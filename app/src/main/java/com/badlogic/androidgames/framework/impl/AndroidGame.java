@@ -1,5 +1,6 @@
 package com.badlogic.androidgames.framework.impl;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.Configuration;
@@ -27,6 +28,7 @@ public abstract class AndroidGame extends Activity implements Game {
     Screen screen;
     WakeLock wakeLock;
 
+    @SuppressLint("InvalidWakeLockTag")
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
