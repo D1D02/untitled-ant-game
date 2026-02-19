@@ -1,0 +1,83 @@
+[{
+    "name": "Rock",
+    "components":{
+        "life": {"hp": 10},
+        "dimension_discrete":{"dimension": 1},
+        "sprite": {"pathname": "sprite.png"},
+        "position": {
+            "x": 0,
+            "y": 10
+        }
+    }
+},
+{
+    "name": "FallingPheromones",
+    "components":{
+        "duration": {"time": 10},
+        "quantity": {"number":1},
+        "sprite": {"pathname": "sprite.png"},
+        "position": {
+            "x": 0,
+            "y": 10
+        }
+    }
+},
+{
+    "name": "Pheromones",
+    "components":{
+        "duration": {"time": 10},
+        "range": {"distance":3},
+        "sprite": {"pathname": "sprite.png"},
+        "position": {
+            "x": 0,
+            "y": 10
+        }
+    }
+},
+{
+    "name": "Anthill",
+    "components":{
+        "level": {"number":1},
+        "dimension_discrete":{"dimension": 3},
+        "sprite": {"pathname": "sprite.png"}
+    }
+},
+{
+    "name": "Trial",
+    "components":{
+        "life": {"hp":1}
+    }
+},
+{
+    "name": "Food",
+    "components":{
+        "weight": {"mass":10},
+        "food": {"capacity":1},
+        "sprite": {"pathname": "sprite.png"},
+        "position": {
+            "x": 0,
+            "y": 10
+        },
+        "duration": {"time": 10}
+    }
+},
+{
+    "name": "Ant",
+    "components":{
+        "life": {"hp": 10},
+        "food": {"capacity":10},
+        "force": {"module":10},
+        "position": {
+            "x": 0,
+            "y": 10
+        },
+        "speed": 10,
+        "consuming_food": {"capacity":1},
+        "weight": {"mass":10},
+        "sprite": {"pathname": "sprite.png"},
+        "hitbox": {"dimension":1},
+        "experience": {"quantity":0},
+        "max_distance": {"distance":10},
+        "range": {"distance":3}
+    }
+}]
