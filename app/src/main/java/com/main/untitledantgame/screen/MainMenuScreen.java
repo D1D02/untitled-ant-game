@@ -1,9 +1,16 @@
 package com.main.untitledantgame.screen;
 
+import android.app.Activity;
+import android.app.Application;
+import android.widget.Toast;
+
 import com.badlogic.androidgames.framework.Game;
 import com.badlogic.androidgames.framework.Graphics;
+import com.badlogic.androidgames.framework.Input;
 import com.badlogic.androidgames.framework.Screen;
 import com.main.untitledantgame.visuals.Assets;
+
+import java.util.List;
 
 public class MainMenuScreen extends Screen {
     public MainMenuScreen(Game game) {
@@ -13,6 +20,33 @@ public class MainMenuScreen extends Screen {
     @Override
     public void update(float deltaTime) {
         Graphics g = game.getGraphics();
+        List<Input.TouchEvent> touchEvents = game.getInput().getTouchEvents();
+        game.getInput().getKeyEvents();
+        int len = touchEvents.size();
+
+        for(int i = 0; i < len; i++) {
+            Input.TouchEvent event = touchEvents.get(i);
+            if(event.type == Input.TouchEvent.TOUCH_UP) {
+                if(inBounds(event, 200, 100, 400, 100) ) {
+                    //game.setScreen(new HelpScreen(game));
+                    System.out.println("Starting game");
+                    return;
+                }
+                if(inBounds(event, 200, 300, 400, 100) ) {
+                    //game.setScreen(new HelpScreen(game));
+                    System.out.println("Selected Settings");
+                    return;
+                }
+            }
+        }
+    }
+
+    private boolean inBounds(Input.TouchEvent event, int x, int y, int width, int height) {
+        if(event.x > x && event.x < x + width - 1 &&
+                event.y > y && event.y < y + height - 1)
+            return true;
+        else
+            return false;
     }
 
     @Override
