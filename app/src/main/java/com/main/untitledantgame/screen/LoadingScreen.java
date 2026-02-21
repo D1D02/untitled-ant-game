@@ -8,11 +8,15 @@ import com.badlogic.androidgames.framework.Graphics;
 import com.badlogic.androidgames.framework.Screen;
 import com.google.gson.JsonArray;
 import com.main.untitledantgame.components.LifeComponent;
+import com.main.untitledantgame.map.Generator;
+import com.main.untitledantgame.utility.GeneratorLoader;
 import com.main.untitledantgame.utility.ecs.Entity;
 import com.main.untitledantgame.utility.ecs.EntityFactory;
 import com.main.untitledantgame.utility.ecs.PrototypeRegistry;
 import com.main.untitledantgame.visuals.Assets;
 import com.main.untitledantgame.utility.JsonLoader;
+
+import java.util.List;
 
 public class LoadingScreen extends Screen {
     public LoadingScreen(Game game) {
@@ -40,6 +44,16 @@ public class LoadingScreen extends Screen {
             Log.d("ECS", "TRIAL OK, ID = " + trial.getId() + ", HP = " + trial.getComponent(LifeComponent.class).getHp());
         } else {
             Log.d("ECS", "TRIAL NULL");
+        }
+
+        List<Generator> generators =
+                GeneratorLoader.loadGenerators((Context) game, "Entities/generator.json");
+
+        if (generators != null) {
+            for (Generator g : generators) {
+                android.util.Log.d("GEN", "Loaded: " + g.name +
+                        " start_delay=" + g.start_delay);
+            }
         }
 
         Graphics g = game.getGraphics();
