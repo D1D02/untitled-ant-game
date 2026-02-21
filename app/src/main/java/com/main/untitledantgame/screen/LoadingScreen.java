@@ -36,7 +36,8 @@ public class LoadingScreen extends Screen {
 
         Log.d("ECS", "---- TEST ECS ----");
 
-        EntityFactory factory = new EntityFactory(Assets.prototypeRegistry);
+        //TESTING
+        /* EntityFactory factory = new EntityFactory(Assets.prototypeRegistry);
 
         Entity trial = factory.create("Trial");
 
@@ -44,12 +45,13 @@ public class LoadingScreen extends Screen {
             Log.d("ECS", "TRIAL OK, ID = " + trial.getId() + ", HP = " + trial.getComponent(LifeComponent.class).getHp());
         } else {
             Log.d("ECS", "TRIAL NULL");
-        }
+        }*/
 
         List<Generator> generators =
                 GeneratorLoader.loadGenerators((Context) game, "Entities/generator.json");
 
         if (generators != null) {
+            Assets.generators = generators;
             for (Generator g : generators) {
                 android.util.Log.d("GEN", "Loaded: " + g.name +
                         " start_delay=" + g.start_delay);
