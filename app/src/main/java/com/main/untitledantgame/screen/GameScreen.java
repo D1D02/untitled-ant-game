@@ -1,6 +1,5 @@
 package com.main.untitledantgame.screen;
 
-<<<<<<< HEAD
 import com.badlogic.androidgames.framework.Game;
 import com.badlogic.androidgames.framework.Screen;
 
@@ -34,7 +33,4 @@ public class GameScreen extends Screen {
     public void dispose() {
 
     }
-=======
-public class GameScreen {
->>>>>>> 96c7de41297ed81ff1b214935f25a9abe3275271
 }
