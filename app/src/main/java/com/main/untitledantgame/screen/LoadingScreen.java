@@ -27,6 +27,8 @@ public class LoadingScreen extends Screen {
 
     @Override
     public void update(float deltaTime) {
+        System.loadLibrary("liquidfun");
+        System.loadLibrary("liquidfun_jni");
 
         JsonArray json = JsonLoader.loadJsonArray((Context) game, "Entities/entities.json");
         if (json == null) {
@@ -82,7 +84,7 @@ public class LoadingScreen extends Screen {
             original.recycle();
 
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.d("ECS", e.getMessage());
         }
 
         // Passo al menu principale
