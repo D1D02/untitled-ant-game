@@ -1,6 +1,7 @@
 package com.main.untitledantgame.screen;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.util.Log;
 
 import com.badlogic.androidgames.framework.Game;
@@ -20,46 +21,75 @@ import java.util.List;
 
 public class LoadingScreen extends Screen {
     public LoadingScreen(Game game) {
+
         super(game);
     }
 
     @Override
     public void update(float deltaTime) {
+        System.loadLibrary("liquidfun");
+        System.loadLibrary("liquidfun_jni");
+
         JsonArray json = JsonLoader.loadJsonArray((Context) game, "Entities/entities.json");
         if (json == null) {
-            android.util.Log.d("ECS", "JSON NON caricato!");
+            Log.d("ECS", "JSON NON caricato!");
         } else {
-            android.util.Log.d("ECS", "JSON caricato! Elementi: " + json.size());
+            Log.d("ECS", "JSON caricato! Elementi: " + json.size());
         }
+
         Assets.prototypeRegistry = new PrototypeRegistry();
         Assets.prototypeRegistry.load(json);
-
-        Log.d("ECS", "---- TEST ECS ----");
-
-        EntityFactory factory = new EntityFactory(Assets.prototypeRegistry);
-
-        Entity trial = factory.create("Trial");
-
-        if (trial != null) {
-            Log.d("ECS", "TRIAL OK, ID = " + trial.getId() + ", HP = " + trial.getComponent(LifeComponent.class).getHp());
-        } else {
-            Log.d("ECS", "TRIAL NULL");
-        }
 
         List<Generator> generators =
                 GeneratorLoader.loadGenerators((Context) game, "Entities/generator.json");
 
         if (generators != null) {
-            for (Generator g : generators) {
-                android.util.Log.d("GEN", "Loaded: " + g.name +
-                        " start_delay=" + g.start_delay);
-            }
+            Assets.generators = generators;
         }
 
         Graphics g = game.getGraphics();
-        Assets.background = g.newPixmap("background.png", Graphics.PixmapFormat.RGB565);
+
+        int screenW = g.getWidth();
+        int screenH = g.getHeight();
+
+        try {
+            android.content.res.AssetManager assetManager =
+                    ((Context) game).getAssets();
+
+            java.io.InputStream in =
+                    assetManager.open("background.png");
+
+            android.graphics.Bitmap original =
+                    android.graphics.BitmapFactory.decodeStream(in);
+
+            in.close();
+
+            android.graphics.Bitmap scaled =
+                    android.graphics.Bitmap.createScaledBitmap(
+                            original,
+                            screenW,
+                            screenH,
+                            true
+                    );
+
+            android.graphics.Bitmap converted =
+                    scaled.copy(Bitmap.Config.RGB_565, true);
+
+            Assets.background =
+                    new com.badlogic.androidgames.framework.impl.AndroidPixmap(
+                            converted,
+                            Graphics.PixmapFormat.RGB565
+                    );
+
+            original.recycle();
+
+        } catch (Exception e) {
+            Log.d("ECS", e.getMessage());
+        }
+
+        // Passo al menu principale
         game.setScreen(new MainMenuScreen(game));
-   }
+    }
 
     @Override
     public void present(float deltaTime) {

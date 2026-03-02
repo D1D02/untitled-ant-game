@@ -52,7 +52,28 @@ public class MainMenuScreen extends Screen {
     @Override
     public void present(float deltaTime) {
         Graphics g = game.getGraphics();
-        g.drawPixmap(Assets.background, 0, 0);
+
+        int screenW = g.getWidth();
+        int screenH = g.getHeight();
+
+        int bgW = Assets.background.getWidth();
+        int bgH = Assets.background.getHeight();
+
+        float scale = Math.max(
+                (float) screenW / bgW,
+                (float) screenH / bgH
+        );
+
+        int scaledW = (int)(bgW * scale);
+        int scaledH = (int)(bgH * scale);
+
+        int x = (screenW - scaledW) / 2;
+        int y = (screenH - scaledH) / 2;
+
+        g.drawPixmap(Assets.background,
+                x, y,
+                0, 0,
+                bgW, bgH);
     }
 
     @Override
