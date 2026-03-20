@@ -1,83 +1,60 @@
 [{
-    "name": "Rock",
+    "name": "Ant",
     "components":{
         "life": {"hp": 10},
-        "dimension_discrete":{"dimension": 1},
-        "sprite": {"pathname": "sprite.png"},
-        "position": {
-            "x": 0,
-            "y": 10
-        }
-    }
-},
-{
-    "name": "FallingPheromones",
-    "components":{
-        "duration": {"time": 10},
-        "quantity": {"number":1},
-        "sprite": {"pathname": "sprite.png"},
-        "position": {
-            "x": 0,
-            "y": 10
-        }
-    }
-},
-{
-    "name": "Pheromones",
-    "components":{
-        "duration": {"time": 10},
-        "range": {"distance":3},
-        "sprite": {"pathname": "sprite.png"},
-        "position": {
-            "x": 0,
-            "y": 10
-        }
-    }
-},
-{
-    "name": "Anthill",
-    "components":{
-        "level": {"number":1},
-        "dimension_discrete":{"dimension": 3},
+        "food": {
+            "capacity":10,
+            "consuming_timer": 10,
+            "last_consumed": 0
+        },
+        "ant_stats": {
+            "force": 10.0,
+            "max_distance": 10,
+            "range": 3
+        },
+        "body":{
+            "position": {
+                "x": 0,
+                "y": 10
+            },
+            "angle": 0.3,
+            "type": "dynamicBody",
+            "fixed_rotation": "true",
+            "gravity_scale": 0.0,
+            "polygon_shape": {
+                "dimension_1": 0.01,
+                "dimension_2": 0.01
+            },
+            "fixture": {
+                "density": 5,
+                "friction": 1,
+                "restitution": 2
+            }
+        },
         "sprite": {"pathname": "sprite.png"}
     }
 },
 {
-    "name": "Trial",
+    "name": "Pheromone",
     "components":{
-        "life": {"hp":1}
-    }
-},
-{
-    "name": "Food",
-    "components":{
-        "weight": {"mass":10},
-        "food": {"capacity":1},
-        "sprite": {"pathname": "sprite.png"},
-        "position": {
-            "x": 0,
-            "y": 10
+        "identifier":{
+            "inc_id": 0
         },
-        "duration": {"time": 10}
-    }
-},
-{
-    "name": "Ant",
-    "components":{
-        "life": {"hp": 10},
-        "food": {"capacity":10},
-        "force": {"module":10},
-        "position": {
-            "x": 0,
-            "y": 10
+        "alive": {"ttl": 10},
+        "body":{
+            "type": "dynamicBody",
+            "fixed_rotation": "true",
+            "gravity_scale": 0.0,
+            "polygon_shape": {
+                "dimension_1": 0.01,
+                "dimension_2": 0.01
+            },
+            "fixture": {
+                "density": 5,
+                "friction": 1,
+                "restitution": 2
+            }
         },
-        "speed": 10,
-        "consuming_food": {"capacity":1},
-        "weight": {"mass":10},
-        "sprite": {"pathname": "sprite.png"},
-        "hitbox": {"dimension":1},
-        "experience": {"quantity":0},
-        "max_distance": {"distance":10},
-        "range": {"distance":3}
+        "sprite": {"pathname": "sprite.png"}
     }
 }]
