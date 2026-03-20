@@ -1,6 +1,6 @@
-package components;
+package com.main.untitledantgame.components;
 
-public class AliveComponent {
+public class AliveComponent implements Component {
     float ttl;
 
     public void setTtl(float ttl) {

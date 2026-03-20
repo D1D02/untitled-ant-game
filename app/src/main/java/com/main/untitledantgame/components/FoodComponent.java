@@ -1,4 +1,4 @@
-package components;
+package com.main.untitledantgame.components;
 
 public class FoodComponent implements Component {
     int capacity;
