@@ -1,5 +1,7 @@
 package com.main.untitledantgame.components;
 
+import com.google.fpl.liquidfun.Body;
+
 public class BodyComponent implements Component {
     Body body;
 

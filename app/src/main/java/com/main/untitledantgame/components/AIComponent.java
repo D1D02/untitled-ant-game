@@ -1,7 +1,9 @@
 package com.main.untitledantgame.components;
 
 import com.google.fpl.liquidfun.Body;
+import com.google.fpl.liquidfun.Vec2;
 import com.main.untitledantgame.components.Component;
+import com.main.untitledantgame.utility.ecs.Entity;
 
 enum Behaviour {
   WANDERING,
@@ -32,9 +34,14 @@ public class AIComponent implements Component {
         antBody.applyForceToCenter(new Vec2(fx, fy), true);
 
         Vec2 currentVel = antBody.getLinearVelocity();
-        if (currentVel.length() > maxSpeed) {
-            currentVel.normalize();
-            antBody.setLinearVelocity(new Vec2(currentVel.getX() * maxSpeed, currentVel.getY() * maxSpeed));
+        float vx = currentVel.getX();
+        float vy = currentVel.getY();
+
+        float length = (float) Math.sqrt(vx * vx + vy * vy);
+
+        if (length > maxSpeed) {
+            float ratio = maxSpeed / length;
+            antBody.setLinearVelocity(new Vec2(vx * ratio, vy * ratio));
         }
 
         generatePheromone(antBody);
@@ -44,7 +51,7 @@ public class AIComponent implements Component {
         Entity targetPheromone = null;
         int minId = Integer.MAX_VALUE;
 
-        for (Entity entity : entitiesInRange) {
+        /*for (Entity entity : entitiesInRange) {
             IdentifierComponent idComp = entity.getComponent(IdentifierComponent.class);
             
             if (idComp != null) {
@@ -56,16 +63,18 @@ public class AIComponent implements Component {
         }
 
         if (targetPheromone != null) {
-            Body targetBody = targetPheromone.getComponent(BodyComponent.class).body;
-            Vec2 direction = new Vec2(
-                targetBody.getPosition().getX() - antBody.getPosition().getX(),
-                targetBody.getPosition().getY() - antBody.getPosition().getY()
-            );
+                Body targetBody = targetPheromone.getComponent(BodyComponent.class).body;
+                Vec2 direction = new Vec2(
+                        targetBody.getPosition().getX() - antBody.getPosition().getX(),
+                        targetBody.getPosition().getY() - antBody.getPosition().getY()
+                );
             direction.normalize();
             
             float steeringForce = 8.0f; 
             antBody.applyForceToCenter(new Vec2(direction.getX() * steeringForce, direction.getY() * steeringForce), true);
         }
+
+         */
     }
 
     private void generatePheromone(Body antBody) {
