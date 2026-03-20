@@ -41,6 +41,20 @@
             "inc_id": 0
         },
         "alive": {"ttl": 10},
+        "body":{
+            "type": "dynamicBody",
+            "fixed_rotation": "true",
+            "gravity_scale": 0.0,
+            "polygon_shape": {
+                "dimension_1": 0.01,
+                "dimension_2": 0.01
+            },
+            "fixture": {
+                "density": 5,
+                "friction": 1,
+                "restitution": 2
+            }
+        },
         "sprite": {"pathname": "sprite.png"}
     }
 }]

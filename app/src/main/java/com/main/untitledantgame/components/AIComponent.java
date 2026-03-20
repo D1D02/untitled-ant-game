@@ -1,5 +1,8 @@
 package com.main.untitledantgame.components;
 
+import com.google.fpl.liquidfun.Body;
+import com.main.untitledantgame.components.Component;
+
 enum Behaviour {
   WANDERING,
   FOLLOWING,
@@ -35,6 +38,34 @@ public class AIComponent implements Component {
         }
 
         generatePheromone(antBody);
+    }
+
+    private void returnHome(Body antBody) {
+        Entity targetPheromone = null;
+        int minId = Integer.MAX_VALUE;
+
+        for (Entity entity : entitiesInRange) {
+            IdentifierComponent idComp = entity.getComponent(IdentifierComponent.class);
+            
+            if (idComp != null) {
+                if (idComp.getInc_id() < minId) {
+                    minId = idComp.getInc_id();
+                    targetPheromone = entity;
+                }
+            }
+        }
+
+        if (targetPheromone != null) {
+            Body targetBody = targetPheromone.getComponent(BodyComponent.class).body;
+            Vec2 direction = new Vec2(
+                targetBody.getPosition().getX() - antBody.getPosition().getX(),
+                targetBody.getPosition().getY() - antBody.getPosition().getY()
+            );
+            direction.normalize();
+            
+            float steeringForce = 8.0f; 
+            antBody.applyForceToCenter(new Vec2(direction.getX() * steeringForce, direction.getY() * steeringForce), true);
+        }
     }
 
     private void generatePheromone(Body antBody) {
