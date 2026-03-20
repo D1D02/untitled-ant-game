@@ -1,15 +1,22 @@
 package com.main.untitledantgame.components;
 
+import com.badlogic.androidgames.framework.Pixmap;
+
 public class SpriteComponent implements Component{
-    String path;
+    Pixmap sprite;
 
     public SpriteComponent(){}
 
-    public String getPath(){
-        return this.path;
+    public SpriteComponent(Pixmap sprite){
+        this.sprite = sprite;
     }
 
-    public void setPath(String new_path){
-        this.path = new_path;
+    public void setSprite(Pixmap sprite){
+        this.sprite=sprite;
     }
+
+    public Pixmap getSprite(){
+        return this.sprite;
+    }
+
 }

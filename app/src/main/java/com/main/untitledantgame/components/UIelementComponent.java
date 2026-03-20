@@ -1,10 +1,17 @@
 package com.main.untitledantgame.components;
 
 import com.badlogic.androidgames.framework.Graphics;
+import com.main.untitledantgame.ui.UIdrawable;
 
-public abstract class UIelement implements Component{
+public class UIelementComponent implements Component{
 
-    int posX = 0, posY = 0;
-    int width = 100, height = 20;
-    public abstract void draw(Graphics g);
+    UIdrawable drawable;
+
+    public UIelementComponent(UIdrawable drawable) {
+        this.drawable = drawable;
+    }
+
+    public void draw(Graphics g){
+        drawable.draw(g);
+    }
 }

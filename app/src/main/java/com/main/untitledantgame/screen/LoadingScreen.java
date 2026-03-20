@@ -86,6 +86,41 @@ public class LoadingScreen extends Screen {
         } catch (Exception e) {
             Log.d("ECS", e.getMessage());
         }
+        //sostituire con un ciclo
+        try {
+            android.content.res.AssetManager assetManager =
+                    ((Context) game).getAssets();
+
+            java.io.InputStream in =
+                    assetManager.open("anthill.png");
+
+            android.graphics.Bitmap original =
+                    android.graphics.BitmapFactory.decodeStream(in);
+
+            in.close();
+
+            android.graphics.Bitmap scaled =
+                    android.graphics.Bitmap.createScaledBitmap(
+                            original,
+                            screenW/3,
+                            screenW/3,
+                            true
+                    );
+
+            android.graphics.Bitmap converted =
+                    scaled.copy(Bitmap.Config.RGB_565, true);
+
+            Assets.anthill =
+                    new com.badlogic.androidgames.framework.impl.AndroidPixmap(
+                            converted,
+                            Graphics.PixmapFormat.RGB565
+                    );
+
+            original.recycle();
+
+        } catch (Exception e) {
+            Log.d("ECS", e.getMessage());
+        }
 
         // Passo al menu principale
         game.setScreen(new MainMenuScreen(game));

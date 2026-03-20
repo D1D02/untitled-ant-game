@@ -58,6 +58,7 @@ public class MainActivity extends Activity {
         //backgroundMusic = audio.newMusic("soundtrack.mp3");
         //backgroundMusic.play();
 
+        /*
         // Game world
         DisplayMetrics metrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(metrics);
@@ -127,6 +128,6 @@ public class MainActivity extends Activity {
         SharedPreferences pref = getPreferences(Context.MODE_PRIVATE);
         int counter = pref.getInt(getString(R.string.important_info), -1); // default value
         Log.i("Main thread", "read counter " + counter);
-        //t.counter = counter;
+        //t.counter = counter; */
     }
 }
