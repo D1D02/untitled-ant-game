@@ -6,6 +6,7 @@ import com.main.untitledantgame.components.Component;
 import com.main.untitledantgame.components.LifeComponent;
 import com.main.untitledantgame.components.PositionComponent;
 import com.main.untitledantgame.components.SpriteComponent;
+import com.main.untitledantgame.visuals.Assets;
 
 public class ComponentFactory {
 
@@ -26,7 +27,8 @@ public class ComponentFactory {
 
             case "sprite":
                 SpriteComponent sprite = new SpriteComponent();
-                sprite.setPath(data.get("pathname").getAsString());
+                if(data.get("pathname").getAsString().equals("anthill.png"))
+                    sprite.setSprite(Assets.anthill);
                 return sprite;
 
             default:

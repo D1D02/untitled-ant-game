@@ -15,7 +15,7 @@ import com.main.untitledantgame.GameObject;
  *
  * Created by mfaella on 27/02/16.
  */
-public class EnclosureGO extends GameObject
+public class EnclosureGO /*extends GameObject*/
 {
     private static final float THICKNESS = 1;
 
@@ -25,7 +25,7 @@ public class EnclosureGO extends GameObject
 
     public EnclosureGO(GameWorld gw, float xmin, float xmax, float ymin, float ymax)
     {
-        super(gw);
+        /*super(gw);
         this.xmin = xmin; this.xmax = xmax; this.ymin = ymin; this.ymax = ymax;
         this.screen_xmin = gw.toPixelsX(xmin+THICKNESS);
         this.screen_xmax = gw.toPixelsX(xmax-THICKNESS);
@@ -55,10 +55,10 @@ public class EnclosureGO extends GameObject
 
         // clean up native objects
         bdef.delete();
-        box.delete();
+        box.delete();*/
     }
 
-    @Override
+    //@Override
     public void draw(Bitmap buffer, float x, float y, float angle) {
         paint.setARGB(255, 0, 0, 255);
         paint.setStyle(Paint.Style.STROKE);

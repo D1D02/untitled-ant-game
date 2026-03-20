@@ -62,12 +62,12 @@ public class TouchConsumer {
         // if we are already dragging with another finger, discard this event
         if (mouseJoint != null) return;
 
-        float x = gw.toMetersX(event.x), y = gw.toMetersY(event.y);
+        //float x = gw.toMetersX(event.x), y = gw.toMetersY(event.y);
 
-        Log.d("MultiTouchHandler", "touch down at " + x + ", " + y);
+        //Log.d("MultiTouchHandler", "touch down at " + x + ", " + y);
 
         touchedFixture = null;
-        gw.world.queryAABB(touchQueryCallback, x - POINTER_SIZE, y - POINTER_SIZE, x + POINTER_SIZE, y + POINTER_SIZE);
+        //gw.world.queryAABB(touchQueryCallback, x - POINTER_SIZE, y - POINTER_SIZE, x + POINTER_SIZE, y + POINTER_SIZE);
         if (touchedFixture != null) {
             // From fixture to GO
             Body touchedBody = touchedFixture.getBody();
@@ -76,7 +76,7 @@ public class TouchConsumer {
                 GameObject touchedGO = (GameObject) userData;
                 activePointerID = pointerId;
                 Log.d("MultiTouchHandler", "touched game object " + touchedGO.name);
-                setupMouseJoint(x, y, touchedBody);
+                //setupMouseJoint(x, y, touchedBody);
                 // splitBox(touchedGO, touchedBody);
             }
         }
@@ -89,23 +89,23 @@ public class TouchConsumer {
         mouseJointDef.setBodyB(touchedBody);
         mouseJointDef.setMaxForce(500 * touchedBody.getMass());
         mouseJointDef.setTarget(x, y);
-        mouseJoint = gw.world.createMouseJoint(mouseJointDef);
+        //mouseJoint = gw.world.createMouseJoint(mouseJointDef);
     }
 
     private void consumeTouchUp(Input.TouchEvent event) {
         if (mouseJoint != null && event.pointer == activePointerID) {
             Log.d("MultiTouchHandler", "Releasing joint");
-            gw.world.destroyJoint(mouseJoint);
+            //gw.world.destroyJoint(mouseJoint);
             mouseJoint = null;
             activePointerID = 0;
         }
     }
 
     private void consumeTouchMove(Input.TouchEvent event) {
-        float x = gw.toMetersX(event.x), y = gw.toMetersY(event.y);
+        //float x = gw.toMetersX(event.x), y = gw.toMetersY(event.y);
         if (mouseJoint!=null && event.pointer == activePointerID) {
-            Log.d("MultiTouchHandler", "active pointer moved to " + x + ", " + y);
-            mouseJoint.setTarget(x, y);
+            //Log.d("MultiTouchHandler", "active pointer moved to " + x + ", " + y);
+            //mouseJoint.setTarget(x, y);
         }
     }
 }

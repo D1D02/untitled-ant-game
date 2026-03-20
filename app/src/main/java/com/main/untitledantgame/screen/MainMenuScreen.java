@@ -27,8 +27,9 @@ public class MainMenuScreen extends Screen {
         for(int i = 0; i < len; i++) {
             Input.TouchEvent event = touchEvents.get(i);
             if(event.type == Input.TouchEvent.TOUCH_UP) {
+                System.out.println(event.x + " " + event.y);
                 if(inBounds(event, 200, 100, 400, 100) ) {
-                    //game.setScreen(new HelpScreen(game));
+                    game.setScreen(new GameScreen(game));
                     System.out.println("Starting game");
                     return;
                 }
