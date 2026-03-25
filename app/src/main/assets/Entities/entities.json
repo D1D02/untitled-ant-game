@@ -42,7 +42,7 @@
         },
         "alive": {"ttl": 10},
         "body":{
-            "type": "dynamicBody",
+            "type": "staticBody",
             "fixed_rotation": "true",
             "gravity_scale": 0.0,
             "polygon_shape": {

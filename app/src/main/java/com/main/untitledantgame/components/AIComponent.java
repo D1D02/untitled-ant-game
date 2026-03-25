@@ -14,16 +14,8 @@ enum Behaviour {
 
 public class AIComponent implements Component {
     public Behaviour state = Behaviour.WANDERING;
-    float wanderAngle = 0f;
-    float maxSpeed = 5.0f;
-
-    public Behaviour getState() {
-        return state;
-    }
-
-    public void setState(Behaviour new_state) {
-        this.state = new_state;
-    }
+    public float wanderAngle = 0f;
+    public float maxSpeed = 5.0f;
 
     public void updateWandering(Body antBody, float force) {
         wanderAngle += (Math.random() - 0.5f) * 0.5f; 
@@ -81,7 +73,4 @@ public class AIComponent implements Component {
 
     }
 
-    public void setMaxSpeed(float maxSpeed) {
-        this.maxSpeed = maxSpeed;
-    }
 }
