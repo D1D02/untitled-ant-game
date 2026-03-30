@@ -4,7 +4,7 @@ public class FoodComponent implements Component {
     public int capacity;
     public int food;
     public float consuming_timer;
-    public float last_consumed;
+    public float last_consumed = 0;
 
 
     boolean isFoodEnded(float deltaTime) {
