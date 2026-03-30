@@ -3,6 +3,7 @@ package com.main.untitledantgame.utility.ecs;
 import com.google.gson.JsonObject;
 
 import com.main.untitledantgame.components.Component;
+import com.main.untitledantgame.components.FoodComponent;
 import com.main.untitledantgame.components.LifeComponent;
 import com.main.untitledantgame.components.PositionComponent;
 import com.main.untitledantgame.components.SpriteComponent;
@@ -14,16 +15,19 @@ public class ComponentFactory {
 
         switch (name) {
 
+            case "food":
+                FoodComponent food = new FoodComponent();
+
+                food.capacity = (int)data.get("capacity").getAsFloat();
+                food.consuming_timer = (int)data.get("consuming_timer").getAsFloat();
+                food.capacity = data.get("hp").getAsFloat();
+                
+                return food;
+
             case "life":
                 LifeComponent life = new LifeComponent();
-                life.setHp(data.get("hp").getAsFloat());
+                life.hp = data.get("hp").getAsFloat();
                 return life;
-
-            case "position":
-                PositionComponent pos = new PositionComponent();
-                pos.setX(data.get("x").getAsFloat());
-                pos.setY(data.get("y").getAsFloat());
-                return pos;
 
             case "sprite":
                 SpriteComponent sprite = new SpriteComponent();

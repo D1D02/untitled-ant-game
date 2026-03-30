@@ -3,6 +3,7 @@
     "components":{
         "life": {"hp": 10},
         "food": {
+            "food": 10,
             "capacity":10,
             "consuming_timer": 10,
             "last_consumed": 0
@@ -15,7 +16,7 @@
         "body":{
             "position": {
                 "x": 0,
-                "y": 10
+                "y": 0
             },
             "angle": 0.3,
             "type": "dynamicBody",
