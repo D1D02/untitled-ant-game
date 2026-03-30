@@ -90,7 +90,6 @@ public class ComponentFactory {
 
             case "identifier":
                 IdentifierComponent id = new IdentifierComponent(); 
-
                 return id;
 
             case "life":
@@ -100,8 +99,15 @@ public class ComponentFactory {
 
             case "sprite":
                 SpriteComponent sprite = new SpriteComponent();
-                if(data.get("pathname").getAsString().equals("anthill.png"))
-                    sprite.setSprite(Assets.anthill);
+                String path = data.get("pathname").getAsString();
+
+                try {
+                    Pixmap pixmap = game.getGraphics().newPixmap(path, Graphics.PixmapFormat.ARGB8888);
+                    sprite.setSprite(pixmap);
+                } catch (Exception e) {
+                    Log.e("ECS", "Impossibile caricare la pixmap dal path: " + path);
+                }
+                
                 return sprite;
 
             default:
