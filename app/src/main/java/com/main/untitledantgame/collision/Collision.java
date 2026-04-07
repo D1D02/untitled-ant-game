@@ -1,14 +1,15 @@
 package com.main.untitledantgame.collision;
 
 import com.main.untitledantgame.GameObject;
+import com.main.untitledantgame.utility.ecs.Entity;
 
 /** An unordered pair of game objects.
  *
  */
 public class Collision {
-    GameObject a, b;
+    Entity a, b;
 
-    public Collision(GameObject a, GameObject b) {
+    public Collision(Entity a, Entity b) {
         this.a = a;
         this.b = b;
     }
@@ -24,6 +25,7 @@ public class Collision {
             return false;
         Collision otherCollision = (Collision) other;
         return (a.equals(otherCollision.a) && b.equals(otherCollision.b)) ||
-                (a.equals(otherCollision.b) && b.equals(otherCollision.a));
+               (a.equals(otherCollision.b) && b.equals(otherCollision.a));
     }
 }
+    
