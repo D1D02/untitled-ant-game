@@ -19,7 +19,7 @@ import com.main.untitledantgame.GameObject;
 import com.main.untitledantgame.TouchConsumer;
 import com.main.untitledantgame.collision.Collision;
 import com.main.untitledantgame.collision.CollisionSounds;
-import com.main.untitledantgame.collision.MyContactListener;
+import com.main.untitledantgame.collision.GameContactListener;
 import com.main.untitledantgame.utility.ecs.Entity;
 
 import java.nio.ByteBuffer;

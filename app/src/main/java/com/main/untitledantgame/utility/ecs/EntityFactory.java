@@ -21,6 +21,7 @@ public class EntityFactory {
         if (proto == null) return null;
 
         Entity entity = new Entity();
+        entity.type = prototypeName;
 
         JsonObject components = proto.getAsJsonObject("components");
 
@@ -29,7 +30,7 @@ public class EntityFactory {
             String compName = entry.getKey();
             JsonObject compData = entry.getValue().getAsJsonObject();
 
-            Component component = ComponentFactory.create(compName, compData, world, game, entity, prototypeName);
+            Component component = ComponentFactory.create(compName, compData, world, game, entity);
 
             if (component != null) {
                 entity.addComponent(component);

@@ -1,95 +1,94 @@
 package com.main.untitledantgame.utility.ecs;
 
-import com.google.fpl.liquidfun.BodyDef;
-import com.google.gson.JsonObject;
-import com.main.untitledantgame.components.AIComponent;
-import com.main.untitledantgame.components.AliveComponent;
-import com.main.untitledantgame.components.Component;
-import com.main.untitledantgame.components.FoodComponent;
-import com.main.untitledantgame.components.IdentifierComponent;
-import com.main.untitledantgame.components.LifeComponent;
-import com.main.untitledantgame.components.PositionComponent;
-import com.main.untitledantgame.components.SpriteComponent;
-import com.main.untitledantgame.visuals.Assets;
+import android.util.Log;
 
-import components.BodyComponent;
+import com.badlogic.androidgames.framework.Game;
+import com.badlogic.androidgames.framework.Graphics;
+import com.badlogic.androidgames.framework.Pixmap;
+
+import com.google.fpl.liquidfun.*;
+
+import com.google.gson.JsonObject;
+
+import com.main.untitledantgame.components.*;
+import com.main.untitledantgame.utility.ecs.Entity;
 
 public class ComponentFactory {
 
-    public static Component create(String name, JsonObject data) {
+    public static Component create(String name, JsonObject data, 
+                                   World world, Game game, Entity entity) {
 
         switch (name) {
 
             case "ai":
                 AIComponent ai = new AIComponent();
-                ai.wanderAngle = (int)data.get("wander_angle").getAsFloat();
-                ai.maxSpeed = (int)data.get("max_speed").getAsFloat();
+                ai.wanderAngle = data.get("wander_angle").getAsFloat();
+                ai.maxSpeed = data.get("max_speed").getAsFloat();
                 return ai;
 
             case "alive":
                 AliveComponent al = new AliveComponent();
-                al.ttl = (int)data.get("ttl").getAsFloat();
+                al.ttl = data.get("ttl").getAsFloat();
                 return al;
 
-
             case "body":
+
                 BodyComponent bc = new BodyComponent();
-                
                 BodyDef bDef = new BodyDef();
-                
+
                 String typeStr = data.get("type").getAsString();
-                if (typeStr.equals("dynamicBody")) bDef.setType(BodyType.dynamicBody);
-                else if (typeStr.equals("staticBody")) bDef.setType(BodyType.staticBody);
-                else bDef.setType(BodyType.kinematicBody);
+                bDef.setType(typeStr.equals("dynamicBody") ?
+                        BodyType.dynamicBody : BodyType.staticBody);
 
                 if (data.has("position")) {
                     JsonObject pos = data.getAsJsonObject("position");
-                    bDef.setPosition(pos.get("x").getAsFloat(), pos.get("y").getAsFloat());
+                    bDef.setPosition(
+                            pos.get("x").getAsFloat(),
+                            pos.get("y").getAsFloat()
+                    );
                 }
-                
-                if (data.has("angle")) bDef.setAngle(data.get("angle").getAsFloat());
-                if (data.has("gravity_scale")) bDef.setGravityScale(data.get("gravity_scale").getAsFloat());
-                if (data.has("fixed_rotation")) bDef.setFixedRotation(data.get("fixed_rotation").getAsBoolean());
 
                 bc.body = world.createBody(bDef);
 
-                PolygonShape shape = new PolygonShape();
-                if (data.has("polygon_shape")) {
+                bc.body.setUserData(entity);
+
+                if (data.has("fixture") && data.has("polygon_shape")) {
+
+                    JsonObject fixData = data.getAsJsonObject("fixture");
                     JsonObject poly = data.getAsJsonObject("polygon_shape");
-                    float d1 = poly.get("dimension_1").getAsFloat();
-                    float d2 = poly.get("dimension_2").getAsFloat();
-                    shape.setAsBox(d1, d2);
+
+                    PolygonShape shape = new PolygonShape();
+                    shape.setAsBox(
+                            poly.get("dimension_1").getAsFloat(),
+                            poly.get("dimension_2").getAsFloat()
+                    );
+
+                    FixtureDef fDef = new FixtureDef();
+                    fDef.setShape(shape);
+                    fDef.setDensity(fixData.get("density").getAsFloat());
+                    fDef.setFriction(fixData.get("friction").getAsFloat());
+                    fDef.setRestitution(fixData.get("restitution").getAsFloat());
+
+                    bc.body.createFixture(fDef);
+
+                    shape.delete();
+                    fDef.delete();
                 }
 
-                FixtureDef fDef = new FixtureDef();
-                fDef.setShape(shape);
-                
-                if (data.has("fixture")) {
-                    JsonObject fix = data.getAsJsonObject("fixture");
-                    fDef.setDensity(fix.get("density").getAsFloat());
-                    fDef.setFriction(fix.get("friction").getAsFloat());
-                    fDef.setRestitution(fix.get("restitution").getAsFloat());
-                }
-
-                bc.body.createFixture(fDef);
-
-                shape.delete();
-                fDef.delete();
                 bDef.delete();
-
                 return bc;
-            
+
             case "food":
                 FoodComponent food = new FoodComponent();
-
-                food.capacity = (int)data.get("capacity").getAsFloat();
-                food.consuming_timer = (int)data.get("consuming_timer").getAsFloat();
-                food.capacity = data.get("hp").getAsFloat();
-                
+                food.capacity = data.get("capacity").getAsInt();
+                food.food = data.get("food").getAsInt();
+                food.consuming_timer = data.get("consuming_timer").getAsInt();
+                food.last_consumed = data.get("last_consumed").getAsInt();
                 return food;
 
             case "identifier":
-                IdentifierComponent id = new IdentifierComponent(); 
+                IdentifierComponent id = new IdentifierComponent();
+                id.inc_id = data.get("inc_id").getAsInt();
                 return id;
 
             case "life":
@@ -102,12 +101,13 @@ public class ComponentFactory {
                 String path = data.get("pathname").getAsString();
 
                 try {
-                    Pixmap pixmap = game.getGraphics().newPixmap(path, Graphics.PixmapFormat.ARGB8888);
-                    sprite.setSprite(pixmap);
+                    Pixmap pixmap = game.getGraphics()
+                            .newPixmap(path, Graphics.PixmapFormat.ARGB8888);
+                    sprite.sprite = pixmap;
                 } catch (Exception e) {
-                    Log.e("ECS", "Impossibile caricare la pixmap dal path: " + path);
+                    Log.e("ECS", "Errore sprite: " + path);
                 }
-                
+
                 return sprite;
 
             default:
