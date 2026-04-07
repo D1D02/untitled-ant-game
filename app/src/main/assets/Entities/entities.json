@@ -29,7 +29,8 @@
             "fixture": {
                 "density": 5,
                 "friction": 1,
-                "restitution": 2
+                "restitution": 2,
+                "isSensor": false
             }
         },
         "sprite": {"pathname": "sprite.png"}
@@ -53,7 +54,8 @@
             "fixture": {
                 "density": 5,
                 "friction": 1,
-                "restitution": 2
+                "restitution": 2,
+                "isSensor": true
             }
         },
         "sprite": {"pathname": "sprite.png"}
