@@ -1,0 +1,87 @@
+[{
+  "name": "FoodBar",
+  "components": {
+    "uibar": {
+      "x": 0,
+      "y": 0,
+      "width": 30,
+      "height": 10,
+      "bgR": 100,
+      "bgG": 100,
+      "bgB": 100,
+      "fillR": 200,
+      "fillG": 150,
+      "fillB": 0
+    }
+  }
+},
+  {
+    "name": "PheroBar",
+    "components": {
+      "uibar": {
+        "x": 35,
+        "y": 0,
+        "width": 30,
+        "height": 10,
+        "bgR": 100,
+        "bgG": 100,
+        "bgB": 100,
+        "fillR": 200,
+        "fillG": 0,
+        "fillB": 150
+      }
+    }
+  },
+  {
+    "name": "ExpBar",
+    "components": {
+      "uibar": {
+        "x": 70,
+        "y": 0,
+        "width": 30,
+        "height": 10,
+        "bgR": 100,
+        "bgG": 100,
+        "bgB": 100,
+        "fillR": 255,
+        "fillG": 255,
+        "fillB": 0
+      }
+    }
+  },
+  {
+    "name": "PlayButton",
+    "components": {
+      "uibutton": {
+        "x": 33,
+        "y": 10,
+        "width": 34,
+        "height": 20,
+        "text": "PLAY",
+        "R": 100,
+        "G": 100,
+        "B": 100,
+        "textR": 255,
+        "textG": 255,
+        "textB": 255
+      }
+    }
+  },
+  {
+    "name": "ResetCameraButton",
+    "components": {
+      "uibutton": {
+        "x": 0,
+        "y": 80,
+        "width": 20,
+        "height": 20,
+        "text": "CENTER",
+        "R": 100,
+        "G": 100,
+        "B": 100,
+        "textR": 255,
+        "textG": 255,
+        "textB": 255
+      }
+    }
+  }]

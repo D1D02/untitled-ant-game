@@ -20,6 +20,11 @@ import com.main.untitledantgame.utility.JsonLoader;
 import java.util.List;
 
 public class LoadingScreen extends Screen {
+
+    Graphics g;
+    int screenW;
+    int screenH;
+    android.content.res.AssetManager assetManager;
     public LoadingScreen(Game game) {
 
         super(game);
@@ -30,15 +35,24 @@ public class LoadingScreen extends Screen {
         System.loadLibrary("liquidfun");
         System.loadLibrary("liquidfun_jni");
 
-        JsonArray json = JsonLoader.loadJsonArray((Context) game, "Entities/entities.json");
-        if (json == null) {
+        JsonArray entitiesJson = JsonLoader.loadJsonArray((Context) game, "Entities/entities.json");
+        if (entitiesJson == null) {
             Log.d("ECS", "JSON NON caricato!");
         } else {
-            Log.d("ECS", "JSON caricato! Elementi: " + json.size());
+            Log.d("ECS", "JSON caricato! Elementi: " + entitiesJson.size());
         }
 
         Assets.prototypeRegistry = new PrototypeRegistry();
-        Assets.prototypeRegistry.load(json);
+        Assets.prototypeRegistry.load(entitiesJson);
+
+        JsonArray uiJson = JsonLoader.loadJsonArray((Context) game, "Entities/ui.json");
+        if (uiJson == null) {
+            Log.d("ECS", "JSON NON caricato!");
+        } else {
+            Log.d("ECS", "JSON caricato! Elementi: " + uiJson.size());
+        }
+
+        Assets.prototypeRegistry.load(uiJson);
 
         List<Generator> generators =
                 GeneratorLoader.loadGenerators((Context) game, "Entities/generator.json");
@@ -47,80 +61,14 @@ public class LoadingScreen extends Screen {
             Assets.generators = generators;
         }
 
-        Graphics g = game.getGraphics();
+        g = game.getGraphics();
 
-        int screenW = g.getWidth();
-        int screenH = g.getHeight();
+        screenW = g.getWidth();
+        screenH = g.getHeight();
 
-        try {
-            android.content.res.AssetManager assetManager =
-                    ((Context) game).getAssets();
+        assetManager = ((Context) game).getAssets();
 
-            java.io.InputStream in =
-                    assetManager.open("background.png");
-
-            android.graphics.Bitmap original =
-                    android.graphics.BitmapFactory.decodeStream(in);
-
-            in.close();
-
-            android.graphics.Bitmap scaled =
-                    android.graphics.Bitmap.createScaledBitmap(
-                            original,
-                            screenW,
-                            screenH,
-                            true
-                    );
-
-            android.graphics.Bitmap converted =
-                    scaled.copy(Bitmap.Config.RGB_565, true);
-
-            Assets.background =
-                    new com.badlogic.androidgames.framework.impl.AndroidPixmap(
-                            converted,
-                            Graphics.PixmapFormat.RGB565
-                    );
-
-            original.recycle();
-
-        } catch (Exception e) {
-            Log.d("ECS", e.getMessage());
-        }
-        //sostituire con un ciclo
-        try {
-            android.content.res.AssetManager assetManager =
-                    ((Context) game).getAssets();
-
-            java.io.InputStream in =
-                    assetManager.open("anthill.png");
-
-            android.graphics.Bitmap original =
-                    android.graphics.BitmapFactory.decodeStream(in);
-
-            in.close();
-
-            android.graphics.Bitmap scaled =
-                    android.graphics.Bitmap.createScaledBitmap(
-                            original,
-                            screenW/3,
-                            screenW/3,
-                            true
-                    );
-
-            android.graphics.Bitmap converted =
-                    scaled.copy(Bitmap.Config.RGB_565, true);
-
-            Assets.anthill =
-                    new com.badlogic.androidgames.framework.impl.AndroidPixmap(
-                            converted,
-                            Graphics.PixmapFormat.RGB565
-                    );
-
-            original.recycle();
-
-        } catch (Exception e) {
-            Log.d("ECS", e.getMessage());
-        }
+        Assets.anthill = loadSprite("anthill.png", 0.25f);
 
         // Passo al menu principale
         game.setScreen(new MainMenuScreen(game));
@@ -144,5 +92,39 @@ public class LoadingScreen extends Screen {
     @Override
     public void dispose() {
 
+    }
+
+    com.badlogic.androidgames.framework.impl.AndroidPixmap loadSprite(String sprite, float scale) {
+        try {
+            java.io.InputStream in =
+                    assetManager.open(sprite);
+
+            android.graphics.Bitmap original =
+                    android.graphics.BitmapFactory.decodeStream(in);
+
+            in.close();
+
+            android.graphics.Bitmap scaled =
+                    android.graphics.Bitmap.createScaledBitmap(
+                            original,
+                            (int)(screenW*scale), //dimensione calcolata in proporzione allo schermo, per ora
+                            (int)(screenW*scale),
+                            true
+                    );
+
+            android.graphics.Bitmap converted =
+                    scaled.copy(Bitmap.Config.RGB_565, true);
+
+            original.recycle();
+            return new com.badlogic.androidgames.framework.impl.AndroidPixmap(
+                    converted,
+                    Graphics.PixmapFormat.RGB565
+            );
+
+
+        } catch (Exception e) {
+            Log.d("ECS", e.getMessage());
+        }
+        return null;
     }
 }

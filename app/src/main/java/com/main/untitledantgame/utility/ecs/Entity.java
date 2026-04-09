@@ -32,4 +32,13 @@ public class Entity {
     public <T extends Component> boolean hasComponent(Class<T> type) {
         return components.containsKey(type);
     }
+
+    public <T extends Component> T getWithSuperComponent(Class<T> type) {
+        for (Component comp : components.values()) {
+            if (type.isAssignableFrom(comp.getClass())) {
+                return type.cast(comp);
+            }
+        }
+        return null;
+    }
 }
