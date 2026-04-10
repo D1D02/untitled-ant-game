@@ -21,17 +21,16 @@ public class AIComponent implements Component {
     public Behaviour state = Behaviour.WANDERING;
 
     public float wanderAngle = 0f;
+    public float directionAngle = 0f;
     public float maxSpeed = 5.0f;
 
     public int path_id = -1;
     public int inc_id = -1;
 
-    public List<Entity> entitiesInRange = new ArrayList<>();
-
     private float pheromoneDropDistance = 0.2f;
     private Vec2 lastDropPosition = null;
 
-    private int nextIncId = 0;
+    private Entity last_pheromone = null;
 
     public void updatePosition(Body antBody, float force) {
 
@@ -41,7 +40,7 @@ public class AIComponent implements Component {
                 break;
 
             case FOLLOWING:
-                //followTrail(antBody, force);
+                followTrail(antBody, force);
                 break;
 
             case RETURNING:
@@ -63,11 +62,43 @@ public class AIComponent implements Component {
         float fy = (float) Math.sin(antBody.getAngle() + wanderAngle) * force;
 
         antBody.applyForceToCenter(new Vec2(fx, fy), true);
+        
+        antBody.setLinearDamping(2.0f);
 
        // generatePheromone(antBody);
     }
 
 
+    public void handleCollision(Entity b) {
+        if(b.type == "pheromones" && ( state == Behaviour.FOLLOWING || state == Behaviour.RETURNING ) ) {
+            followTrail(b);
+        }
+        else if(b.type == "food") {
+
+        }           
+    }
+
+    private void followTrail(Entity pheromone) {
+        
+        if (pheromone != last_pheromone) {
+            last_pheromone = pheromone;
+            
+            Vec2 pheromonePos = last_pheromone.getComponent("BodyComponent").body.getPosition();
+            Vec2 antPos = antBody.getPosition();
+            
+            float dx = pheromonePos.x - antPos.x;
+            float dy = pheromonePos.y - antPos.y;
+            
+            directionAngle = (float) Math.atan2(dy, dx);
+        }
+        
+        float fx = (float) Math.cos(directionAngle) * force;
+        float fy = (float) Math.sin(directionAngle) * force;
+
+        antBody.applyForceToCenter(new Vec2(fx, fy), true);
+        antBody.setLinearDamping(2.0f);
+    }
+    
 
     private void generatePheromone(Body antBody) {
 
