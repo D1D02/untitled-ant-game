@@ -5,8 +5,11 @@ import java.util.*;
 import com.google.fpl.liquidfun.Body;
 import com.google.fpl.liquidfun.Vec2;
 
+import com.badlogic.androidgames.framework.Screen;
+
 import com.main.untitledantgame.utility.ecs.Entity;
 import com.main.untitledantgame.utility.UUID_Int;
+
 
 enum Behaviour {
     WANDERING,
@@ -32,7 +35,7 @@ public class AIComponent implements Component {
 
     private Entity last_pheromone = null;
 
-    public void updatePosition(Body antBody, float force) {
+    public void updatePosition(Body antBody, float force, Screen screen) {
 
         switch (state) {
             case WANDERING:
@@ -54,7 +57,7 @@ public class AIComponent implements Component {
         }
     }
 
-    public void updateWandering(Body antBody, float force) {
+    public void updateWandering(Body antBody, float force, Screen screen) {
 
         wanderAngle += (Math.random() - 0.5f) * 0.5f;
 
@@ -66,7 +69,7 @@ public class AIComponent implements Component {
         
         antBody.setLinearDamping(2.0f);
 
-       // generatePheromone(antBody);
+        generatePheromone(antBody, screen);
     }
 
 
@@ -102,8 +105,11 @@ public class AIComponent implements Component {
     }
     
 
-    private void generatePheromone(Body antBody) {
+    private void generatePheromone(Body antBody, Screen screen) {
+        float x = antBody.getPosition().getX();
+        float y = antBody.getPosition().getY();
 
+        screen.generatePheromone(x, y);
     }
 
 }
