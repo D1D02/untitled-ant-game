@@ -28,6 +28,7 @@ public class GameScreen extends Screen {
     boolean dragged = false;
     GameWorld world;
     UICanvas canvas;
+    //GameContactListener contactListener;
 
     public GameScreen(Game game) {
         super(game);
@@ -42,6 +43,8 @@ public class GameScreen extends Screen {
         int len = touchEvents.size();
 
         dragged = false;
+
+        //GESTIONE EVENTI
         for(int i = 0; i < len; i++) {
             Input.TouchEvent event = touchEvents.get(i);
             if(event.type == Input.TouchEvent.TOUCH_DOWN) {
@@ -62,6 +65,8 @@ public class GameScreen extends Screen {
                 }
             }
         }
+        //GESTIONE COLLISIONI
+        handleCollisions();
     }
 
     @Override
@@ -113,6 +118,9 @@ public class GameScreen extends Screen {
         world = new GameWorld();
         Graphics g = game.getGraphics();
 
+        //contactListener = new GameContactListener();
+        //world.setContactlistener(contactListener);
+
         //UI
         canvas = new UICanvas();
         Entity foodBarEntity = factory.create("FoodBar");
@@ -134,7 +142,19 @@ public class GameScreen extends Screen {
         Anthill anthill = new Anthill(w/2-(w/8), h/2-(h/8), foodBarEntity.getComponent(UIBarComponent.class), pheroBarEntity.getComponent(UIBarComponent.class), expBarEntity.getComponent(UIBarComponent.class));
 
         world.addEntity(anthill);
+    }
 
+    void handleCollisions(){
+        /*List collisions = contactListener.getCollisions();
+        for(int i = 0; i < collisions.size; i++){
+            Collision event = collisions[i];
+            if(event.a.type.equals("ant")){
+                event.a.getComponent("AI").handleCollision(event.b);
+            elseif(event.b.type.equals("ant")){
+                event.a.getComponent("AI").handleCollision(event.a);
+            }
+        }
 
+         */
     }
 }
