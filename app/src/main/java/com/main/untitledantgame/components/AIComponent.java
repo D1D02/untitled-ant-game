@@ -62,6 +62,7 @@ public class AIComponent implements Component {
         float fy = (float) Math.sin(antBody.getAngle() + wanderAngle) * force;
 
         antBody.applyForceToCenter(new Vec2(fx, fy), true);
+        antBody.setTransform(antBody.getPosition(), wanderAngle);
         
         antBody.setLinearDamping(2.0f);
 
@@ -97,6 +98,7 @@ public class AIComponent implements Component {
 
         antBody.applyForceToCenter(new Vec2(fx, fy), true);
         antBody.setLinearDamping(2.0f);
+        antBody.setTransform(antBody.getPosition(), directionAngle);
     }
     
 
