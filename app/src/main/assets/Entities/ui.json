@@ -84,4 +84,22 @@
         "textB": 255
       }
     }
+  },
+  {
+    "name": "ExplorationButton",
+    "components": {
+      "uibutton": {
+        "x": 80,
+        "y": 80,
+        "width": 20,
+        "height": 20,
+        "text": "EXPLORE",
+        "R": 100,
+        "G": 100,
+        "B": 100,
+        "textR": 255,
+        "textG": 255,
+        "textB": 255
+      }
+    }
   }]

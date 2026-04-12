@@ -28,6 +28,9 @@ public class GameScreen extends Screen {
     boolean dragged = false;
     GameWorld world;
     UICanvas canvas;
+
+    Anthill anthill;
+
     //GameContactListener contactListener;
 
     public GameScreen(Game game) {
@@ -133,15 +136,25 @@ public class GameScreen extends Screen {
         Entity reset = factory.create("ResetCameraButton");
         UIButtonComponent.setOnClickEvent(reset, ()->{xOffset = 0; yOffset = 0;});
 
-
         canvas.addElement(reset);
 
         //FORMICAIO
 
         int w = g.getWidth(), h = g.getHeight();
-        Anthill anthill = new Anthill(w/2-(w/8), h/2-(h/8), foodBarEntity.getComponent(UIBarComponent.class), pheroBarEntity.getComponent(UIBarComponent.class), expBarEntity.getComponent(UIBarComponent.class));
+        anthill = new Anthill(w/2-(w/8), h/2-(h/8), foodBarEntity.getComponent(UIBarComponent.class), pheroBarEntity.getComponent(UIBarComponent.class), expBarEntity.getComponent(UIBarComponent.class));
 
         world.addEntity(anthill);
+
+        //PULSANTE SPEDIZIONE
+        Entity exploration = factory.create("ExplorationButton");
+        UIButtonComponent.setOnClickEvent(exploration, ()->{
+            if(anthill.consumeFood(10))
+                spawnAnt();
+        });
+    }
+
+    void spawnAnt(){
+        return;
     }
 
     void handleCollisions(){
