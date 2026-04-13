@@ -8,6 +8,7 @@ import com.google.fpl.liquidfun.Vec2;
 import com.badlogic.androidgames.framework.Screen;
 
 import com.main.untitledantgame.utility.ecs.Entity;
+import com.main.untitledantgame.components.Component;
 import com.main.untitledantgame.utility.UUID_Int;
 
 
@@ -73,12 +74,13 @@ public class AIComponent implements Component {
     }
 
 
-    public void handleCollision(Entity b) {
+    public void handleCollision(Entity b, Screen screen) {
         if(b.type == "pheromones" && ( state == Behaviour.FOLLOWING || state == Behaviour.RETURNING ) ) {
             followTrail(b);
         }
         else if(b.type == "food") {
-
+            state = Behaviour.RETURNING;
+            screen.attachFood(this, b);
         }           
     }
 
@@ -113,3 +115,5 @@ public class AIComponent implements Component {
     }
 
 }
+
+
