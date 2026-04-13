@@ -12,6 +12,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Paint.Style;
 import android.graphics.Rect;
+import android.graphics.Typeface;
 
 import com.badlogic.androidgames.framework.Graphics;
 import com.badlogic.androidgames.framework.Pixmap;
@@ -29,6 +30,9 @@ public class AndroidGraphics implements Graphics {
         this.frameBuffer = frameBuffer;
         this.canvas = new Canvas(frameBuffer);
         this.paint = new Paint();
+        paint.setTextSize(30);
+        paint.setTypeface(Typeface.SANS_SERIF);
+        paint.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD));
     }
 
     @Override
@@ -119,6 +123,12 @@ public class AndroidGraphics implements Graphics {
     @Override
     public void drawPixmap(Pixmap pixmap, int x, int y) {
         canvas.drawBitmap(((AndroidPixmap)pixmap).bitmap, x, y, null);
+    }
+
+    @Override
+    public void drawText(String text, int x, int y, int color){
+        paint.setColor(color);
+        canvas.drawText(text, x, y, paint);
     }
 
     @Override
