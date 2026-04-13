@@ -3,6 +3,7 @@
     "components":{
         "life": {"hp": 10},
         "food": {
+            "food": 10,
             "capacity":10,
             "consuming_timer": 10,
             "last_consumed": 0
@@ -15,7 +16,7 @@
         "body":{
             "position": {
                 "x": 0,
-                "y": 10
+                "y": 0
             },
             "angle": 0.3,
             "type": "dynamicBody",
@@ -28,7 +29,8 @@
             "fixture": {
                 "density": 5,
                 "friction": 1,
-                "restitution": 2
+                "restitution": 2,
+                "isSensor": 0
             }
         },
         "sprite": {"pathname": "sprite.png"}
@@ -42,7 +44,7 @@
         },
         "alive": {"ttl": 10},
         "body":{
-            "type": "dynamicBody",
+            "type": "staticBody",
             "fixed_rotation": "true",
             "gravity_scale": 0.0,
             "polygon_shape": {
@@ -52,7 +54,8 @@
             "fixture": {
                 "density": 5,
                 "friction": 1,
-                "restitution": 2
+                "restitution": 2,
+                "isSensor": 1
             }
         },
         "sprite": {"pathname": "sprite.png"}
