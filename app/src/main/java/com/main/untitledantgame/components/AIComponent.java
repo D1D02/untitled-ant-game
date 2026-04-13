@@ -45,14 +45,13 @@ public class AIComponent implements Component {
                 break;
 
             case FOLLOWING:
+            case RETURNING:
+                inc_id = -1;
                 followTrail(last_pheromone, antBody, force);
                 break;
 
-            case RETURNING:
-                //returnHome(antBody, force);
-                break;
-
             case WAITING:
+                inc_id = -1;
                 break;
             default:
                 break;
@@ -76,9 +75,12 @@ public class AIComponent implements Component {
 
 
     public void handleCollision(Entity ant, Entity b, GameScreen screen) {
-        if(b.type.equals("pheromones") && ( state == Behaviour.FOLLOWING || state == Behaviour.RETURNING ) ) {
-            last_pheromone = b;
-            state = Behaviour.FOLLOWING;
+        if(b.type.equals("pheromones") && ( state != Behaviour.WANDERING ) ) {
+            int dxPheromone = b.getComponent(IdentifierComponent.class).inc_id - last_pheromone.getComponent(IdentifierComponent.class).inc_id;
+
+            if(dxPheromone > 0 && state == Behaviour.FOLLOWING) last_pheromone = b;
+            else if(dxPheromone <= 0 && state == Behaviour.RETURNING) last_pheromone = b;
+
         }
         else if(b.type.equals("food")) {
             state = Behaviour.RETURNING;
@@ -110,10 +112,12 @@ public class AIComponent implements Component {
 
 
     private void generatePheromone(Body antBody, GameScreen screen) {
+        inc_id++;
+
         float x = antBody.getPosition().getX();
         float y = antBody.getPosition().getY();
 
-        screen.generatePheromone(x, y);
+        screen.generatePheromone(x, y, inc_id);
     }
 
 }
