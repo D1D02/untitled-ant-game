@@ -12,6 +12,9 @@ import com.google.fpl.liquidfun.Joint;
 import com.google.fpl.liquidfun.JointDef;
 import com.google.fpl.liquidfun.RevoluteJoint;
 import com.google.fpl.liquidfun.RevoluteJointDef;
+import com.main.untitledantgame.collision.Collision;
+import com.main.untitledantgame.collision.GameContactListener;
+import com.main.untitledantgame.components.AIComponent;
 import com.main.untitledantgame.components.BodyComponent;
 import com.main.untitledantgame.components.PositionComponent;
 import com.main.untitledantgame.components.SpriteComponent;
@@ -23,8 +26,10 @@ import com.main.untitledantgame.map.GameWorld;
 import com.main.untitledantgame.ui.UICanvas;
 import com.main.untitledantgame.utility.ecs.Entity;
 import com.main.untitledantgame.utility.ecs.EntityFactory;
+import com.main.untitledantgame.utility.ecs.PrototypeRegistry;
 import com.main.untitledantgame.visuals.Assets;
 
+import java.util.Collection;
 import java.util.List;
 
 public class GameScreen extends Screen {
@@ -38,11 +43,15 @@ public class GameScreen extends Screen {
 
     Anthill anthill;
 
-    //GameContactListener contactListener;
+    GameContactListener contactListener;
+
+    EntityFactory entityFactory;
 
     public GameScreen(Game game) {
         super(game);
         initWorld();
+        entityFactory = new EntityFactory(Assets.prototypeRegistry);
+
     }
 
     @Override
@@ -77,7 +86,7 @@ public class GameScreen extends Screen {
         }
         //FISICA
         world.physicsWorld.step(deltaTime, 8, 3, 3);
-        handleCollisions();
+        handleCollisions(contactListener.getCollisions());
     }
 
     @Override
@@ -123,25 +132,23 @@ public class GameScreen extends Screen {
     }
 
     void initWorld(){
-        EntityFactory factory = new EntityFactory(Assets.prototypeRegistry);
-
         //WORLD
         world = new GameWorld();
         Graphics g = game.getGraphics();
 
-        //contactListener = new GameContactListener();
-        //world.setContactlistener(contactListener);
+        contactListener = new GameContactListener();
+        world.physicsWorld.setContactListener(contactListener);
 
         //UI
         canvas = new UICanvas();
-        Entity foodBarEntity = factory.create("FoodBar", world.physicsWorld, game);
-        Entity pheroBarEntity = factory.create("PheroBar", world.physicsWorld, game);
-        Entity expBarEntity = factory.create("ExpBar", world.physicsWorld, game);
+        Entity foodBarEntity = entityFactory.create("FoodBar", world.physicsWorld, game);
+        Entity pheroBarEntity = entityFactory.create("PheroBar", world.physicsWorld, game);
+        Entity expBarEntity = entityFactory.create("ExpBar", world.physicsWorld, game);
         canvas.addElement(foodBarEntity);
         canvas.addElement(pheroBarEntity);
         canvas.addElement(expBarEntity);
 
-        Entity reset = factory.create("ResetCameraButton", world.physicsWorld, game);
+        Entity reset = entityFactory.create("ResetCameraButton", world.physicsWorld, game);
         UIButtonComponent.setOnClickEvent(reset, ()->{xOffset = 0; yOffset = 0;});
 
         canvas.addElement(reset);
@@ -154,7 +161,7 @@ public class GameScreen extends Screen {
         world.addEntity(anthill);
 
         //PULSANTE SPEDIZIONE
-        Entity exploration = factory.create("ExplorationButton", world.physicsWorld, game);
+        Entity exploration = entityFactory.create("ExplorationButton", world.physicsWorld, game);
         UIButtonComponent.setOnClickEvent(exploration, ()->{
             if(anthill.consumeFood(10))
                 spawnAnt();
@@ -166,21 +173,20 @@ public class GameScreen extends Screen {
     }
 
     public void generatePheromone(float x, float y){
-        return;
+        Entity newPheromone = entityFactory.create("Pheromone", world.physicsWorld, game);
+        newPheromone.getComponent(BodyComponent.class).body.setTransform(x, y, 0);
+        world.addEntity(newPheromone);
     }
 
-    void handleCollisions(){
-        /*List collisions = contactListener.getCollisions();
-        for(int i = 0; i < collisions.size; i++){
-            Collision event = collisions[i];
+    void handleCollisions(Collection<Collision> collisions){
+        for(Collision event : collisions){
             if(event.a.type.equals("ant")){
-                event.a.getComponent("AI").handleCollision(event.a, event.b, this);
-            elseif(event.b.type.equals("ant")){
-                event.a.getComponent("AI").handleCollision(event.b, event.a, this);
+                event.a.getComponent(AIComponent.class).handleCollision(event.a, event.b, this);
+            }
+            else if(event.b.type.equals("ant")){
+                event.a.getComponent(AIComponent.class).handleCollision(event.b, event.a, this);
             }
         }
-
-         */
     }
 
     public void attachFood(Entity a, Entity b) {

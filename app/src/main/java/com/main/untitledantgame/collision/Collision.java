@@ -6,7 +6,8 @@ import com.main.untitledantgame.utility.ecs.Entity;
  *
  */
 public class Collision {
-    Entity a, b;
+    public Entity a;
+    public Entity b;
 
     public Collision(Entity a, Entity b) {
         this.a = a;
