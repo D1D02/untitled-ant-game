@@ -8,10 +8,6 @@ import com.badlogic.androidgames.framework.Pixmap;
 import com.badlogic.androidgames.framework.Screen;
 import com.google.fpl.liquidfun.DistanceJoint;
 import com.google.fpl.liquidfun.DistanceJointDef;
-import com.google.fpl.liquidfun.Joint;
-import com.google.fpl.liquidfun.JointDef;
-import com.google.fpl.liquidfun.RevoluteJoint;
-import com.google.fpl.liquidfun.RevoluteJointDef;
 import com.main.untitledantgame.collision.Collision;
 import com.main.untitledantgame.collision.GameContactListener;
 import com.main.untitledantgame.components.AIComponent;
@@ -26,7 +22,6 @@ import com.main.untitledantgame.map.GameWorld;
 import com.main.untitledantgame.ui.UICanvas;
 import com.main.untitledantgame.utility.ecs.Entity;
 import com.main.untitledantgame.utility.ecs.EntityFactory;
-import com.main.untitledantgame.utility.ecs.PrototypeRegistry;
 import com.main.untitledantgame.visuals.Assets;
 
 import java.util.Collection;
@@ -169,7 +164,9 @@ public class GameScreen extends Screen {
     }
 
     void spawnAnt(){
-        return;
+        Entity newAnt = entityFactory.create("Ant", world.physicsWorld, game);
+        newAnt.getComponent(BodyComponent.class).body.setTransform(2, 2, 0);
+        world.addEntity(newAnt);
     }
 
     public void generatePheromone(float x, float y){
