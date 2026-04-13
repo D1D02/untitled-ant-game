@@ -30,7 +30,7 @@
                 "density": 5,
                 "friction": 1,
                 "restitution": 2,
-                "isSensor": false
+                "isSensor": 0
             }
         },
         "sprite": {"pathname": "sprite.png"}
@@ -55,7 +55,7 @@
                 "density": 5,
                 "friction": 1,
                 "restitution": 2,
-                "isSensor": true
+                "isSensor": 1
             }
         },
         "sprite": {"pathname": "sprite.png"}

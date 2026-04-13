@@ -1,6 +1,11 @@
 package com.main.untitledantgame.utility.ecs;
 
 import android.util.Log;
+import components.AIComponent;
+import components.AliveComponent;
+import components.BodyComponent;
+import components.FoodComponent;
+import components.IdentifierComponent;
 
 import com.badlogic.androidgames.framework.Game;
 import com.badlogic.androidgames.framework.Graphics;
@@ -68,6 +73,12 @@ public class ComponentFactory {
                     fDef.setDensity(fixData.get("density").getAsFloat());
                     fDef.setFriction(fixData.get("friction").getAsFloat());
                     fDef.setRestitution(fixData.get("restitution").getAsFloat());
+
+                    if(fDef.setRestitution(fixData.get("isSensor").getAsInt())==1){
+                        fDef.setDensity(0f);
+                        fDef.setFriction(0f);
+                        fDef.setRestitution(0f);
+                    }
 
                     bc.body.createFixture(fDef);
 
