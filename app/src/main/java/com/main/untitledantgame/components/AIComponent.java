@@ -45,14 +45,13 @@ public class AIComponent implements Component {
                 break;
 
             case FOLLOWING:
-                //followTrail(antBody, force);
-                break;
-
             case RETURNING:
-                //returnHome(antBody, force);
+                inc_id = -1;
+                followTrail(last_pheromone, antBody, force);
                 break;
 
             case WAITING:
+                inc_id = -1;
                 break;
             default:
                 break;
@@ -61,7 +60,7 @@ public class AIComponent implements Component {
 
     public void updateWandering(Body antBody, float force, GameScreen screen) {
 
-        wanderAngle += (Math.random() - 0.5f) * 0.5f;
+        wanderAngle += (float) ((Math.random() - 0.5f) * 0.5f);
 
         float fx = (float) Math.cos(antBody.getAngle() + wanderAngle) * force;
         float fy = (float) Math.sin(antBody.getAngle() + wanderAngle) * force;
@@ -76,25 +75,29 @@ public class AIComponent implements Component {
 
 
     public void handleCollision(Entity ant, Entity b, GameScreen screen) {
-        if(b.type == "pheromones" && ( state == Behaviour.FOLLOWING || state == Behaviour.RETURNING ) ) {
-            //followTrail(b);
+        if(b.type.equals("pheromones") && ( state != Behaviour.WANDERING ) ) {
+            int dxPheromone = b.getComponent(IdentifierComponent.class).inc_id - last_pheromone.getComponent(IdentifierComponent.class).inc_id;
+
+            if(dxPheromone > 0 && state == Behaviour.FOLLOWING) last_pheromone = b;
+            else if(dxPheromone <= 0 && state == Behaviour.RETURNING) last_pheromone = b;
+
         }
-        else if(b.type == "food") {
+        else if(b.type.equals("food")) {
             state = Behaviour.RETURNING;
             screen.attachFood(ant, b);
         }           
     }
-/*
-    private void followTrail(Entity pheromone, Body antBody) {
+
+    private void followTrail(Entity pheromone, Body antBody, float force) {
         
         if (pheromone != last_pheromone) {
             last_pheromone = pheromone;
             
-            Vec2 pheromonePos = last_pheromone.getComponent("BodyComponent").body.getPosition();
+            Vec2 pheromonePos = last_pheromone.getComponent(BodyComponent.class).body.getPosition();
             Vec2 antPos = antBody.getPosition();
             
-            float dx = pheromonePos.x - antPos.x;
-            float dy = pheromonePos.y - antPos.y;
+            float dx = pheromonePos.getX() - antPos.getX();
+            float dy = pheromonePos.getY() - antPos.getY();
             
             directionAngle = (float) Math.atan2(dy, dx);
         }
@@ -106,13 +109,15 @@ public class AIComponent implements Component {
         antBody.setLinearDamping(2.0f);
         antBody.setTransform(antBody.getPosition(), directionAngle);
     }
-*/
+
 
     private void generatePheromone(Body antBody, GameScreen screen) {
+        inc_id++;
+
         float x = antBody.getPosition().getX();
         float y = antBody.getPosition().getY();
 
-        screen.generatePheromone(x, y);
+        screen.generatePheromone(x, y, inc_id);
     }
 
 }
