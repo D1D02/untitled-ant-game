@@ -1,26 +1,32 @@
 package com.main.untitledantgame.utility.ecs;
 
 import android.util.Log;
-import components.AIComponent;
-import components.AliveComponent;
-import components.BodyComponent;
-import components.FoodComponent;
-import components.IdentifierComponent;
+
+import com.google.fpl.liquidfun.BodyDef;
+import com.google.fpl.liquidfun.BodyType;
+import com.google.fpl.liquidfun.FixtureDef;
+import com.google.fpl.liquidfun.PolygonShape;
+import com.google.fpl.liquidfun.World;
+import com.main.untitledantgame.components.AIComponent;
+import com.main.untitledantgame.components.AliveComponent;
+import com.main.untitledantgame.components.BodyComponent;
+import com.main.untitledantgame.components.ui.UIButtonComponent;
+import com.main.untitledantgame.components.ui.UIBarComponent;
+import com.main.untitledantgame.components.FoodComponent;
+import com.main.untitledantgame.components.IdentifierComponent;
 
 import com.badlogic.androidgames.framework.Game;
 import com.badlogic.androidgames.framework.Graphics;
 import com.badlogic.androidgames.framework.Pixmap;
 
-import com.google.fpl.liquidfun.*;
-
+import com.badlogic.androidgames.framework.Color;
 import com.google.gson.JsonObject;
 
 import com.main.untitledantgame.components.*;
-import com.main.untitledantgame.utility.ecs.Entity;
 
 public class ComponentFactory {
 
-    public static Component create(String name, JsonObject data, 
+    public static Component create(String name, JsonObject data,
                                    World world, Game game, Entity entity) {
 
         switch (name) {
@@ -74,7 +80,7 @@ public class ComponentFactory {
                     fDef.setFriction(fixData.get("friction").getAsFloat());
                     fDef.setRestitution(fixData.get("restitution").getAsFloat());
 
-                    if(fDef.setRestitution(fixData.get("isSensor").getAsInt())==1){
+                    if(fixData.get("isSensor").getAsInt()==1){
                         fDef.setDensity(0f);
                         fDef.setFriction(0f);
                         fDef.setRestitution(0f);

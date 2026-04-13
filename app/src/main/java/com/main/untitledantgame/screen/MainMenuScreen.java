@@ -98,7 +98,7 @@ public class MainMenuScreen extends Screen {
         EntityFactory factory = new EntityFactory(Assets.prototypeRegistry);
         this.canvas = new UICanvas();
 
-        Entity play = factory.create("PlayButton");
+        Entity play = factory.create("PlayButton", null, null);
         UIButtonComponent.setOnClickEvent(play, ()->{game.setScreen(new GameScreen(game));});
 
         canvas.addElement(play);

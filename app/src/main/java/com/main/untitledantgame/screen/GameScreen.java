@@ -6,6 +6,12 @@ import com.badlogic.androidgames.framework.Graphics;
 import com.badlogic.androidgames.framework.Input;
 import com.badlogic.androidgames.framework.Pixmap;
 import com.badlogic.androidgames.framework.Screen;
+import com.google.fpl.liquidfun.DistanceJoint;
+import com.google.fpl.liquidfun.DistanceJointDef;
+import com.main.untitledantgame.collision.Collision;
+import com.main.untitledantgame.collision.GameContactListener;
+import com.main.untitledantgame.components.AIComponent;
+import com.main.untitledantgame.components.BodyComponent;
 import com.main.untitledantgame.components.PositionComponent;
 import com.main.untitledantgame.components.SpriteComponent;
 import com.main.untitledantgame.components.ui.UIBarComponent;
@@ -18,6 +24,7 @@ import com.main.untitledantgame.utility.ecs.Entity;
 import com.main.untitledantgame.utility.ecs.EntityFactory;
 import com.main.untitledantgame.visuals.Assets;
 
+import java.util.Collection;
 import java.util.List;
 
 public class GameScreen extends Screen {
@@ -31,11 +38,15 @@ public class GameScreen extends Screen {
 
     Anthill anthill;
 
-    //GameContactListener contactListener;
+    GameContactListener contactListener;
+
+    EntityFactory entityFactory;
 
     public GameScreen(Game game) {
         super(game);
         initWorld();
+        entityFactory = new EntityFactory(Assets.prototypeRegistry);
+
     }
 
     @Override
@@ -68,8 +79,9 @@ public class GameScreen extends Screen {
                 }
             }
         }
-        //GESTIONE COLLISIONI
-        handleCollisions();
+        //FISICA
+        world.physicsWorld.step(deltaTime, 8, 3, 3);
+        handleCollisions(contactListener.getCollisions());
     }
 
     @Override
@@ -102,9 +114,9 @@ public class GameScreen extends Screen {
             Entity e = entities.get(i);
             if(!e.hasComponent(SpriteComponent.class) || !e.hasComponent(PositionComponent.class))
                 continue;
-            Pixmap sprite = e.getComponent(SpriteComponent.class).getSprite();
+            Pixmap sprite = e.getComponent(SpriteComponent.class).sprite;
             PositionComponent pos = e.getComponent(PositionComponent.class);
-            g.drawPixmap(sprite,(int)pos.getX() + xOffset,(int)pos.getY() + yOffset);
+            g.drawPixmap(sprite,(int)pos.x + xOffset,(int)pos.y + yOffset);
         }
 
         List<Entity> uiElements = canvas.elements;
@@ -115,25 +127,23 @@ public class GameScreen extends Screen {
     }
 
     void initWorld(){
-        EntityFactory factory = new EntityFactory(Assets.prototypeRegistry);
-
         //WORLD
         world = new GameWorld();
         Graphics g = game.getGraphics();
 
-        //contactListener = new GameContactListener();
-        //world.setContactlistener(contactListener);
+        contactListener = new GameContactListener();
+        world.physicsWorld.setContactListener(contactListener);
 
         //UI
         canvas = new UICanvas();
-        Entity foodBarEntity = factory.create("FoodBar");
-        Entity pheroBarEntity = factory.create("PheroBar");
-        Entity expBarEntity = factory.create("ExpBar");
+        Entity foodBarEntity = entityFactory.create("FoodBar", world.physicsWorld, game);
+        Entity pheroBarEntity = entityFactory.create("PheroBar", world.physicsWorld, game);
+        Entity expBarEntity = entityFactory.create("ExpBar", world.physicsWorld, game);
         canvas.addElement(foodBarEntity);
         canvas.addElement(pheroBarEntity);
         canvas.addElement(expBarEntity);
 
-        Entity reset = factory.create("ResetCameraButton");
+        Entity reset = entityFactory.create("ResetCameraButton", world.physicsWorld, game);
         UIButtonComponent.setOnClickEvent(reset, ()->{xOffset = 0; yOffset = 0;});
 
         canvas.addElement(reset);
@@ -146,7 +156,7 @@ public class GameScreen extends Screen {
         world.addEntity(anthill);
 
         //PULSANTE SPEDIZIONE
-        Entity exploration = factory.create("ExplorationButton");
+        Entity exploration = entityFactory.create("ExplorationButton", world.physicsWorld, game);
         UIButtonComponent.setOnClickEvent(exploration, ()->{
             if(anthill.consumeFood(10))
                 spawnAnt();
@@ -154,20 +164,36 @@ public class GameScreen extends Screen {
     }
 
     void spawnAnt(){
-        return;
+        Entity newAnt = entityFactory.create("Ant", world.physicsWorld, game);
+        newAnt.getComponent(BodyComponent.class).body.setTransform(2, 2, 0);
+        world.addEntity(newAnt);
     }
 
-    void handleCollisions(){
-        /*List collisions = contactListener.getCollisions();
-        for(int i = 0; i < collisions.size; i++){
-            Collision event = collisions[i];
+    public void generatePheromone(float x, float y){
+        Entity newPheromone = entityFactory.create("Pheromone", world.physicsWorld, game);
+        newPheromone.getComponent(BodyComponent.class).body.setTransform(x, y, 0);
+        world.addEntity(newPheromone);
+    }
+
+    void handleCollisions(Collection<Collision> collisions){
+        for(Collision event : collisions){
             if(event.a.type.equals("ant")){
-                event.a.getComponent("AI").handleCollision(event.b);
-            elseif(event.b.type.equals("ant")){
-                event.a.getComponent("AI").handleCollision(event.a);
+                event.a.getComponent(AIComponent.class).handleCollision(event.a, event.b, this);
+            }
+            else if(event.b.type.equals("ant")){
+                event.a.getComponent(AIComponent.class).handleCollision(event.b, event.a, this);
             }
         }
+    }
 
-         */
+    public void attachFood(Entity a, Entity b) {
+        DistanceJointDef jointDef = new DistanceJointDef();
+
+        jointDef.setBodyA(a.getComponent(BodyComponent.class).body);
+        jointDef.setBodyB(b.getComponent(BodyComponent.class).body);
+        jointDef.setLocalAnchorA(a.getComponent(BodyComponent.class).body.getWorldCenter().getX(), a.getComponent(BodyComponent.class).body.getWorldCenter().getY());
+        jointDef.setLocalAnchorB(b.getComponent(BodyComponent.class).body.getWorldCenter().getX(), b.getComponent(BodyComponent.class).body.getWorldCenter().getY());
+
+        DistanceJoint joint = (DistanceJoint) world.physicsWorld.createJoint(jointDef);
     }
 }

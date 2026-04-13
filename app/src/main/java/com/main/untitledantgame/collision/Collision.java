@@ -1,13 +1,13 @@
 package com.main.untitledantgame.collision;
 
-import com.main.untitledantgame.GameObject;
 import com.main.untitledantgame.utility.ecs.Entity;
 
 /** An unordered pair of game objects.
  *
  */
 public class Collision {
-    Entity a, b;
+    public Entity a;
+    public Entity b;
 
     public Collision(Entity a, Entity b) {
         this.a = a;
