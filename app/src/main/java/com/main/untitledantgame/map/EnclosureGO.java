@@ -4,12 +4,6 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 
-import com.google.fpl.liquidfun.Body;
-import com.google.fpl.liquidfun.BodyDef;
-import com.google.fpl.liquidfun.BodyType;
-import com.google.fpl.liquidfun.PolygonShape;
-import com.main.untitledantgame.GameObject;
-
 /**
  * A static box, usually encloses the whole world.
  *

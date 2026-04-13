@@ -15,11 +15,11 @@ public class Anthill extends Entity {
 
     public Anthill(int x, int y, UIBarComponent foodBar, UIBarComponent pheroBar, UIBarComponent expbar){
         PositionComponent pos = new PositionComponent();
-        pos.setX(x);
-        pos.setY(y);
+        pos.x = x;
+        pos.y = y;
         addComponent(pos);
         SpriteComponent sprite = new SpriteComponent();
-        sprite.setSprite(Assets.anthill);
+        sprite.sprite = Assets.anthill;
         addComponent(sprite);
         this.foodBar = foodBar;
         this.pheroBar = pheroBar;

@@ -7,6 +7,7 @@ import com.google.fpl.liquidfun.Vec2;
 
 import com.badlogic.androidgames.framework.Screen;
 
+import com.main.untitledantgame.screen.GameScreen;
 import com.main.untitledantgame.utility.ecs.Entity;
 import com.main.untitledantgame.components.Component;
 import com.main.untitledantgame.utility.UUID_Int;
@@ -36,15 +37,15 @@ public class AIComponent implements Component {
 
     private Entity last_pheromone = null;
 
-    public void updatePosition(Body antBody, float force, Screen screen) {
+    public void updatePosition(Body antBody, float force, GameScreen screen) {
 
         switch (state) {
             case WANDERING:
-                updateWandering(antBody, force);
+                updateWandering(antBody, force, screen);
                 break;
 
             case FOLLOWING:
-                followTrail(antBody, force);
+                //followTrail(antBody, force);
                 break;
 
             case RETURNING:
@@ -58,7 +59,7 @@ public class AIComponent implements Component {
         }
     }
 
-    public void updateWandering(Body antBody, float force, Screen screen) {
+    public void updateWandering(Body antBody, float force, GameScreen screen) {
 
         wanderAngle += (Math.random() - 0.5f) * 0.5f;
 
@@ -74,17 +75,17 @@ public class AIComponent implements Component {
     }
 
 
-    public void handleCollision(Entity b, Screen screen) {
+    public void handleCollision(Entity ant, Entity b, GameScreen screen) {
         if(b.type == "pheromones" && ( state == Behaviour.FOLLOWING || state == Behaviour.RETURNING ) ) {
-            followTrail(b);
+            //followTrail(b);
         }
         else if(b.type == "food") {
             state = Behaviour.RETURNING;
-            screen.attachFood(this, b);
+            screen.attachFood(ant, b);
         }           
     }
-
-    private void followTrail(Entity pheromone) {
+/*
+    private void followTrail(Entity pheromone, Body antBody) {
         
         if (pheromone != last_pheromone) {
             last_pheromone = pheromone;
@@ -105,9 +106,9 @@ public class AIComponent implements Component {
         antBody.setLinearDamping(2.0f);
         antBody.setTransform(antBody.getPosition(), directionAngle);
     }
-    
+*/
 
-    private void generatePheromone(Body antBody, Screen screen) {
+    private void generatePheromone(Body antBody, GameScreen screen) {
         float x = antBody.getPosition().getX();
         float y = antBody.getPosition().getY();
 

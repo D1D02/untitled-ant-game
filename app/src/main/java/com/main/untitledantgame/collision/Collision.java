@@ -1,6 +1,5 @@
 package com.main.untitledantgame.collision;
 
-import com.main.untitledantgame.GameObject;
 import com.main.untitledantgame.utility.ecs.Entity;
 
 /** An unordered pair of game objects.
