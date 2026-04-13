@@ -39,4 +39,6 @@ public class GameWorld {
     public void addEntity(Entity e){
         entities.add(e);
     }
+
+    public World physicsWorld = new World(0, 0);
 }

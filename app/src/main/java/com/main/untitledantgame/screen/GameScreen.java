@@ -6,6 +6,13 @@ import com.badlogic.androidgames.framework.Graphics;
 import com.badlogic.androidgames.framework.Input;
 import com.badlogic.androidgames.framework.Pixmap;
 import com.badlogic.androidgames.framework.Screen;
+import com.google.fpl.liquidfun.DistanceJoint;
+import com.google.fpl.liquidfun.DistanceJointDef;
+import com.google.fpl.liquidfun.Joint;
+import com.google.fpl.liquidfun.JointDef;
+import com.google.fpl.liquidfun.RevoluteJoint;
+import com.google.fpl.liquidfun.RevoluteJointDef;
+import com.main.untitledantgame.components.BodyComponent;
 import com.main.untitledantgame.components.PositionComponent;
 import com.main.untitledantgame.components.SpriteComponent;
 import com.main.untitledantgame.components.ui.UIBarComponent;
@@ -68,7 +75,8 @@ public class GameScreen extends Screen {
                 }
             }
         }
-        //GESTIONE COLLISIONI
+        //FISICA
+        world.physicsWorld.step(deltaTime, 8, 3, 3);
         handleCollisions();
     }
 
@@ -162,12 +170,23 @@ public class GameScreen extends Screen {
         for(int i = 0; i < collisions.size; i++){
             Collision event = collisions[i];
             if(event.a.type.equals("ant")){
-                event.a.getComponent("AI").handleCollision(event.b);
+                event.a.getComponent("AI").handleCollision(event.b, this);
             elseif(event.b.type.equals("ant")){
-                event.a.getComponent("AI").handleCollision(event.a);
+                event.a.getComponent("AI").handleCollision(event.a, this);
             }
         }
 
          */
+    }
+
+    public void attachFood(Entity a, Entity b) {
+        DistanceJointDef jointDef = new DistanceJointDef();
+
+        jointDef.setBodyA(a.getComponent(BodyComponent.class).body);
+        jointDef.setBodyB(b.getComponent(BodyComponent.class).body);
+        jointDef.setLocalAnchorA(a.getComponent(BodyComponent.class).body.getWorldCenter());
+        jointDef.setLocalAnchorA(b.getComponent(BodyComponent.class).body.getWorldCenter());
+
+        DistanceJoint joint = (DistanceJoint) world.physicsWorld.createJoint(jointDef);
     }
 }
