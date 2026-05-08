@@ -1,11 +1,12 @@
 package com.main.untitledantgame.components;
 
 public class GeneratorComponent implements Component {
-    int start_delay = 0;
-    float ratio = 10;
-    float time_spent = 0;
-    float min_distance = 10;
-    float max_distance = 100;
+    public int start_delay = 0;
+    public float ratio = 10;
+    public float time_spent = 0;
+    public float min_distance = 10;
+    public float max_distance = 100;
+    public String entity_name;
 
     public Boolean canBeGenerated( float time_passed ) {
         this.time_spent += time_passed;
