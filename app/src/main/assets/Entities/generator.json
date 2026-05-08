@@ -1,24 +1,36 @@
 [{
   "name": "PheromonesGenerator",
-  "start_delay":0,
-  "ratio": 100,
-  "time_spent": 0,
-  "min_distance": 0,
-  "max_distance": 10
+  "components":{
+    "generator": {
+      "start_delay":0,
+      "ratio": 100,
+      "time_spent": 0,
+      "min_distance": 0,
+      "max_distance": 10
+    }
+  }
 },
 {
   "name": "EnemyGenerator",
-  "start_delay":1000,
-  "ratio": 100,
-  "time_spent": 0,
-  "min_distance": 0,
-  "max_distance": 10
+  "components":{
+    "generator": {
+      "start_delay":1000,
+      "ratio": 100,
+      "time_spent": 0,
+      "min_distance": 0,
+      "max_distance": 10
+    }
+  }
 },
 {
   "name": "ObstacleGenerator",
-  "start_delay":0,
-  "ratio": 100,
-  "time_spent": 0,
-  "min_distance": 0,
-  "max_distance": 10
+  "components":{
+    "generator": {
+      "start_delay":0,
+      "ratio": 100,
+      "time_spent": 0,
+      "min_distance": 0,
+      "max_distance": 10
+    }
+  }
 }]
