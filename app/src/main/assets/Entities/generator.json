@@ -2,6 +2,7 @@
   "name": "PheromonesGenerator",
   "components":{
     "generator": {
+      "entity_name": "Pheromone",
       "start_delay":0,
       "ratio": 100,
       "time_spent": 0,
@@ -14,6 +15,7 @@
   "name": "EnemyGenerator",
   "components":{
     "generator": {
+      "entity_name": "Enemy",
       "start_delay":1000,
       "ratio": 100,
       "time_spent": 0,
@@ -26,6 +28,7 @@
   "name": "ObstacleGenerator",
   "components":{
     "generator": {
+      "entity_name": "",
       "start_delay":0,
       "ratio": 100,
       "time_spent": 0,
