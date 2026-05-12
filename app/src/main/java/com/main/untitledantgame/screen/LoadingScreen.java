@@ -37,29 +37,35 @@ public class LoadingScreen extends Screen {
 
         JsonArray entitiesJson = JsonLoader.loadJsonArray((Context) game, "Entities/entities.json");
         if (entitiesJson == null) {
-            Log.d("ECS", "JSON NON caricato!");
+            Log.d("ECS", "Entities not loaded!");
         } else {
-            Log.d("ECS", "JSON caricato! Elementi: " + entitiesJson.size());
+            Log.d("ECS", "Entities loaded! Elements: " + entitiesJson.size());
         }
 
         Assets.prototypeRegistry = new PrototypeRegistry();
         Assets.prototypeRegistry.load(entitiesJson);
 
+
         JsonArray uiJson = JsonLoader.loadJsonArray((Context) game, "Entities/ui.json");
         if (uiJson == null) {
-            Log.d("ECS", "JSON NON caricato!");
+            Log.d("ECS", "UI not loaded!");
         } else {
-            Log.d("ECS", "JSON caricato! Elementi: " + uiJson.size());
+            Log.d("ECS", "UI loaded! Elements: " + uiJson.size());
         }
 
         Assets.prototypeRegistry.load(uiJson);
 
-        List<Generator> generators =
-                GeneratorLoader.loadGenerators((Context) game, "Entities/generator.json");
 
-        if (generators != null) {
-            Assets.generators = generators;
+        JsonArray generators = JsonLoader.loadJsonArray((Context) game, "Entities/generator.json");
+
+         if (generators == null) {
+            Log.d("ECS", "Generators not loaded!");
+        } else {
+            Log.d("ECS", "Generators loaded! Elements: " + uiJson.size());
         }
+        
+        Assets.prototypeRegistry.load(generators);
+
 
         g = game.getGraphics();
 

@@ -12,6 +12,8 @@ import com.main.untitledantgame.collision.Collision;
 import com.main.untitledantgame.collision.GameContactListener;
 import com.main.untitledantgame.components.AIComponent;
 import com.main.untitledantgame.components.BodyComponent;
+import com.main.untitledantgame.components.GeneratorComponent;
+import com.main.untitledantgame.components.IdentifierComponent;
 import com.main.untitledantgame.components.PositionComponent;
 import com.main.untitledantgame.components.SpriteComponent;
 import com.main.untitledantgame.components.ui.UIBarComponent;
@@ -41,6 +43,8 @@ public class GameScreen extends Screen {
     GameContactListener contactListener;
 
     EntityFactory entityFactory;
+
+    List<Entity> generators;
 
     public GameScreen(Game game) {
         super(game);
@@ -148,6 +152,11 @@ public class GameScreen extends Screen {
 
         canvas.addElement(reset);
 
+        Entity food_generator = entityFactory.create("FoodGenerator", world.physicsWorld, game);
+        Entity obstacle_generator = entityFactory.create("ObstacleGenerator", world.physicsWorld, game);
+        generators.add(food_generator);
+        generators.add(obstacle_generator);
+        
         //FORMICAIO
 
         int w = g.getWidth(), h = g.getHeight();
@@ -163,15 +172,28 @@ public class GameScreen extends Screen {
         });
     }
 
+    void generateItems( float deltaTime ) {
+        for(Entity generator : generators ) {
+            if(generator.getComponent(GeneratorComponent.class).canBeGenerated(deltaTime)) {
+                Entity entity = entityFactory.create(generator.getComponent(GeneratorComponent.class).entity_name, world.physicsWorld, game);
+                float x = (float)(Math.random() * (generator.getComponent(GeneratorComponent.class).max_distance - generator.getComponent(GeneratorComponent.class).min_distance) + generator.getComponent(GeneratorComponent.class).min_distance);
+                float y = (float)(Math.random() * (generator.getComponent(GeneratorComponent.class).max_distance - generator.getComponent(GeneratorComponent.class).min_distance) + generator.getComponent(GeneratorComponent.class).min_distance);
+                entity.getComponent(BodyComponent.class).body.setTransform(x, y, 0);
+                world.addEntity(entity);
+            }
+        }
+    }
+
     void spawnAnt(){
         Entity newAnt = entityFactory.create("Ant", world.physicsWorld, game);
         newAnt.getComponent(BodyComponent.class).body.setTransform(2, 2, 0);
         world.addEntity(newAnt);
     }
 
-    public void generatePheromone(float x, float y){
+    public void generatePheromone(float x, float y, int uuid){
         Entity newPheromone = entityFactory.create("Pheromone", world.physicsWorld, game);
         newPheromone.getComponent(BodyComponent.class).body.setTransform(x, y, 0);
+        newPheromone.getComponent(IdentifierComponent.class).uuid = uuid;
         world.addEntity(newPheromone);
     }
 

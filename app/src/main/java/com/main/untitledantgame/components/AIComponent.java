@@ -112,12 +112,11 @@ public class AIComponent implements Component {
 
 
     private void generatePheromone(Body antBody, GameScreen screen) {
-        inc_id++;
 
         float x = antBody.getPosition().getX();
         float y = antBody.getPosition().getY();
 
-        screen.generatePheromone(x, y, inc_id);
+        screen.generatePheromone(x, y, UUID_Int.getUUIDInt());
     }
 
 }
