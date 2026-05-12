@@ -44,9 +44,9 @@ public class GameScreen extends Screen {
 
     public GameScreen(Game game) {
         super(game);
-        initWorld();
         entityFactory = new EntityFactory(Assets.prototypeRegistry);
 
+        initWorld();
     }
 
     @Override
