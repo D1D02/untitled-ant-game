@@ -49,8 +49,8 @@ public class GameScreen extends Screen {
     public GameScreen(Game game) {
         super(game);
         entityFactory = new EntityFactory(Assets.prototypeRegistry);
-
         initWorld();
+
     }
 
     @Override
@@ -156,7 +156,7 @@ public class GameScreen extends Screen {
         Entity obstacle_generator = entityFactory.create("ObstacleGenerator", world.physicsWorld, game);
         generators.add(food_generator);
         generators.add(obstacle_generator);
-        
+
         //FORMICAIO
 
         int w = g.getWidth(), h = g.getHeight();
