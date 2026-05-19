@@ -14,6 +14,7 @@ import com.main.untitledantgame.components.ui.UIButtonComponent;
 import com.main.untitledantgame.components.ui.UIBarComponent;
 import com.main.untitledantgame.components.FoodComponent;
 import com.main.untitledantgame.components.IdentifierComponent;
+import com.main.untitledantgame.components.GeneratorComponent;
 
 import com.badlogic.androidgames.framework.Game;
 import com.badlogic.androidgames.framework.Graphics;
@@ -107,6 +108,17 @@ public class ComponentFactory {
                 IdentifierComponent id = new IdentifierComponent();
                 id.inc_id = data.get("inc_id").getAsInt();
                 return id;
+
+            case "generator":
+                GeneratorComponent generator = new GeneratorComponent();
+                generator.start_delay = data.get("start_delay").getAsInt();
+                generator.ratio = data.get("ratio").getAsInt();
+                generator.time_spent = data.get("time_spent").getAsInt();
+                generator.min_distance = data.get("min_distance").getAsInt();
+                generator.max_distance = data.get("max_distance").getAsInt();
+                generator.entity_name = data.get("entity_name").getAsString();
+
+                return generator;
 
             case "life":
                 LifeComponent life = new LifeComponent();
