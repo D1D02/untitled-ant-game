@@ -72,4 +72,30 @@
             "height": "20"
         }
     }
-}]
+},
+    {
+        "name": "Food",
+        "components":{
+            "body":{
+                "type": "staticBody",
+                "fixed_rotation": "true",
+                "gravity_scale": 0.0,
+                "polygon_shape": {
+                    "dimension_1": 0.01,
+                    "dimension_2": 0.01
+                },
+                "fixture": {
+                    "density": 5,
+                    "friction": 1,
+                    "restitution": 2,
+                    "isSensor": 1
+                }
+            },
+            "sprite": {
+                "pathname": "sugar.png",
+                "width": "30",
+                "height": "30"
+            }
+        }
+    }
+]

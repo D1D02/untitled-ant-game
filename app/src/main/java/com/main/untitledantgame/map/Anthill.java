@@ -48,37 +48,20 @@ public class Anthill extends Entity {
 
         bc.body = world.createBody(bDef);
 
-        //bc.body.setUserData(entity);
+        PolygonShape shape = new PolygonShape();
+        shape.setAsBox(20, 20);
 
-        /*if (data.has("fixture") && data.has("polygon_shape")) {
+        FixtureDef fDef = new FixtureDef();
+        fDef.setShape(shape);
+        fDef.setDensity(1f);
+        fDef.setFriction(1f);
+        fDef.setRestitution(0f);
 
-            JsonObject fixData = data.getAsJsonObject("fixture");
-            JsonObject poly = data.getAsJsonObject("polygon_shape");
+        //bc.body.createFixture(fDef);
+        shape.delete();
+        fDef.delete();
 
-            PolygonShape shape = new PolygonShape();
-            shape.setAsBox(
-                    poly.get("dimension_1").getAsFloat(),
-                    poly.get("dimension_2").getAsFloat()
-            );
-
-            FixtureDef fDef = new FixtureDef();
-            fDef.setShape(shape);
-            fDef.setDensity(fixData.get("density").getAsFloat());
-            fDef.setFriction(fixData.get("friction").getAsFloat());
-            fDef.setRestitution(fixData.get("restitution").getAsFloat());
-
-            if(fixData.get("isSensor").getAsInt()==1){
-                fDef.setDensity(0f);
-                fDef.setFriction(0f);
-                fDef.setRestitution(0f);
-            }
-
-            bc.body.createFixture(fDef);
-
-            shape.delete();
-            fDef.delete();
-        }*/
-
+        shape.delete();
         bDef.delete();
         return bc;
     }

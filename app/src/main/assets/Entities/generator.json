@@ -36,4 +36,17 @@
       "max_distance": 10
     }
   }
-}]
+},
+  {
+    "name": "FoodGenerator",
+    "components":{
+      "generator": {
+        "entity_name": "Food",
+        "start_delay":0,
+        "ratio": 60,
+        "time_spent": 0,
+        "min_distance": 0,
+        "max_distance": 10
+      }
+    }
+  }]
