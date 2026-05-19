@@ -8,6 +8,8 @@ import com.badlogic.androidgames.framework.Pixmap;
 import com.badlogic.androidgames.framework.Screen;
 import com.google.fpl.liquidfun.DistanceJoint;
 import com.google.fpl.liquidfun.DistanceJointDef;
+import com.google.fpl.liquidfun.RevoluteJoint;
+import com.google.fpl.liquidfun.RevoluteJointDef;
 import com.main.untitledantgame.collision.Collision;
 import com.main.untitledantgame.collision.GameContactListener;
 import com.main.untitledantgame.components.AIComponent;
@@ -31,6 +33,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 
 public class GameScreen extends Screen {
 
@@ -255,5 +258,25 @@ public class GameScreen extends Screen {
         jointDef.setLocalAnchorB(b.getComponent(BodyComponent.class).body.getWorldCenter().getX(), b.getComponent(BodyComponent.class).body.getWorldCenter().getY());
 
         DistanceJoint joint = (DistanceJoint) world.physicsWorld.createJoint(jointDef);
+    }
+
+    public void dispatchCollisions() {
+        Collection<Collision> collisions = contactListener.getCollisions();
+
+        for(Collision event : collisions) {
+            if(Objects.equals(event.a.type, "food") && Objects.equals(event.b.type, "ant") ||
+            Objects.equals(event.b.type, "food") && Objects.equals(event.a.type, "ant")) {
+                RevoluteJointDef revoluteJointDef = new RevoluteJointDef();
+                revoluteJointDef.setBodyA(event.a.getComponent(BodyComponent.class).body);
+                revoluteJointDef.setBodyB(event.b.getComponent(BodyComponent.class).body);
+                revoluteJointDef.setLocalAnchorA(event.a.getComponent(BodyComponent.class).body.getWorldCenter().getX(), event.a.getComponent(BodyComponent.class).body.getWorldCenter().getY());
+                revoluteJointDef.setLocalAnchorB(event.b.getComponent(BodyComponent.class).body.getWorldCenter().getX(), event.b.getComponent(BodyComponent.class).body.getWorldCenter().getY());
+                world.physicsWorld.createJoint(revoluteJointDef);
+
+                RevoluteJoint revoluteJoint = (RevoluteJoint) world.physicsWorld.createJoint(revoluteJointDef);
+                revoluteJointDef.delete();
+
+            }
+        }
     }
 }
