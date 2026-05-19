@@ -26,6 +26,7 @@ import com.main.untitledantgame.utility.ecs.Entity;
 import com.main.untitledantgame.utility.ecs.EntityFactory;
 import com.main.untitledantgame.visuals.Assets;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -44,12 +45,12 @@ public class GameScreen extends Screen {
 
     EntityFactory entityFactory;
 
-    List<Entity> generators;
+    List<Entity> generators = new ArrayList<>(5);
 
     public GameScreen(Game game) {
         super(game);
-        initWorld();
         entityFactory = new EntityFactory(Assets.prototypeRegistry);
+        initWorld();
 
     }
 
@@ -84,6 +85,7 @@ public class GameScreen extends Screen {
             }
         }
         //FISICA
+        moveAnts();
         world.physicsWorld.step(deltaTime, 8, 3, 3);
         handleCollisions(contactListener.getCollisions());
     }
@@ -108,6 +110,17 @@ public class GameScreen extends Screen {
 
     }
 
+    void moveAnts(){
+        List<Entity> entities = world.entities;
+        for(int i = 0; i < entities.size();i++){ //l'enhanced for è meno efficiente perchè alloca memoria per la variabile di scorrimento
+            Entity e = entities.get(i);
+            if(!e.hasComponent(AIComponent.class))
+                continue;
+            AIComponent agent = e.getComponent(AIComponent.class);
+            agent.updatePosition(e.getComponent(BodyComponent.class).body, 1000f, this);
+        }
+    }
+
     void drawWorld(){
         Graphics g = game.getGraphics();
 
@@ -116,11 +129,14 @@ public class GameScreen extends Screen {
         List<Entity> entities = world.entities;
         for(int i = 0; i < entities.size();i++){ //l'enhanced for è meno efficiente perchè alloca memoria per la variabile di scorrimento
             Entity e = entities.get(i);
-            if(!e.hasComponent(SpriteComponent.class) || !e.hasComponent(PositionComponent.class))
+            if(!e.hasComponent(SpriteComponent.class) || !e.hasComponent(BodyComponent.class))
                 continue;
-            Pixmap sprite = e.getComponent(SpriteComponent.class).sprite;
-            PositionComponent pos = e.getComponent(PositionComponent.class);
-            g.drawPixmap(sprite,(int)pos.x + xOffset,(int)pos.y + yOffset);
+            SpriteComponent sprite = e.getComponent(SpriteComponent.class);
+            BodyComponent body = e.getComponent(BodyComponent.class);
+            int posX = (int)body.body.getPositionX() + xOffset;
+            int posY = (int)body.body.getPositionY() + yOffset;
+            g.drawPixmap(sprite.sprite,posX,posY, 0, 0, sprite.sprite.getWidth(), sprite.sprite.getHeight(), sprite.width, sprite.height);
+
         }
 
         List<Entity> uiElements = canvas.elements;
@@ -156,11 +172,11 @@ public class GameScreen extends Screen {
         Entity obstacle_generator = entityFactory.create("ObstacleGenerator", world.physicsWorld, game);
         generators.add(food_generator);
         generators.add(obstacle_generator);
-        
+
         //FORMICAIO
 
         int w = g.getWidth(), h = g.getHeight();
-        anthill = new Anthill(w/2-(w/8), h/2-(h/8), foodBarEntity.getComponent(UIBarComponent.class), pheroBarEntity.getComponent(UIBarComponent.class), expBarEntity.getComponent(UIBarComponent.class));
+        anthill = new Anthill(w/2-(w/8), h/2-(h/8), foodBarEntity.getComponent(UIBarComponent.class), pheroBarEntity.getComponent(UIBarComponent.class), expBarEntity.getComponent(UIBarComponent.class), world.physicsWorld);
 
         world.addEntity(anthill);
 
@@ -170,6 +186,7 @@ public class GameScreen extends Screen {
             if(anthill.consumeFood(10))
                 spawnAnt();
         });
+        canvas.addElement(exploration);
     }
 
     void generateItems( float deltaTime ) {

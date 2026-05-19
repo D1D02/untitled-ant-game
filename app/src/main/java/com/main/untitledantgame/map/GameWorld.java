@@ -1,6 +1,7 @@
 package com.main.untitledantgame.map;
 
 import com.google.fpl.liquidfun.World;
+import com.main.untitledantgame.components.BodyComponent;
 import com.main.untitledantgame.utility.ecs.Entity;
 
 import java.util.ArrayList;
@@ -15,9 +16,9 @@ public class GameWorld {
         entities = new ArrayList<>();
     }
 
+    public World physicsWorld = new World(0, 0);
     public void addEntity(Entity e){
         entities.add(e);
     }
 
-    public World physicsWorld = new World(0, 0);
 }

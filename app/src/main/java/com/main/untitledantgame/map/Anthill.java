@@ -1,5 +1,12 @@
 package com.main.untitledantgame.map;
 
+import com.google.fpl.liquidfun.BodyDef;
+import com.google.fpl.liquidfun.BodyType;
+import com.google.fpl.liquidfun.FixtureDef;
+import com.google.fpl.liquidfun.PolygonShape;
+import com.google.fpl.liquidfun.World;
+import com.google.gson.JsonObject;
+import com.main.untitledantgame.components.BodyComponent;
 import com.main.untitledantgame.components.PositionComponent;
 import com.main.untitledantgame.components.SpriteComponent;
 import com.main.untitledantgame.components.ui.UIBarComponent;
@@ -13,13 +20,14 @@ public class Anthill extends Entity {
     int maxFood = 100, maxPhero = 100, maxExp = 100;
     int level = 1;
 
-    public Anthill(int x, int y, UIBarComponent foodBar, UIBarComponent pheroBar, UIBarComponent expbar){
-        PositionComponent pos = new PositionComponent();
-        pos.x = x;
-        pos.y = y;
-        addComponent(pos);
+    public Anthill(int x, int y, UIBarComponent foodBar, UIBarComponent pheroBar, UIBarComponent expbar, World world){
+        BodyComponent body = generateBody(x, y, world);
+
+        addComponent(body);
         SpriteComponent sprite = new SpriteComponent();
         sprite.sprite = Assets.anthill;
+        sprite.width = 100;
+        sprite.height = 100;
         addComponent(sprite);
         this.foodBar = foodBar;
         this.pheroBar = pheroBar;
@@ -30,6 +38,49 @@ public class Anthill extends Entity {
         pheroBar.value = phero;
         expbar.maxValue = maxExp;
         expbar.value = exp;
+    }
+
+    private BodyComponent generateBody(float x, float y, World world){
+        BodyComponent bc = new BodyComponent();
+        BodyDef bDef = new BodyDef();
+        bDef.setType(BodyType.staticBody);
+        bDef.setPosition(x, y);
+
+        bc.body = world.createBody(bDef);
+
+        //bc.body.setUserData(entity);
+
+        /*if (data.has("fixture") && data.has("polygon_shape")) {
+
+            JsonObject fixData = data.getAsJsonObject("fixture");
+            JsonObject poly = data.getAsJsonObject("polygon_shape");
+
+            PolygonShape shape = new PolygonShape();
+            shape.setAsBox(
+                    poly.get("dimension_1").getAsFloat(),
+                    poly.get("dimension_2").getAsFloat()
+            );
+
+            FixtureDef fDef = new FixtureDef();
+            fDef.setShape(shape);
+            fDef.setDensity(fixData.get("density").getAsFloat());
+            fDef.setFriction(fixData.get("friction").getAsFloat());
+            fDef.setRestitution(fixData.get("restitution").getAsFloat());
+
+            if(fixData.get("isSensor").getAsInt()==1){
+                fDef.setDensity(0f);
+                fDef.setFriction(0f);
+                fDef.setRestitution(0f);
+            }
+
+            bc.body.createFixture(fDef);
+
+            shape.delete();
+            fDef.delete();
+        }*/
+
+        bDef.delete();
+        return bc;
     }
 
     public boolean consumeFood(int amount){
