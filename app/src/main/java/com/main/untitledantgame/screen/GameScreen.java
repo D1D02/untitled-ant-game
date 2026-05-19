@@ -11,6 +11,7 @@ import com.google.fpl.liquidfun.DistanceJointDef;
 import com.main.untitledantgame.collision.Collision;
 import com.main.untitledantgame.collision.GameContactListener;
 import com.main.untitledantgame.components.AIComponent;
+import com.main.untitledantgame.components.AliveComponent;
 import com.main.untitledantgame.components.BodyComponent;
 import com.main.untitledantgame.components.GeneratorComponent;
 import com.main.untitledantgame.components.IdentifierComponent;
@@ -46,6 +47,7 @@ public class GameScreen extends Screen {
     EntityFactory entityFactory;
 
     List<Entity> generators = new ArrayList<>(5);
+    List<Entity> mortalEntities = new ArrayList<>(100);
 
     public GameScreen(Game game) {
         super(game);
@@ -201,6 +203,15 @@ public class GameScreen extends Screen {
         }
     }
 
+    void checkTTL( float deltaTime ) {
+        for(Entity mortalEntity : mortalEntities ) {
+            if( mortalEntity.getComponent(AliveComponent.class).isDead(deltaTime) ) {
+                mortalEntities.remove(mortalEntity);
+                world.removeEntity(mortalEntity);
+            }
+        }
+    }
+
     void spawnAnt(){
         Entity newAnt = entityFactory.create("Ant", world.physicsWorld, game);
         newAnt.getComponent(BodyComponent.class).body.setTransform(2, 2, 0);
@@ -211,6 +222,7 @@ public class GameScreen extends Screen {
         Entity newPheromone = entityFactory.create("Pheromone", world.physicsWorld, game);
         newPheromone.getComponent(BodyComponent.class).body.setTransform(x, y, 0);
         newPheromone.getComponent(IdentifierComponent.class).uuid = uuid;
+        mortalEntities.add(newPheromone);
         world.addEntity(newPheromone);
     }
 
