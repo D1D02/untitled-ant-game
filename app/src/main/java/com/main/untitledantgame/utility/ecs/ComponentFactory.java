@@ -115,6 +115,9 @@ public class ComponentFactory {
 
             case "sprite":
                 SpriteComponent sprite = new SpriteComponent();
+
+                sprite.width = data.get("width").getAsInt();
+                sprite.height = data.get("height").getAsInt();
                 String path = data.get("pathname").getAsString();
 
                 try {

@@ -33,7 +33,15 @@
                 "isSensor": 0
             }
         },
-        "sprite": {"pathname": "sprite.png"}
+        "sprite": {
+            "pathname": "ant.png",
+            "width": "40",
+            "height": "50"
+        },
+        "ai":{
+            "wander_angle": "90",
+            "max_speed": "50"
+        }
     }
 },
 {
@@ -58,6 +66,10 @@
                 "isSensor": 1
             }
         },
-        "sprite": {"pathname": "sprite.png"}
+        "sprite": {
+            "pathname": "phero.png",
+            "width": "20",
+            "height": "20"
+        }
     }
 }]
