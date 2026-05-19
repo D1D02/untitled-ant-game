@@ -85,7 +85,7 @@ public class GameScreen extends Screen {
             }
         }
         //FISICA
-        moveAnts();
+        moveAnts(deltaTime);
         world.physicsWorld.step(deltaTime, 8, 3, 3);
         handleCollisions(contactListener.getCollisions());
     }
@@ -110,14 +110,14 @@ public class GameScreen extends Screen {
 
     }
 
-    void moveAnts(){
+    void moveAnts(float deltaTime){
         List<Entity> entities = world.entities;
         for(int i = 0; i < entities.size();i++){ //l'enhanced for è meno efficiente perchè alloca memoria per la variabile di scorrimento
             Entity e = entities.get(i);
             if(!e.hasComponent(AIComponent.class))
                 continue;
             AIComponent agent = e.getComponent(AIComponent.class);
-            agent.updatePosition(e.getComponent(BodyComponent.class).body, 1000f, this);
+            agent.updatePosition(e.getComponent(BodyComponent.class).body, 1000f, this, deltaTime);
         }
     }
 

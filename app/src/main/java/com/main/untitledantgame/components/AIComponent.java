@@ -37,11 +37,14 @@ public class AIComponent implements Component {
 
     private Entity last_pheromone = null;
 
-    public void updatePosition(Body antBody, float force, GameScreen screen) {
+    private float time_spent = 0;
+    private float max_time = 0.3f;
+
+    public void updatePosition(Body antBody, float force, GameScreen screen, float deltaTime) {
 
         switch (state) {
             case WANDERING:
-                updateWandering(antBody, force, screen);
+                updateWandering(antBody, force, screen, deltaTime);
                 break;
 
             case FOLLOWING:
@@ -58,7 +61,7 @@ public class AIComponent implements Component {
         }
     }
 
-    public void updateWandering(Body antBody, float force, GameScreen screen) {
+    public void updateWandering(Body antBody, float force, GameScreen screen, float deltaTime) {
 
         wanderAngle += (float) ((Math.random() - 0.5f) * 0.5f);
 
@@ -70,7 +73,7 @@ public class AIComponent implements Component {
         
         antBody.setLinearDamping(2.0f);
 
-        generatePheromone(antBody, screen);
+        generatePheromone(antBody, screen, deltaTime);
     }
 
 
@@ -111,12 +114,17 @@ public class AIComponent implements Component {
     }
 
 
-    private void generatePheromone(Body antBody, GameScreen screen) {
+    private void generatePheromone(Body antBody, GameScreen screen, float deltaTime) {
 
-        float x = antBody.getPosition().getX();
-        float y = antBody.getPosition().getY();
+        time_spent += deltaTime;;
 
-        screen.generatePheromone(x, y, UUID_Int.getUUIDInt());
+        if( time_spent >= max_time ) {
+            float x = antBody.getPosition().getX();
+            float y = antBody.getPosition().getY();
+
+            screen.generatePheromone(x, y, UUID_Int.getUUIDInt());
+            time_spent -= max_time;
+        }
     }
 
 }
