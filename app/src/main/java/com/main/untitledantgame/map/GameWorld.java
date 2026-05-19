@@ -20,5 +20,8 @@ public class GameWorld {
     public void addEntity(Entity e){
         entities.add(e);
     }
+    public void removeEntity(Entity e){
+        entities.remove(e);
+    }
 
 }
