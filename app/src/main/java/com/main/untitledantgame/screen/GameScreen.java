@@ -29,6 +29,7 @@ import com.main.untitledantgame.visuals.Assets;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 
 public class GameScreen extends Screen {
@@ -90,6 +91,9 @@ public class GameScreen extends Screen {
         moveAnts(deltaTime);
         world.physicsWorld.step(deltaTime, 8, 3, 3);
         handleCollisions(contactListener.getCollisions());
+
+
+        checkTTL(deltaTime);
     }
 
     @Override
@@ -203,10 +207,15 @@ public class GameScreen extends Screen {
         }
     }
 
-    void checkTTL( float deltaTime ) {
-        for(Entity mortalEntity : mortalEntities ) {
-            if( mortalEntity.getComponent(AliveComponent.class).isDead(deltaTime) ) {
-                mortalEntities.remove(mortalEntity);
+    void checkTTL(float deltaTime) {
+        Iterator<Entity> iterator = mortalEntities.iterator();
+
+        while (iterator.hasNext()) {
+            Entity mortalEntity = iterator.next();
+
+            if (mortalEntity.getComponent(AliveComponent.class).isDead(deltaTime)) {
+                iterator.remove();
+
                 world.removeEntity(mortalEntity);
             }
         }
