@@ -144,8 +144,8 @@ public class GameScreen extends Screen {
                 continue;
             SpriteComponent sprite = e.getComponent(SpriteComponent.class);
             BodyComponent body = e.getComponent(BodyComponent.class);
-            int posX = (int)body.body.getPositionX() + xOffset;
-            int posY = (int)body.body.getPositionY() + yOffset;
+            int posX = (int)body.body.getPositionX() + g.getWidth()/2 - sprite.width/2 + xOffset;
+            int posY = (int)body.body.getPositionY() + g.getHeight()/2 - sprite.height/2 + yOffset;
             g.drawPixmap(sprite.sprite,posX,posY, 0, 0, sprite.sprite.getWidth(), sprite.sprite.getHeight(), sprite.width, sprite.height);
 
         }
@@ -188,7 +188,7 @@ public class GameScreen extends Screen {
         //FORMICAIO
 
         int w = g.getWidth(), h = g.getHeight();
-        anthill = new Anthill(w/2-(w/8), h/2-(h/8), foodBarEntity.getComponent(UIBarComponent.class), pheroBarEntity.getComponent(UIBarComponent.class), expBarEntity.getComponent(UIBarComponent.class), world.physicsWorld);
+        anthill = new Anthill(0, 0, foodBarEntity.getComponent(UIBarComponent.class), pheroBarEntity.getComponent(UIBarComponent.class), expBarEntity.getComponent(UIBarComponent.class), world.physicsWorld, game);
 
         world.addEntity(anthill);
 
@@ -201,17 +201,18 @@ public class GameScreen extends Screen {
         canvas.addElement(exploration);
 
         //ENTITA' INIZIALI
-        for(int i = 0; i < 10; i++)
-            spawnEntity("Food",
-                        (float)(Math.random() * (food_generator.getComponent(GeneratorComponent.class).max_distance - food_generator.getComponent(GeneratorComponent.class).min_distance) + food_generator.getComponent(GeneratorComponent.class).min_distance),
-                    (float)Math.random() * (food_generator.getComponent(GeneratorComponent.class).max_distance - food_generator.getComponent(GeneratorComponent.class).min_distance) + food_generator.getComponent(GeneratorComponent.class).min_distance);
+        for(int i = 0; i < 10; i++){
+            GeneratorComponent gen = food_generator.getComponent(GeneratorComponent.class);
+            spawnEntity("Food", gen.getRandomPosition(), gen.getRandomPosition());
+        }
     }
 
     void generateItems( float deltaTime ) {
         for(Entity generator : generators ) {
             if(generator.getComponent(GeneratorComponent.class).canBeGenerated(deltaTime)) {
-                float x = (float)(Math.random() * (generator.getComponent(GeneratorComponent.class).max_distance - generator.getComponent(GeneratorComponent.class).min_distance) + generator.getComponent(GeneratorComponent.class).min_distance);
-                float y = (float)(Math.random() * (generator.getComponent(GeneratorComponent.class).max_distance - generator.getComponent(GeneratorComponent.class).min_distance) + generator.getComponent(GeneratorComponent.class).min_distance);
+                GeneratorComponent gen = generator.getComponent(GeneratorComponent.class);
+                float x = gen.getRandomPosition();
+                float y = gen.getRandomPosition();
                 spawnEntity(generator.getComponent(GeneratorComponent.class).entity_name, x, y);
             }
         }
