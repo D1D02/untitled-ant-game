@@ -94,14 +94,11 @@ public class GameScreen extends Screen {
         moveAnts(deltaTime);
         world.physicsWorld.step(deltaTime, 8, 3, 3);
         handleCollisions(contactListener.getCollisions());
-<<<<<<< HEAD
 
 
         checkTTL(deltaTime);
-=======
         //GENERATORI
         generateItems(deltaTime);
->>>>>>> 9871365bb8474d8ab557efe16f87f278a2d01308
     }
 
     @Override
@@ -274,4 +271,19 @@ public class GameScreen extends Screen {
             }
         }
     }
+
+    void checkTTL(float deltaTime) {
+        Iterator<Entity> iterator = mortalEntities.iterator();
+
+        while (iterator.hasNext()) {
+            Entity mortalEntity = iterator.next();
+
+            if (mortalEntity.getComponent(AliveComponent.class).isDead(deltaTime)) {
+                iterator.remove();
+
+                world.removeEntity(mortalEntity);
+            }
+        }
+    }
+
 }
