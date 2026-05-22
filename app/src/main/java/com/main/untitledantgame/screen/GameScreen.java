@@ -93,8 +93,8 @@ public class GameScreen extends Screen {
         //FISICA
         moveAnts(deltaTime);
         world.physicsWorld.step(deltaTime, 8, 3, 3);
-        handleCollisions(contactListener.getCollisions());
-
+        //handleCollisions(contactListener.getCollisions());
+        dispatchCollisions();
 
         checkTTL(deltaTime);
         //GENERATORI
@@ -244,31 +244,24 @@ public class GameScreen extends Screen {
         }
     }
 
-    public void attachFood(Entity a, Entity b) {
-        DistanceJointDef jointDef = new DistanceJointDef();
 
-        jointDef.setBodyA(a.getComponent(BodyComponent.class).body);
-        jointDef.setBodyB(b.getComponent(BodyComponent.class).body);
-        jointDef.setLocalAnchorA(a.getComponent(BodyComponent.class).body.getWorldCenter().getX(), a.getComponent(BodyComponent.class).body.getWorldCenter().getY());
-        jointDef.setLocalAnchorB(b.getComponent(BodyComponent.class).body.getWorldCenter().getX(), b.getComponent(BodyComponent.class).body.getWorldCenter().getY());
-
-        DistanceJoint joint = (DistanceJoint) world.physicsWorld.createJoint(jointDef);
-    }
 
     public void dispatchCollisions() {
         Collection<Collision> collisions = contactListener.getCollisions();
 
         for(Collision event : collisions) {
-            if(Objects.equals(event.a.type, "food") && Objects.equals(event.b.type, "ant") ||
-            Objects.equals(event.b.type, "food") && Objects.equals(event.a.type, "ant")) {
+            if(Objects.equals(event.a.type, "Food") && Objects.equals(event.b.type, "Ant") ||
+            Objects.equals(event.b.type, "Food") && Objects.equals(event.a.type, "Ant")) {
+
+                System.out.println(event.a.type + " " + event.b.type);
                 RevoluteJointDef revoluteJointDef = new RevoluteJointDef();
                 revoluteJointDef.setBodyA(event.a.getComponent(BodyComponent.class).body);
                 revoluteJointDef.setBodyB(event.b.getComponent(BodyComponent.class).body);
-                revoluteJointDef.setLocalAnchorA(event.a.getComponent(BodyComponent.class).body.getWorldCenter().getX(), event.a.getComponent(BodyComponent.class).body.getWorldCenter().getY());
-                revoluteJointDef.setLocalAnchorB(event.b.getComponent(BodyComponent.class).body.getWorldCenter().getX(), event.b.getComponent(BodyComponent.class).body.getWorldCenter().getY());
+                revoluteJointDef.setLocalAnchorA(0, 0);
+                revoluteJointDef.setLocalAnchorB(0, 0);
                 world.physicsWorld.createJoint(revoluteJointDef);
 
-                RevoluteJoint revoluteJoint = (RevoluteJoint) world.physicsWorld.createJoint(revoluteJointDef);
+                world.physicsWorld.createJoint(revoluteJointDef);
                 revoluteJointDef.delete();
 
             }

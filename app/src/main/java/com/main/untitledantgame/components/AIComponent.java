@@ -87,7 +87,7 @@ public class AIComponent implements Component {
         }
         else if(b.type.equals("food")) {
             state = Behaviour.RETURNING;
-            screen.attachFood(ant, b);
+            //screen.attachFood(ant, b);
         }           
     }
 

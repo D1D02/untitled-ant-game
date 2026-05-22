@@ -9,7 +9,6 @@ public class GeneratorComponent implements Component {
     public String entity_name;
 
     public Boolean canBeGenerated( float time_passed ) {
-        System.out.println("Passed: " + time_passed + ", total: " + time_spent);
         this.time_spent += time_passed;
     
         if( time_spent >= ratio ){ time_spent -= ratio; return true; }
