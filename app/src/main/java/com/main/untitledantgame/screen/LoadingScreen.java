@@ -6,6 +6,7 @@ import android.util.Log;
 
 import com.badlogic.androidgames.framework.Game;
 import com.badlogic.androidgames.framework.Graphics;
+import com.badlogic.androidgames.framework.Pixmap;
 import com.badlogic.androidgames.framework.Screen;
 import com.google.gson.JsonArray;
 import com.main.untitledantgame.components.LifeComponent;
@@ -74,8 +75,8 @@ public class LoadingScreen extends Screen {
 
         assetManager = ((Context) game).getAssets();
 
-        Assets.anthill = loadSprite("anthill.png", 0.25f);
-
+        Assets.anthill = loadSprite("anthill.png", game);
+        Assets.background = loadSprite("grass.png", game);
         // Passo al menu principale
         game.setScreen(new MainMenuScreen(game));
     }
@@ -99,7 +100,15 @@ public class LoadingScreen extends Screen {
     public void dispose() {
 
     }
-
+    Pixmap loadSprite(String sprite, Game game){
+        try {
+            return game.getGraphics()
+                    .newPixmap(sprite, Graphics.PixmapFormat.ARGB8888);
+        } catch (Exception e) {
+            Log.e("ECS", "Errore sprite: anthill.png");
+        }
+        return null;
+    }
     com.badlogic.androidgames.framework.impl.AndroidPixmap loadSprite(String sprite, float scale) {
         try {
             java.io.InputStream in =

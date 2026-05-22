@@ -34,13 +34,7 @@ public class Anthill extends Entity {
         sprite.width = 100;
         sprite.height = 100;
 
-        try {
-            Pixmap pixmap = game.getGraphics()
-                    .newPixmap("anthill.png", Graphics.PixmapFormat.ARGB8888);
-            sprite.sprite = pixmap;
-        } catch (Exception e) {
-            Log.e("ECS", "Errore sprite: anthill.png");
-        }
+        sprite.sprite = Assets.anthill;
 
         addComponent(sprite);
 

@@ -135,7 +135,9 @@ public class GameScreen extends Screen {
     void drawWorld(){
         Graphics g = game.getGraphics();
 
-        g.drawRect(0,0, 480, 320, Color.convert(120,210,50,255)); //sfondo provvisorio
+        //g.drawRect(0,0, 480, 320, Color.convert(120,210,50,255)); //sfondo provvisorio
+        g.drawPixmap(Assets.background, xOffset-500, yOffset-500);
+
 
         List<Entity> entities = world.entities;
         for(int i = 0; i < entities.size();i++){ //l'enhanced for è meno efficiente perchè alloca memoria per la variabile di scorrimento
