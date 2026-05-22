@@ -19,8 +19,8 @@
       "start_delay":1000,
       "ratio": 100,
       "time_spent": 0,
-      "min_distance": 0,
-      "max_distance": 10
+      "min_distance": 10,
+      "max_distance": 500
     }
   }
 },
@@ -32,8 +32,8 @@
       "start_delay":0,
       "ratio": 100,
       "time_spent": 0,
-      "min_distance": 0,
-      "max_distance": 10
+      "min_distance": 10,
+      "max_distance": 100
     }
   }
 },
@@ -45,8 +45,8 @@
         "start_delay":0,
         "ratio": 60,
         "time_spent": 0,
-        "min_distance": 0,
-        "max_distance": 10
+        "min_distance": 50,
+        "max_distance": 700
       }
     }
   }]

@@ -1,5 +1,10 @@
 package com.main.untitledantgame.map;
 
+import android.util.Log;
+
+import com.badlogic.androidgames.framework.Game;
+import com.badlogic.androidgames.framework.Graphics;
+import com.badlogic.androidgames.framework.Pixmap;
 import com.google.fpl.liquidfun.BodyDef;
 import com.google.fpl.liquidfun.BodyType;
 import com.google.fpl.liquidfun.FixtureDef;
@@ -20,15 +25,19 @@ public class Anthill extends Entity {
     int maxFood = 100, maxPhero = 100, maxExp = 100;
     int level = 1;
 
-    public Anthill(int x, int y, UIBarComponent foodBar, UIBarComponent pheroBar, UIBarComponent expbar, World world){
+    public Anthill(int x, int y, UIBarComponent foodBar, UIBarComponent pheroBar, UIBarComponent expbar, World world, Game game){
         BodyComponent body = generateBody(x, y, world);
 
         addComponent(body);
         SpriteComponent sprite = new SpriteComponent();
-        sprite.sprite = Assets.anthill;
+
         sprite.width = 100;
         sprite.height = 100;
+
+        sprite.sprite = Assets.anthill;
+
         addComponent(sprite);
+
         this.foodBar = foodBar;
         this.pheroBar = pheroBar;
         this.expbar = expbar;
