@@ -95,7 +95,33 @@ public class ComponentFactory {
 
                 bDef.delete();
                 return bc;
+            case "sensor":
+                BodyComponent bodyComp = entity.getComponent(BodyComponent.class);
+                if (bodyComp == null || bodyComp.body == null) {
+                    return null;
+                }
 
+                SensorComponent sc = new SensorComponent();
+                JsonObject polySensor = data.getAsJsonObject("polygon_shape");
+
+                PolygonShape sensorShape = new PolygonShape();
+                sensorShape.setAsBox(
+                        polySensor.get("dimension_1").getAsFloat(),
+                        polySensor.get("dimension_2").getAsFloat()
+                );
+
+                FixtureDef sfDef = new FixtureDef();
+                sfDef.setShape(sensorShape);
+                sfDef.setDensity(0f);
+                sfDef.setFriction(0f);
+                sfDef.setRestitution(0f);
+
+                sc.sensorFixture = bodyComp.body.createFixture(sfDef);
+
+                sensorShape.delete();
+                sfDef.delete();
+
+                return sc;
             case "food":
                 FoodComponent food = new FoodComponent();
                 food.capacity = data.get("capacity").getAsInt();

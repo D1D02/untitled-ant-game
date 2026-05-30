@@ -38,6 +38,7 @@ public class AIComponent implements Component {
     private Vec2 lastDropPosition = null;
 
     private Entity last_pheromone = null;
+    private int lastPheromoneId = -1;
 
     private float time_spent = 0;
     private float max_time = 0.3f;
@@ -70,7 +71,7 @@ public class AIComponent implements Component {
 
         antBody.applyForceToCenter(new Vec2(fx, fy), true);
         antBody.setTransform(antBody.getPosition(), wanderAngle);
-        
+
         antBody.setLinearDamping(2.0f);
 
         generatePheromone(antBody, screen, deltaTime);
@@ -80,7 +81,7 @@ public class AIComponent implements Component {
 
 
     public void handleCollision(Entity ant, Entity b, GameWorld world) {
-        if(Objects.equals(b.type, "Food")){
+        if(state == Behaviour.WANDERING && Objects.equals(b.type, "Food")){
             RevoluteJointDef revoluteJointDef = new RevoluteJointDef();
             revoluteJointDef.setBodyA(ant.getComponent(BodyComponent.class).body);
             revoluteJointDef.setBodyB(b.getComponent(BodyComponent.class).body);
@@ -90,25 +91,36 @@ public class AIComponent implements Component {
 
             world.physicsWorld.createJoint(revoluteJointDef);
             revoluteJointDef.delete();
+            state = Behaviour.RETURNING;
+        }
+        else if(state == Behaviour.RETURNING && (Objects.equals(b.type, "Pheromone"))){
+            if (b.hasComponent(IdentifierComponent.class)) {
+                int pheromoneId = b.getComponent(IdentifierComponent.class).uuid; // o inc_id, a seconda di come lo hai chiamato
+
+                if (lastPheromoneId == -1 || pheromoneId < lastPheromoneId) {
+
+                    lastPheromoneId = pheromoneId;
+                    last_pheromone = b;
+}
+            }
         }
     }
 
     private float followTrail(Entity pheromone, Body antBody, float force) {
-        
-        if (pheromone != last_pheromone) {
-            last_pheromone = pheromone;
-            
-            Vec2 pheromonePos = last_pheromone.getComponent(BodyComponent.class).body.getPosition();
-            Vec2 antPos = antBody.getPosition();
-            
-            float dx = pheromonePos.getX() - antPos.getX();
-            float dy = pheromonePos.getY() - antPos.getY();
-            
-            directionAngle = (float) Math.atan2(dy, dx);
+        if (pheromone == null) {
+            return antBody.getAngle();
         }
-        
-        float fx = (float) Math.cos(directionAngle) * force;
-        float fy = (float) Math.sin(directionAngle) * force;
+
+        Vec2 pheromonePos = pheromone.getComponent(BodyComponent.class).body.getPosition();
+        Vec2 antPos = antBody.getPosition();
+
+        float dx = pheromonePos.getX() - antPos.getX();
+        float dy = pheromonePos.getY() - antPos.getY();
+
+        directionAngle = (float) Math.atan2(dy, dx);
+
+        float fx = (float) Math.cos(directionAngle) * 100000;
+        float fy = (float) Math.sin(directionAngle) * 100000;
 
         antBody.applyForceToCenter(new Vec2(fx, fy), true);
         antBody.setLinearDamping(2.0f);
@@ -120,7 +132,7 @@ public class AIComponent implements Component {
 
     private void generatePheromone(Body antBody, GameScreen screen, float deltaTime) {
 
-        time_spent += deltaTime;;
+        time_spent += deltaTime;
 
         if( time_spent >= max_time ) {
             float x = antBody.getPosition().getX();
