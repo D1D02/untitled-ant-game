@@ -128,7 +128,7 @@ public class GameScreen extends Screen {
             if(!e.hasComponent(AIComponent.class))
                 continue;
             AIComponent agent = e.getComponent(AIComponent.class);
-            agent.updatePosition(e.getComponent(BodyComponent.class).body, 1000f, this, deltaTime);
+            float agentAngle = agent.updatePosition(e.getComponent(BodyComponent.class).body, 1000f, this, deltaTime);
         }
     }
 
@@ -252,6 +252,7 @@ public class GameScreen extends Screen {
         for(Collision event : collisions) {
             if(Objects.equals(event.a.type, "Food") && Objects.equals(event.b.type, "Ant") ||
             Objects.equals(event.b.type, "Food") && Objects.equals(event.a.type, "Ant")) {
+
 
                 System.out.println(event.a.type + " " + event.b.type);
                 RevoluteJointDef revoluteJointDef = new RevoluteJointDef();

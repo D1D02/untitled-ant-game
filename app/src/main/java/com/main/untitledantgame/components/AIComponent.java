@@ -40,28 +40,26 @@ public class AIComponent implements Component {
     private float time_spent = 0;
     private float max_time = 0.3f;
 
-    public void updatePosition(Body antBody, float force, GameScreen screen, float deltaTime) {
+    public float updatePosition(Body antBody, float force, GameScreen screen, float deltaTime) {
 
         switch (state) {
             case WANDERING:
-                updateWandering(antBody, force, screen, deltaTime);
-                break;
+                return updateWandering(antBody, force, screen, deltaTime);
 
-            case FOLLOWING:
+            case FOLLOWING: return 0f;
             case RETURNING:
                 inc_id = -1;
-                followTrail(last_pheromone, antBody, force);
-                break;
+                return followTrail(last_pheromone, antBody, force);
 
             case WAITING:
                 inc_id = -1;
-                break;
+                return 0f;
             default:
-                break;
+                return 0f;
         }
     }
 
-    public void updateWandering(Body antBody, float force, GameScreen screen, float deltaTime) {
+    public float updateWandering(Body antBody, float force, GameScreen screen, float deltaTime) {
 
         wanderAngle += (float) ((Math.random() - 0.5f) * 0.5f);
 
@@ -74,6 +72,8 @@ public class AIComponent implements Component {
         antBody.setLinearDamping(2.0f);
 
         generatePheromone(antBody, screen, deltaTime);
+
+        return wanderAngle;
     }
 
 
@@ -91,7 +91,7 @@ public class AIComponent implements Component {
         }           
     }
 
-    private void followTrail(Entity pheromone, Body antBody, float force) {
+    private float followTrail(Entity pheromone, Body antBody, float force) {
         
         if (pheromone != last_pheromone) {
             last_pheromone = pheromone;
@@ -111,6 +111,8 @@ public class AIComponent implements Component {
         antBody.applyForceToCenter(new Vec2(fx, fy), true);
         antBody.setLinearDamping(2.0f);
         antBody.setTransform(antBody.getPosition(), directionAngle);
+
+        return directionAngle;
     }
 
 
