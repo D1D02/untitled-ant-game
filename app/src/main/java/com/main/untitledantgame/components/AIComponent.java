@@ -3,10 +3,12 @@ package com.main.untitledantgame.components;
 import java.util.*;
 
 import com.google.fpl.liquidfun.Body;
+import com.google.fpl.liquidfun.RevoluteJointDef;
 import com.google.fpl.liquidfun.Vec2;
 
 import com.badlogic.androidgames.framework.Screen;
 
+import com.main.untitledantgame.map.GameWorld;
 import com.main.untitledantgame.screen.GameScreen;
 import com.main.untitledantgame.utility.ecs.Entity;
 import com.main.untitledantgame.components.Component;
@@ -77,18 +79,18 @@ public class AIComponent implements Component {
     }
 
 
-    public void handleCollision(Entity ant, Entity b, GameScreen screen) {
-        if(b.type.equals("pheromones") && ( state != Behaviour.WANDERING ) ) {
-            int dxPheromone = b.getComponent(IdentifierComponent.class).inc_id - last_pheromone.getComponent(IdentifierComponent.class).inc_id;
+    public void handleCollision(Entity ant, Entity b, GameWorld world) {
+        if(Objects.equals(b.type, "Food")){
+            RevoluteJointDef revoluteJointDef = new RevoluteJointDef();
+            revoluteJointDef.setBodyA(ant.getComponent(BodyComponent.class).body);
+            revoluteJointDef.setBodyB(b.getComponent(BodyComponent.class).body);
+            revoluteJointDef.setLocalAnchorA(0, 0);
+            revoluteJointDef.setLocalAnchorB(0, 0);
+            world.physicsWorld.createJoint(revoluteJointDef);
 
-            if(dxPheromone > 0 && state == Behaviour.FOLLOWING) last_pheromone = b;
-            else if(dxPheromone <= 0 && state == Behaviour.RETURNING) last_pheromone = b;
-
+            world.physicsWorld.createJoint(revoluteJointDef);
+            revoluteJointDef.delete();
         }
-        else if(b.type.equals("food")) {
-            state = Behaviour.RETURNING;
-            //screen.attachFood(ant, b);
-        }           
     }
 
     private float followTrail(Entity pheromone, Body antBody, float force) {

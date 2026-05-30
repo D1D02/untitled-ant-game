@@ -50,7 +50,7 @@
         "identifier":{
             "inc_id": 0
         },
-        "alive": {"ttl": 10},
+        "alive": {"ttl": 100},
         "body":{
             "type": "staticBody",
             "fixed_rotation": "true",

@@ -233,39 +233,12 @@ public class GameScreen extends Screen {
         world.addEntity(newPheromone);
     }
 
-    void handleCollisions(Collection<Collision> collisions){
-        for(Collision event : collisions){
-            if(event.a.type.equals("ant")){
-                event.a.getComponent(AIComponent.class).handleCollision(event.a, event.b, this);
-            }
-            else if(event.b.type.equals("ant")){
-                event.a.getComponent(AIComponent.class).handleCollision(event.b, event.a, this);
-            }
-        }
-    }
-
-
-
     public void dispatchCollisions() {
         Collection<Collision> collisions = contactListener.getCollisions();
 
         for(Collision event : collisions) {
-            if(Objects.equals(event.a.type, "Food") && Objects.equals(event.b.type, "Ant") ||
-            Objects.equals(event.b.type, "Food") && Objects.equals(event.a.type, "Ant")) {
-
-
-                System.out.println(event.a.type + " " + event.b.type);
-                RevoluteJointDef revoluteJointDef = new RevoluteJointDef();
-                revoluteJointDef.setBodyA(event.a.getComponent(BodyComponent.class).body);
-                revoluteJointDef.setBodyB(event.b.getComponent(BodyComponent.class).body);
-                revoluteJointDef.setLocalAnchorA(0, 0);
-                revoluteJointDef.setLocalAnchorB(0, 0);
-                world.physicsWorld.createJoint(revoluteJointDef);
-
-                world.physicsWorld.createJoint(revoluteJointDef);
-                revoluteJointDef.delete();
-
-            }
+            if(Objects.equals(event.a.type, "Ant")) event.a.getComponent(AIComponent.class).handleCollision( event.a, event.b, world);
+            else if(Objects.equals(event.b.type, "Ant")) event.b.getComponent(AIComponent.class).handleCollision( event.b, event.a, world);
         }
     }
 
