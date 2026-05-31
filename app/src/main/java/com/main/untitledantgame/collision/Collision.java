@@ -8,6 +8,7 @@ import com.main.untitledantgame.utility.ecs.Entity;
 public class Collision {
     public Entity a;
     public Entity b;
+    public boolean sensor = false;
 
     public Collision(Entity a, Entity b) {
         this.a = a;

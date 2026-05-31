@@ -225,10 +225,11 @@ public class GameScreen extends Screen {
         world.addEntity(newEntity);
     }
 
-    public void generatePheromone(float x, float y, int uuid){
+    public void generatePheromone(float x, float y, int uuid, int inc_id){
         Entity newPheromone = entityFactory.create("Pheromone", world.physicsWorld, game);
         newPheromone.getComponent(BodyComponent.class).body.setTransform(x, y, 0);
         newPheromone.getComponent(IdentifierComponent.class).uuid = uuid;
+        newPheromone.getComponent(IdentifierComponent.class).inc_id = inc_id;
         mortalEntities.add(newPheromone);
         world.addEntity(newPheromone);
     }
@@ -237,8 +238,14 @@ public class GameScreen extends Screen {
         Collection<Collision> collisions = contactListener.getCollisions();
 
         for(Collision event : collisions) {
-            if(Objects.equals(event.a.type, "Ant")) event.a.getComponent(AIComponent.class).handleCollision( event.a, event.b, world);
-            else if(Objects.equals(event.b.type, "Ant")) event.b.getComponent(AIComponent.class).handleCollision( event.b, event.a, world);
+            if( !event.sensor ) {
+                if(Objects.equals(event.a.type, "Ant")) event.a.getComponent(AIComponent.class).handleCollision( event.a, event.b, world);
+                else if(Objects.equals(event.b.type, "Ant")) event.b.getComponent(AIComponent.class).handleCollision( event.b, event.a, world);
+            }
+            else{
+                if(Objects.equals(event.a.type, "Ant")) event.a.getComponent(AIComponent.class).handleSensorCollision( event.a, event.b, world);
+                else if(Objects.equals(event.b.type, "Ant")) event.b.getComponent(AIComponent.class).handleSensorCollision( event.b, event.a, world);
+            }
         }
     }
 

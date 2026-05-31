@@ -32,8 +32,8 @@
         },
         "sensor": {
             "polygon_shape": {
-                "dimension_1": 1.5,
-                "dimension_2": 1.5
+                "dimension_1": 10.0,
+                "dimension_2": 10.0
             }
         },
         "sprite": {
