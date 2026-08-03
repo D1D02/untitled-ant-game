@@ -183,6 +183,39 @@ public class GameScreen extends Screen {
 
         canvas.addElement(reset);
 
+        Entity board1 = entityFactory.create("BoardButton1", world.physicsWorld, game);
+        Entity board2 = entityFactory.create("BoardButton2", world.physicsWorld, game);
+        Entity board3 = entityFactory.create("BoardButton3", world.physicsWorld, game);
+        Entity toggleBoard = entityFactory.create("ToggleBoardButton", world.physicsWorld, game);
+
+        UIButtonComponent b1 = board1.getComponent(UIButtonComponent.class);
+        UIButtonComponent b2 = board2.getComponent(UIButtonComponent.class);
+        UIButtonComponent b3 = board3.getComponent(UIButtonComponent.class);
+        UIButtonComponent toggle = toggleBoard.getComponent(UIButtonComponent.class);
+
+        UIButtonComponent.setOnClickEvent(board1, ()->{selectBoardEvent(0);});
+        UIButtonComponent.setOnClickEvent(board2, ()->{selectBoardEvent(1);});
+        UIButtonComponent.setOnClickEvent(board3, ()->{selectBoardEvent(2);});
+
+        UIButtonComponent.setOnClickEvent(toggleBoard, ()->{
+            b1.enabled = !b1.enabled;
+            b2.enabled = !b2.enabled;
+            b3.enabled = !b3.enabled;
+            if(b1.enabled) {
+                toggle.text = "v";
+                toggle.posY = 40;
+            }
+            else{
+                toggle.posY = 85;
+                toggle.text = "^";
+            }
+        });
+
+        canvas.addElement(board1);
+        canvas.addElement(board2);
+        canvas.addElement(board3);
+        canvas.addElement(toggleBoard);
+
         //GENERATORI
         Entity food_generator = entityFactory.create("FoodGenerator", world.physicsWorld, game);
         //Entity obstacle_generator = entityFactory.create("ObstacleGenerator", world.physicsWorld, game);
@@ -209,6 +242,10 @@ public class GameScreen extends Screen {
             GeneratorComponent gen = food_generator.getComponent(GeneratorComponent.class);
             spawnEntity("Food", gen.getRandomPosition(), gen.getRandomPosition());
         }
+    }
+
+    void selectBoardEvent(int index){
+        return;
     }
 
     void generateItems( float deltaTime ) {
