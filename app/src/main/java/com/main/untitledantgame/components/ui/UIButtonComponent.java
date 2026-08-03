@@ -32,6 +32,10 @@ public class UIButtonComponent extends UIElementComponent{
             return;
 
         UIButtonComponent button = e.getComponent(UIButtonComponent.class);
+
+        if(!button.enabled)
+            return;
+
         int relativeX = button.getRelativeX(g), relativeY = button.getRelativeY(g);
         if(event.x > relativeX && event.x < relativeX + button.getRelativeWidth(g) - 1 &&
                 event.y > relativeY && event.y < relativeY + button.getRelativeHeight(g) - 1)

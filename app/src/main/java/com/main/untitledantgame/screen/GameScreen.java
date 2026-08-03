@@ -155,7 +155,9 @@ public class GameScreen extends Screen {
         List<Entity> uiElements = canvas.elements;
         for(int i = 0; i < uiElements.size(); i++){
             Entity e = uiElements.get(i);
-            e.getWithSuperComponent(UIElementComponent.class).draw(g);
+            UIElementComponent ui = e.getWithSuperComponent(UIElementComponent.class);
+            if(ui.enabled)
+                ui.draw(g);
         }
     }
 

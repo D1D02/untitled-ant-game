@@ -7,6 +7,7 @@ public abstract class UIElementComponent implements Component {
 
     public int posX = 0, posY = 0;
     public int width = 100, height = 20;
+    public boolean enabled = true;
 
     public abstract void draw(Graphics g);
 
