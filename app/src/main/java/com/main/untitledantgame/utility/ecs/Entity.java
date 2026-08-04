@@ -11,6 +11,7 @@ public class Entity {
     private static long NEXT_ID = 0;
     private long id;
     public String type;
+    public int pool_id;
 
     private Map<Class<? extends Component>, Component> components = new HashMap<>();
 

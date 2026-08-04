@@ -57,6 +57,8 @@ public class GameScreen extends Screen {
 
     EntityPool pheromones_pool;
 
+    Entity[][] trails;
+
     public GameScreen(Game game) {
         super(game);
         entityFactory = new EntityFactory(Assets.prototypeRegistry);
@@ -238,13 +240,9 @@ public class GameScreen extends Screen {
         world.addEntity(newEntity);
     }
 
-    public Entity generatePheromone(float x, float y, int uuid, int inc_id){
+    public void generatePheromone(float x, float y, int uuid, int inc_id){
 
-        Entity newPheromone = entityFactory.create(
-                "Pheromone",
-                world.physicsWorld,
-                game
-        );
+        Entity newPheromone = pheromones_pool.acquire();
 
         newPheromone.getComponent(BodyComponent.class)
                 .body.setTransform(x,y,0);
@@ -252,13 +250,12 @@ public class GameScreen extends Screen {
         newPheromone.getComponent(IdentifierComponent.class).uuid = uuid;
         newPheromone.getComponent(IdentifierComponent.class).inc_id = inc_id;
 
+        trails[uuid][inc_id] = newPheromone;
 
         mortalEntities.add(newPheromone);
 
         pendingEntities.add(newPheromone);
 
-
-        return newPheromone;
     }
 
     public void dispatchCollisions() {
@@ -286,6 +283,10 @@ public class GameScreen extends Screen {
                 iterator.remove();
 
                 world.removeEntity(mortalEntity);
+                if (Objects.equals(mortalEntity.type, "Pheromone"))
+                {
+                    pheromones_pool.release(mortalEntity.pool_id);
+                }
             }
         }
     }

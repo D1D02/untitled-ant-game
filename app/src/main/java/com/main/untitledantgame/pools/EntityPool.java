@@ -33,6 +33,8 @@ public class EntityPool {
         {
             Entity entity = entityFactory.create(entity_type, world, game);
 
+            entity.pool_id = i;
+
             if (entity.hasComponent(com.main.untitledantgame.components.BodyComponent.class))
             {
                 entity.getComponent(com.main.untitledantgame.components.BodyComponent.class).body.setActive(false);
