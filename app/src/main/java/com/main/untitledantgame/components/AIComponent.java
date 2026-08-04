@@ -29,7 +29,6 @@ public class AIComponent implements Component {
 
     public Behaviour state = Behaviour.WANDERING;
 
-    public List<Entity> path = new ArrayList<>();
 
     public float wanderAngle = 0f;
     public float directionAngle = 0f;
@@ -103,25 +102,7 @@ public class AIComponent implements Component {
         if (last_pheromone == null) {
             int targetId = this.lastPheromoneId - 1;
 
-            for (int i = path.size() - 1; i >= 0; i--) {
-                Entity pheromone = path.get(i);
-
-                if (pheromone.hasComponent(IdentifierComponent.class)) {
-                    int pheroIncId = pheromone.getComponent(IdentifierComponent.class).inc_id;
-                    int pheroUuid = pheromone.getComponent(IdentifierComponent.class).uuid;
-
-                    if (pheroUuid == this.path_id && pheroIncId == targetId) {
-                        last_pheromone = pheromone;
-                        this.lastPheromoneId = targetId;
-                        path.remove(i);
-                        break;
-                    }
-                }
-            }
-        }
-
-        if (last_pheromone == null) {
-            return walkTowards(new Vec2(0f, 0f), antBody, force);
+            
         }
 
         Vec2 pheromonePos = last_pheromone.getComponent(BodyComponent.class).body.getPosition();

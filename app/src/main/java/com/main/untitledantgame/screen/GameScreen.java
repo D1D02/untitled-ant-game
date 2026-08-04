@@ -10,6 +10,7 @@ import com.google.fpl.liquidfun.DistanceJoint;
 import com.google.fpl.liquidfun.DistanceJointDef;
 import com.google.fpl.liquidfun.RevoluteJoint;
 import com.google.fpl.liquidfun.RevoluteJointDef;
+import com.google.fpl.liquidfun.World;
 import com.main.untitledantgame.collision.Collision;
 import com.main.untitledantgame.collision.GameContactListener;
 import com.main.untitledantgame.components.AIComponent;
@@ -24,6 +25,7 @@ import com.main.untitledantgame.components.ui.UIButtonComponent;
 import com.main.untitledantgame.components.ui.UIElementComponent;
 import com.main.untitledantgame.map.Anthill;
 import com.main.untitledantgame.map.GameWorld;
+import com.main.untitledantgame.pools.EntityPool;
 import com.main.untitledantgame.ui.UICanvas;
 import com.main.untitledantgame.utility.ecs.Entity;
 import com.main.untitledantgame.utility.ecs.EntityFactory;
@@ -49,9 +51,11 @@ public class GameScreen extends Screen {
     GameContactListener contactListener;
 
     EntityFactory entityFactory;
-
+    List<Entity> pendingEntities = new ArrayList<>();
     List<Entity> generators = new ArrayList<>(5);
     List<Entity> mortalEntities = new ArrayList<>(100);
+
+    EntityPool pheromones_pool;
 
     public GameScreen(Game game) {
         super(game);
@@ -99,6 +103,12 @@ public class GameScreen extends Screen {
         checkTTL(deltaTime);
         //GENERATORI
         generateItems(deltaTime);
+
+        for(Entity e : pendingEntities){
+            world.addEntity(e);
+        }
+
+        pendingEntities.clear();
     }
 
     @Override
@@ -209,8 +219,9 @@ public class GameScreen extends Screen {
             GeneratorComponent gen = food_generator.getComponent(GeneratorComponent.class);
             spawnEntity("Food", gen.getRandomPosition(), gen.getRandomPosition());
         }
-    }
 
+        pheromones_pool = new EntityPool(1000, "Pheromone", world.physicsWorld, game);
+    }
     void generateItems( float deltaTime ) {
         for(Entity generator : generators ) {
             if(generator.getComponent(GeneratorComponent.class).canBeGenerated(deltaTime)) {
@@ -227,13 +238,27 @@ public class GameScreen extends Screen {
         world.addEntity(newEntity);
     }
 
-    public void generatePheromone(float x, float y, int uuid, int inc_id){
-        Entity newPheromone = entityFactory.create("Pheromone", world.physicsWorld, game);
-        newPheromone.getComponent(BodyComponent.class).body.setTransform(x, y, 0);
+    public Entity generatePheromone(float x, float y, int uuid, int inc_id){
+
+        Entity newPheromone = entityFactory.create(
+                "Pheromone",
+                world.physicsWorld,
+                game
+        );
+
+        newPheromone.getComponent(BodyComponent.class)
+                .body.setTransform(x,y,0);
+
         newPheromone.getComponent(IdentifierComponent.class).uuid = uuid;
         newPheromone.getComponent(IdentifierComponent.class).inc_id = inc_id;
+
+
         mortalEntities.add(newPheromone);
-        world.addEntity(newPheromone);
+
+        pendingEntities.add(newPheromone);
+
+
+        return newPheromone;
     }
 
     public void dispatchCollisions() {

@@ -31,7 +31,14 @@ public class EntityPool {
 
         for( int i = 0; i < init_num_entities; ++i )
         {
-            entities.add( entityFactory.create( this.entity_type, world, game ) );
+            Entity entity = entityFactory.create(entity_type, world, game);
+
+            if (entity.hasComponent(com.main.untitledantgame.components.BodyComponent.class))
+            {
+                entity.getComponent(com.main.untitledantgame.components.BodyComponent.class).body.setActive(false);
+            }
+
+            entities.add(entity);
         }     
     }
 
@@ -39,7 +46,11 @@ public class EntityPool {
     {
         curr++;
         if( curr == num_entities && rel != 0 ) curr = 0;
-        
+        Entity entity = entities.get(curr);
+        if (entity.hasComponent(com.main.untitledantgame.components.BodyComponent.class))
+        {
+            entity.getComponent(com.main.untitledantgame.components.BodyComponent.class).body.setActive(true);
+        }
         return curr;
     }
 
@@ -47,6 +58,11 @@ public class EntityPool {
     {
         if (entity_id >= rel || rel == num_entities - 1) 
         {
+            Entity entity = entities.get(entity_id);
+            if (entity.hasComponent(com.main.untitledantgame.components.BodyComponent.class))
+            {
+                entity.getComponent(com.main.untitledantgame.components.BodyComponent.class).body.setActive(false);
+            }
             rel = entity_id;
         }
     }
