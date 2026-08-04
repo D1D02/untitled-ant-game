@@ -42,7 +42,7 @@ public class EntityPool {
         }     
     }
 
-    public int acquire()
+    public Entity acquire()
     {
         curr++;
         if( curr == num_entities && rel != 0 ) curr = 0;
@@ -51,7 +51,7 @@ public class EntityPool {
         {
             entity.getComponent(com.main.untitledantgame.components.BodyComponent.class).body.setActive(true);
         }
-        return curr;
+        return entity;
     }
 
     public void release( int entity_id ) 
