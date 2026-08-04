@@ -223,6 +223,8 @@ public class GameScreen extends Screen {
         }
 
         pheromones_pool = new EntityPool(1000, "Pheromone", world.physicsWorld, game);
+        trails = new Entity[1000][1000];
+
     }
     void generateItems( float deltaTime ) {
         for(Entity generator : generators ) {
