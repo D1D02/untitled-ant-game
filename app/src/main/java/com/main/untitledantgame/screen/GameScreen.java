@@ -1,5 +1,7 @@
 package com.main.untitledantgame.screen;
 
+import android.util.Log;
+
 import com.badlogic.androidgames.framework.Color;
 import com.badlogic.androidgames.framework.Game;
 import com.badlogic.androidgames.framework.Graphics;
@@ -250,20 +252,23 @@ public class GameScreen extends Screen {
         for(int i = 0; i < 10; i++){
             GeneratorComponent foodGen = food_generator.getComponent(GeneratorComponent.class);
             spawnEntity("Food", foodGen.getRandomPosition(), foodGen.getRandomPosition());
-            if(i < 2){
+            if(i < 3){
                 GeneratorComponent rockGen = rock_generator.getComponent(GeneratorComponent.class);
-                Entity r = spawnEntity("Rock", rockGen.getRandomPosition(), rockGen.getRandomPosition());
-                addToBoard(r);
+                spawnEntity("Rock", rockGen.getRandomPosition(), rockGen.getRandomPosition());
             }
         }
     }
 
     void selectBoardEvent(int index){
+        Log.d("OBSTACLES", "Ostacoli " +obSize);
         if(obSize <= index)
             return;
         BodyComponent bc = obstacles.get(index).getComponent(BodyComponent.class);
-        xOffset = (int)bc.body.getPositionX();
-        yOffset = (int)bc.body.getPositionY();
+
+        //Graphics g = game.getGraphics();
+        xOffset = -(int)(bc.body.getPositionX());// + g.getWidth()/2f);
+        yOffset = -(int)(bc.body.getPositionY());// + g.getHeight()/2f);
+        //Log.d("POS_DEBUG", xOffset + " " + yOffset);
     }
 
     public void addToBoard(Entity e){
