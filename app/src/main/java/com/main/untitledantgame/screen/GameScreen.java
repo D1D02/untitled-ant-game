@@ -8,8 +8,10 @@ import com.badlogic.androidgames.framework.Pixmap;
 import com.badlogic.androidgames.framework.Screen;
 import com.google.fpl.liquidfun.DistanceJoint;
 import com.google.fpl.liquidfun.DistanceJointDef;
+import com.google.fpl.liquidfun.Joint;
 import com.google.fpl.liquidfun.RevoluteJoint;
 import com.google.fpl.liquidfun.RevoluteJointDef;
+import com.google.fpl.liquidfun.Vec2;
 import com.google.fpl.liquidfun.World;
 import com.main.untitledantgame.collision.Collision;
 import com.main.untitledantgame.collision.GameContactListener;
@@ -58,6 +60,8 @@ public class GameScreen extends Screen {
     EntityPool pheromones_pool;
 
     Entity[][] trails;
+
+    int curr_path_id = 0;
 
     public GameScreen(Game game) {
         super(game);
@@ -140,7 +144,7 @@ public class GameScreen extends Screen {
             if(!e.hasComponent(AIComponent.class))
                 continue;
             AIComponent agent = e.getComponent(AIComponent.class);
-            float agentAngle = agent.updatePosition(e.getComponent(BodyComponent.class).body, 1000f, this, deltaTime);
+            float agentAngle = agent.updatePosition(e.getComponent(BodyComponent.class).body, 5000f, this, deltaTime);
         }
     }
 
@@ -242,22 +246,26 @@ public class GameScreen extends Screen {
         world.addEntity(newEntity);
     }
 
-    public void generatePheromone(float x, float y, int uuid, int inc_id){
+    public int generatePheromone(float x, float y, int path_id, int inc_id){
+
+        if(path_id == -1 ) path_id = this.curr_path_id++;
+
 
         Entity newPheromone = pheromones_pool.acquire();
 
         newPheromone.getComponent(BodyComponent.class)
                 .body.setTransform(x,y,0);
 
-        newPheromone.getComponent(IdentifierComponent.class).uuid = uuid;
         newPheromone.getComponent(IdentifierComponent.class).inc_id = inc_id;
 
-        trails[uuid][inc_id] = newPheromone;
+        trails[path_id][inc_id] = newPheromone;
+
+
 
         mortalEntities.add(newPheromone);
 
         pendingEntities.add(newPheromone);
-
+        return  path_id;
     }
 
     public void dispatchCollisions() {
@@ -285,12 +293,48 @@ public class GameScreen extends Screen {
                 iterator.remove();
 
                 world.removeEntity(mortalEntity);
-                if (Objects.equals(mortalEntity.type, "Pheromone"))
-                {
+                if (Objects.equals(mortalEntity.type, "Pheromone")) {
+                    IdentifierComponent id = mortalEntity.getComponent(IdentifierComponent.class);
+                    /*if (trails[id.path_id][id.inc_id] == mortalEntity) {
+                        trails[id.path_id][id.inc_id] = null;
+                    }*/
                     pheromones_pool.release(mortalEntity.pool_id);
                 }
             }
         }
     }
 
+
+    public Entity nextTrailPheromone(int path_id, int inc_id) {
+        // Controllo di sicurezza sui limiti delle matrici
+        if (path_id < 0 || path_id >= 1000 || inc_id < 0 || inc_id >= 1000) {
+            return null;
+        }
+        return trails[path_id][inc_id];
+    }
+
+    public int fun() {
+        Entity newPheromone = pheromones_pool.acquire();
+
+        newPheromone.getComponent(BodyComponent.class)
+                .body.setTransform(0,0,0);
+
+        return 1;
+    }
+
+    public Vec2 getAnthillPosition() {
+        return new Vec2(0, 0); // il formicaio viene creato in (0,0) in initWorld()
+    }
+
+    public void destroyJoint(Joint joint) {
+        if (joint != null) world.physicsWorld.destroyJoint(joint);
+    }
+
+    public void removeEntity(Entity e) {
+        if (e != null) world.removeEntity(e);
+    }
+
+    public void depositFood(int amount) {
+        anthill.addFood(amount); // adatta al nome reale del metodo nella tua classe Anthill
+    }
 }
