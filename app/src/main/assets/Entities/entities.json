@@ -100,5 +100,34 @@
                 "height": "30"
             }
         }
+    },
+    {
+        "name": "Rock",
+        "components":{
+            "body":{
+                "type": "dynamicBody",
+                "fixed_rotation": "true",
+                "gravity_scale": 0.0,
+                "polygon_shape": {
+                    "dimension_1": 10.01,
+                    "dimension_2": 10.01
+                },
+                "fixture": {
+                    "density": 5,
+                    "friction": 1,
+                    "restitution": 2,
+                    "isSensor": 1
+                }
+            },
+            "sprite": {
+                "pathname": "rock.png",
+                "width": "40",
+                "height": "40"
+            },
+            "obstacle":{
+                "name" : "Rock",
+                "weight" : "10"
+            }
+        }
     }
 ]

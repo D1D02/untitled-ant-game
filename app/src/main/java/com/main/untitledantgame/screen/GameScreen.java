@@ -17,6 +17,7 @@ import com.main.untitledantgame.components.AliveComponent;
 import com.main.untitledantgame.components.BodyComponent;
 import com.main.untitledantgame.components.GeneratorComponent;
 import com.main.untitledantgame.components.IdentifierComponent;
+import com.main.untitledantgame.components.ObstacleComponent;
 import com.main.untitledantgame.components.PositionComponent;
 import com.main.untitledantgame.components.SpriteComponent;
 import com.main.untitledantgame.components.ui.UIBarComponent;
@@ -52,6 +53,11 @@ public class GameScreen extends Screen {
 
     List<Entity> generators = new ArrayList<>(5);
     List<Entity> mortalEntities = new ArrayList<>(100);
+
+    List<Entity> obstacles = new ArrayList<>(10);
+    int obSize = 0;
+    int obMax = 10;
+    UIButtonComponent[] boardButtons = new UIButtonComponent[3];
 
     public GameScreen(Game game) {
         super(game);
@@ -188,9 +194,9 @@ public class GameScreen extends Screen {
         Entity board3 = entityFactory.create("BoardButton3", world.physicsWorld, game);
         Entity toggleBoard = entityFactory.create("ToggleBoardButton", world.physicsWorld, game);
 
-        UIButtonComponent b1 = board1.getComponent(UIButtonComponent.class);
-        UIButtonComponent b2 = board2.getComponent(UIButtonComponent.class);
-        UIButtonComponent b3 = board3.getComponent(UIButtonComponent.class);
+        boardButtons[0] = board1.getComponent(UIButtonComponent.class);
+        boardButtons[1] = board2.getComponent(UIButtonComponent.class);
+        boardButtons[2] = board3.getComponent(UIButtonComponent.class);
         UIButtonComponent toggle = toggleBoard.getComponent(UIButtonComponent.class);
 
         UIButtonComponent.setOnClickEvent(board1, ()->{selectBoardEvent(0);});
@@ -198,10 +204,10 @@ public class GameScreen extends Screen {
         UIButtonComponent.setOnClickEvent(board3, ()->{selectBoardEvent(2);});
 
         UIButtonComponent.setOnClickEvent(toggleBoard, ()->{
-            b1.enabled = !b1.enabled;
-            b2.enabled = !b2.enabled;
-            b3.enabled = !b3.enabled;
-            if(b1.enabled) {
+            boardButtons[0].enabled = !boardButtons[0].enabled;
+            boardButtons[1].enabled = !boardButtons[1].enabled;
+            boardButtons[2].enabled = !boardButtons[2].enabled;
+            if(boardButtons[0].enabled) {
                 toggle.text = "v";
                 toggle.posY = 40;
             }
@@ -216,15 +222,18 @@ public class GameScreen extends Screen {
         canvas.addElement(board3);
         canvas.addElement(toggleBoard);
 
+        updateBoard();
+
         //GENERATORI
         Entity food_generator = entityFactory.create("FoodGenerator", world.physicsWorld, game);
         //Entity obstacle_generator = entityFactory.create("ObstacleGenerator", world.physicsWorld, game);
         generators.add(food_generator);
         //generators.add(obstacle_generator);
+        Entity rock_generator = entityFactory.create("RockGenerator", world.physicsWorld, game);
+        generators.add(rock_generator);
 
         //FORMICAIO
 
-        int w = g.getWidth(), h = g.getHeight();
         anthill = new Anthill(0, 0, foodBarEntity.getComponent(UIBarComponent.class), pheroBarEntity.getComponent(UIBarComponent.class), expBarEntity.getComponent(UIBarComponent.class), world.physicsWorld, game);
 
         world.addEntity(anthill);
@@ -239,15 +248,44 @@ public class GameScreen extends Screen {
 
         //ENTITA' INIZIALI
         for(int i = 0; i < 10; i++){
-            GeneratorComponent gen = food_generator.getComponent(GeneratorComponent.class);
-            spawnEntity("Food", gen.getRandomPosition(), gen.getRandomPosition());
+            GeneratorComponent foodGen = food_generator.getComponent(GeneratorComponent.class);
+            spawnEntity("Food", foodGen.getRandomPosition(), foodGen.getRandomPosition());
+            if(i < 2){
+                GeneratorComponent rockGen = rock_generator.getComponent(GeneratorComponent.class);
+                Entity r = spawnEntity("Rock", rockGen.getRandomPosition(), rockGen.getRandomPosition());
+                addToBoard(r);
+            }
         }
     }
 
     void selectBoardEvent(int index){
-        return;
+        if(obSize <= index)
+            return;
+        BodyComponent bc = obstacles.get(index).getComponent(BodyComponent.class);
+        xOffset = (int)bc.body.getPositionX();
+        yOffset = (int)bc.body.getPositionY();
     }
 
+    public void addToBoard(Entity e){
+        if(obSize >= obMax){
+            return;
+        }
+        obstacles.add(e);
+        obSize++;
+        updateBoard();
+    }
+
+    void updateBoard(){
+        for(int i = 0; i < 3; i++) {
+            if(i >= obstacles.size())
+                boardButtons[i].text = "";
+            else{
+                Entity ob = obstacles.get(i);
+                boardButtons[i].text = ob.getComponent(ObstacleComponent.class).name;
+            }
+        }
+
+    }
     void generateItems( float deltaTime ) {
         for(Entity generator : generators ) {
             if(generator.getComponent(GeneratorComponent.class).canBeGenerated(deltaTime)) {
@@ -258,10 +296,12 @@ public class GameScreen extends Screen {
             }
         }
     }
-    void spawnEntity(String name, float x, float y){
+    Entity spawnEntity(String name, float x, float y){
         Entity newEntity = entityFactory.create(name, world.physicsWorld, game);
         newEntity.getComponent(BodyComponent.class).body.setTransform(x, y, 0);
         world.addEntity(newEntity);
+
+        return newEntity;
     }
 
     public void generatePheromone(float x, float y, int uuid, int inc_id){
