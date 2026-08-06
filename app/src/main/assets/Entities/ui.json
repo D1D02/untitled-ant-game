@@ -102,4 +102,76 @@
         "textB": 255
       }
     }
+  },
+  {
+    "name": "BoardButton1",
+    "components": {
+      "uibutton": {
+        "x": 0,
+        "y": 55,
+        "width": 25,
+        "height": 15,
+        "text": "oggetto 1",
+        "R": 100,
+        "G": 100,
+        "B": 100,
+        "textR": 255,
+        "textG": 255,
+        "textB": 255
+      }
+    }
+  },
+  {
+    "name": "BoardButton2",
+    "components": {
+      "uibutton": {
+        "x": 0,
+        "y": 70,
+        "width": 25,
+        "height": 15,
+        "text": "oggetto 2",
+        "R": 100,
+        "G": 100,
+        "B": 100,
+        "textR": 255,
+        "textG": 255,
+        "textB": 255
+      }
+    }
+  },
+  {
+    "name": "BoardButton3",
+    "components": {
+      "uibutton": {
+        "x": 0,
+        "y": 85,
+        "width": 25,
+        "height": 15,
+        "text": "oggetto 2",
+        "R": 100,
+        "G": 100,
+        "B": 100,
+        "textR": 255,
+        "textG": 255,
+        "textB": 255
+      }
+    }
+  },
+  {
+    "name": "ToggleBoardButton",
+    "components": {
+      "uibutton": {
+        "x": 0,
+        "y": 40,
+        "width": 10,
+        "height": 15,
+        "text": "v",
+        "R": 100,
+        "G": 100,
+        "B": 100,
+        "textR": 255,
+        "textG": 255,
+        "textB": 255
+      }
+    }
   }]

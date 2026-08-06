@@ -189,6 +189,12 @@ public class ComponentFactory {
                 buttonComponent.textColor = Color.convert(data.get("textR").getAsInt(),data.get("textG").getAsInt(),data.get("textB").getAsInt(),255);
 
                 return buttonComponent;
+            case "obstacle":
+                ObstacleComponent oc = new ObstacleComponent();
+                oc.name = data.get("name").getAsString();
+                oc.weight = data.get("weight").getAsFloat();
+
+                return oc;
             default:
                 return null;
         }
