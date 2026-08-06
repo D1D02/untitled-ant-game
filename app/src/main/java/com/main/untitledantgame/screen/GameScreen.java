@@ -277,8 +277,8 @@ public class GameScreen extends Screen {
                 else if(Objects.equals(event.b.type, "Ant")) event.b.getComponent(AIComponent.class).handleCollision( event.b, event.a, world);
             }
             else{
-                if(Objects.equals(event.a.type, "Ant")) event.a.getComponent(AIComponent.class).handleSensorCollision( event.a, event.b, world);
-                else if(Objects.equals(event.b.type, "Ant")) event.b.getComponent(AIComponent.class).handleSensorCollision( event.b, event.a, world);
+                //if(Objects.equals(event.a.type, "Ant")) event.a.getComponent(AIComponent.class).handleSensorCollision( event.a, event.b, world);
+                //else if(Objects.equals(event.b.type, "Ant")) event.b.getComponent(AIComponent.class).handleSensorCollision( event.b, event.a, world);
             }
         }
     }

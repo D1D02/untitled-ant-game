@@ -63,4 +63,22 @@ public class Vec2 {
     return liquidfunJNI.Vec2_y_get(swigCPtr, this);
   }
 
+
+  public static float normalize(Vec2 v) {
+    float x = v.getX();
+    float y = v.getY();
+
+    float length = (float) Math.hypot(x, y);
+
+    if (length > 0.00001f) {
+      float invLength = 1.0f / length;
+      v.set(x * invLength, y * invLength);
+    } else {
+      v.set(0.0f, 0.0f);
+    }
+
+    return length;
+  }
+
+
 }
