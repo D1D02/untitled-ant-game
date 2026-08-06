@@ -19,6 +19,7 @@ import com.main.untitledantgame.collision.Collision;
 import com.main.untitledantgame.collision.GameContactListener;
 import com.main.untitledantgame.components.AIComponent;
 import com.main.untitledantgame.components.AliveComponent;
+import com.main.untitledantgame.components.AntStatsComponent;
 import com.main.untitledantgame.components.BodyComponent;
 import com.main.untitledantgame.components.GeneratorComponent;
 import com.main.untitledantgame.components.IdentifierComponent;
@@ -151,7 +152,7 @@ public class GameScreen extends Screen {
             if(!e.hasComponent(AIComponent.class))
                 continue;
             AIComponent agent = e.getComponent(AIComponent.class);
-            float agentAngle = agent.updatePosition(e.getComponent(BodyComponent.class).body, 5000f, this, deltaTime);
+            float agentAngle = agent.updatePosition(e.getComponent(BodyComponent.class).body, e.getComponent(AntStatsComponent.class).force, this, deltaTime);
         }
     }
 

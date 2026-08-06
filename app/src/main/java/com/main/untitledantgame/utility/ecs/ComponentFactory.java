@@ -81,12 +81,6 @@ public class ComponentFactory {
                     fDef.setFriction(fixData.get("friction").getAsFloat());
                     fDef.setRestitution(fixData.get("restitution").getAsFloat());
 
-                    if(fixData.get("isSensor").getAsInt()==1){
-                        fDef.setDensity(0f);
-                        fDef.setFriction(0f);
-                        fDef.setRestitution(0f);
-                    }
-
                     bc.body.createFixture(fDef);
 
                     shape.delete();
@@ -195,6 +189,11 @@ public class ComponentFactory {
                 oc.weight = data.get("weight").getAsFloat();
 
                 return oc;
+            case "ant_stats":
+                AntStatsComponent as = new AntStatsComponent();
+                as.force = data.get("force").getAsFloat();
+
+                return as;
             default:
                 return null;
         }

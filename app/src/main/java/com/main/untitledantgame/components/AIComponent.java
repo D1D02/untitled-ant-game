@@ -132,12 +132,15 @@ public class AIComponent implements Component {
             state = Behaviour.WAITING;
             return 1;
         }
-        else if(d.getX() < 0.01f && d.getY() < 0.01f ) inc_id--;
+        else if(Math.abs(d.getX()) < 1.1f && Math.abs(d.getY()) < 1.1f ) {
+            inc_id--;
+            antBody.setLinearVelocity(new Vec2(0f, 0f));
+        }
 
         Vec2.normalize(d);
 
-        d.setX(d.getX() * 10000);
-        d.setY(d.getY() * 10000);
+        d.setX(d.getX() * force);
+        d.setY(d.getY() * force);
 
         //Log.d("AI_Normalized_Vector", "x: " + d.getX() + " y:"+ d.getY());
 
@@ -184,7 +187,7 @@ public class AIComponent implements Component {
 
 
 
-            //carryJoint = world.physicsWorld.createJoint(def);
+            carryJoint = world.physicsWorld.createJoint(def);
 
 
 
