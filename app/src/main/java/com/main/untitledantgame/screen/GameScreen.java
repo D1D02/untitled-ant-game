@@ -291,10 +291,13 @@ public class GameScreen extends Screen {
         //Log.d("POS_DEBUG", xOffset + " " + yOffset);
     }
 
-    public void addToBoard(Entity e){
+    public void addToBoard(Entity e, int id){
         if(obSize >= obMax){
             return;
         }
+        ObstacleComponent oc = e.getComponent(ObstacleComponent.class);
+        oc.path_id = id;
+        oc.spotted = true;
         obstacles.add(e);
         obSize++;
         updateBoard();
