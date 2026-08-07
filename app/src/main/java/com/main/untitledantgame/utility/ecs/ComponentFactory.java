@@ -118,10 +118,10 @@ public class ComponentFactory {
                 return sc;
             case "food":
                 FoodComponent food = new FoodComponent();
-                food.capacity = data.get("capacity").getAsInt();
+                //food.capacity = data.get("capacity").getAsInt();
                 food.food = data.get("food").getAsInt();
-                food.consuming_timer = data.get("consuming_timer").getAsInt();
-                food.last_consumed = data.get("last_consumed").getAsInt();
+                //food.consuming_timer = data.get("consuming_timer").getAsInt();
+                //food.last_consumed = data.get("last_consumed").getAsInt();
                 return food;
 
             case "identifier":

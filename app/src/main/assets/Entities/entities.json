@@ -90,6 +90,9 @@
                 "pathname": "sugar.png",
                 "width": "30",
                 "height": "30"
+            },
+            "food": {
+                "food": 10
             }
         }
     },

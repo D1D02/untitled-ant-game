@@ -51,41 +51,18 @@ public class AIComponent implements Component {
 
 
 
-    public float updatePosition(
-            Body antBody,
-            float force,
-            GameScreen screen,
-            float deltaTime
-    ){
+    public float updatePosition( Body antBody, float force, GameScreen screen, float deltaTime ){
 
         switch(state){
-
             case WANDERING:
-
-                return updateWandering(
-                        antBody,
-                        force,
-                        screen,
-                        deltaTime
-                );
-
+                return updateWandering( antBody, force, screen, deltaTime );
 
             case RETURNING:
-
-                return followTrail(
-                        antBody,
-                        force,
-                        screen
-                );
-
+                return followTrail( antBody, force, screen );
 
             case WAITING:
-
                 return 2;
-
-
             default:
-
                 return antBody.getAngle();
         }
     }
@@ -130,6 +107,16 @@ public class AIComponent implements Component {
 
         if(inc_id == 0 ) {
             state = Behaviour.WAITING;
+
+            if (carryJoint != null)
+            {
+                screen.destroyJoint(carryJoint);
+                carryJoint = null;
+            }
+
+            screen.anthill.addFood(carriedFood.getComponent(FoodComponent.class).food);
+            screen.world.removeEntity(carriedFood);
+            carriedFood = null;
             return 1;
         }
         else if(Math.abs(d.getX()) < 1.1f && Math.abs(d.getY()) < 1.1f ) {
@@ -153,116 +140,46 @@ public class AIComponent implements Component {
     }
 
 
-    public void handleCollision(
-            Entity ant,
-            Entity b,
-            GameWorld world
-    ){
+    public void handleCollision( Entity ant, Entity b, GameWorld world ){
 
+        if( state == Behaviour.WANDERING && Objects.equals(b.type,"Food") ){
 
-        if(
-                state == Behaviour.WANDERING &&
-                        Objects.equals(b.type,"Food")
-        ){
+            RevoluteJointDef def = new RevoluteJointDef();
 
+            def.setBodyA( ant.getComponent(BodyComponent.class).body );
 
-            RevoluteJointDef def =
-                    new RevoluteJointDef();
-
-
-
-            def.setBodyA(
-                    ant.getComponent(BodyComponent.class).body
-            );
-
-
-            def.setBodyB(
-                    b.getComponent(BodyComponent.class).body
-            );
-
-
+            def.setBodyB( b.getComponent(BodyComponent.class).body );
 
             def.setLocalAnchorA(0,0);
             def.setLocalAnchorB(0,0);
 
-
-
             carryJoint = world.physicsWorld.createJoint(def);
-
-
 
             carriedFood = b;
 
-
-
             def.delete();
-
-
 
             state = Behaviour.RETURNING;
 
             //world.removeEntity(b);
 
-            Log.d(
-                    "AI",
-                    "Food grabbed"
-            );
+            Log.d( "AI", "Food grabbed" );
 
         }
 
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-    private void generatePheromone(
-            Body antBody,
-            GameScreen screen,
-            float deltaTime
-    ){
-
+    private void generatePheromone( Body antBody, GameScreen screen, float deltaTime ){
 
         time_spent+=deltaTime;
 
-
-
         if(time_spent>=max_time){
 
-
-
-            float x =
-                    antBody.getPositionX();
-
-
-            float y =
-                    antBody.getPositionY();
-
-
-
+            float x = antBody.getPositionX();
+            float y = antBody.getPositionY();
 
             inc_id++;
-
-
-
-            path_id =
-                    screen.generatePheromone(
-                            x,
-                            y,
-                            path_id,
-                            inc_id
-                    );
-
-
+            path_id = screen.generatePheromone( x, y, path_id, inc_id );
 
             time_spent-=max_time;
 

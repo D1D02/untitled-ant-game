@@ -49,10 +49,10 @@ public class GameScreen extends Screen {
     float camVelocityX = 0, camVelocityY = 0, camSpeed = 120;
 
     boolean dragged = false;
-    GameWorld world;
+    public GameWorld world;
     UICanvas canvas;
 
-    Anthill anthill;
+    public Anthill anthill;
 
     GameContactListener contactListener;
 
@@ -335,14 +335,11 @@ public class GameScreen extends Screen {
 
         Entity newPheromone = pheromones_pool.acquire();
 
-        newPheromone.getComponent(BodyComponent.class)
-                .body.setTransform(x,y,0);
+        newPheromone.getComponent(BodyComponent.class).body.setTransform(x,y,0);
 
         newPheromone.getComponent(IdentifierComponent.class).inc_id = inc_id;
 
         trails[path_id][inc_id] = newPheromone;
-
-
 
         mortalEntities.add(newPheromone);
 
@@ -395,28 +392,10 @@ public class GameScreen extends Screen {
         return trails[path_id][inc_id];
     }
 
-    public int fun() {
-        Entity newPheromone = pheromones_pool.acquire();
-
-        newPheromone.getComponent(BodyComponent.class)
-                .body.setTransform(0,0,0);
-
-        return 1;
-    }
-
-    public Vec2 getAnthillPosition() {
-        return new Vec2(0, 0); // il formicaio viene creato in (0,0) in initWorld()
-    }
 
     public void destroyJoint(Joint joint) {
         if (joint != null) world.physicsWorld.destroyJoint(joint);
     }
 
-    public void removeEntity(Entity e) {
-        if (e != null) world.removeEntity(e);
-    }
 
-    public void depositFood(int amount) {
-        anthill.addFood(amount); // adatta al nome reale del metodo nella tua classe Anthill
-    }
 }
