@@ -273,6 +273,9 @@ public class GameScreen extends Screen {
                 spawnEntity("Rock", rockGen.getRandomPosition(), rockGen.getRandomPosition());
             }
         }
+
+        pheromones_pool = new EntityPool(1000, "Pheromone", world.physicsWorld, game);
+        trails = new Entity[1000][1000];
     }
 
     void selectBoardEvent(int index){
@@ -306,8 +309,6 @@ public class GameScreen extends Screen {
             }
         }
 
-        pheromones_pool = new EntityPool(1000, "Pheromone", world.physicsWorld, game);
-        trails = new Entity[1000][1000];
 
     }
     void generateItems( float deltaTime ) {
@@ -352,8 +353,8 @@ public class GameScreen extends Screen {
 
         for(Collision event : collisions) {
             if( !event.sensor ) {
-                if(Objects.equals(event.a.type, "Ant")) event.a.getComponent(AIComponent.class).handleCollision( event.a, event.b, world);
-                else if(Objects.equals(event.b.type, "Ant")) event.b.getComponent(AIComponent.class).handleCollision( event.b, event.a, world);
+                if(Objects.equals(event.a.type, "Ant")) event.a.getComponent(AIComponent.class).handleCollision( event.a, event.b, world, this);
+                else if(Objects.equals(event.b.type, "Ant")) event.b.getComponent(AIComponent.class).handleCollision( event.b, event.a, world, this);
             }
             else{
                 //if(Objects.equals(event.a.type, "Ant")) event.a.getComponent(AIComponent.class).handleSensorCollision( event.a, event.b, world);

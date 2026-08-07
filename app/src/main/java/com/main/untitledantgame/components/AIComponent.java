@@ -4,6 +4,7 @@ import android.util.Log;
 
 import java.util.*;
 
+import com.badlogic.androidgames.framework.Screen;
 import com.google.fpl.liquidfun.Body;
 import com.google.fpl.liquidfun.Joint;
 import com.google.fpl.liquidfun.RevoluteJointDef;
@@ -97,26 +98,27 @@ public class AIComponent implements Component {
 
     public float followTrail( Body antBody, float force, GameScreen screen ) {
 
+        if( inc_id == 0 ) state = Behaviour.WAITING;
+
         Entity pheromone = screen.nextTrailPheromone( path_id, inc_id);
 
         Log.d("TRAIL", "Path_id:"+path_id+" Inc_id:"+inc_id);
-
         Vec2 antPos = antBody.getPosition();
         Vec2 pheromonePos = pheromone.getComponent(BodyComponent.class).body.getPosition();
         Vec2 d = new Vec2((pheromonePos.getX() - antPos.getX()), pheromonePos.getY() - antPos.getY());
 
-        if(inc_id == 0 ) {
-            state = Behaviour.WAITING;
+        if(carriedFood != null && inc_id == 0 ) {
+
 
             if (carryJoint != null)
             {
                 screen.destroyJoint(carryJoint);
                 carryJoint = null;
+                screen.anthill.addFood(carriedFood.getComponent(FoodComponent.class).food);
+                screen.world.removeEntity(carriedFood);
+                carriedFood = null;
             }
 
-            screen.anthill.addFood(carriedFood.getComponent(FoodComponent.class).food);
-            screen.world.removeEntity(carriedFood);
-            carriedFood = null;
             return 1;
         }
         else if(Math.abs(d.getX()) < 1.1f && Math.abs(d.getY()) < 1.1f ) {
@@ -135,15 +137,14 @@ public class AIComponent implements Component {
 
         antBody.setLinearDamping(0.5f);
 
-
-        return 2;
+        return antBody.getAngle();
     }
 
 
-    public void handleCollision( Entity ant, Entity b, GameWorld world ){
+    public void handleCollision( Entity ant, Entity b, GameWorld world, GameScreen screen ){
 
-        if( state == Behaviour.WANDERING && Objects.equals(b.type,"Food") ){
-
+        if( state == Behaviour.WANDERING && Objects.equals(b.type,"Food") )
+        {
             RevoluteJointDef def = new RevoluteJointDef();
 
             def.setBodyA( ant.getComponent(BodyComponent.class).body );
@@ -161,10 +162,17 @@ public class AIComponent implements Component {
 
             state = Behaviour.RETURNING;
 
-            //world.removeEntity(b);
 
             Log.d( "AI", "Food grabbed" );
 
+        }
+        else if( state == Behaviour.WANDERING && Objects.equals(b.type,"Rock") )
+        {
+            screen.addToBoard(b);
+            state = Behaviour.RETURNING;
+
+
+            Log.d( "AI", "Food grabbed" );
         }
 
     }
