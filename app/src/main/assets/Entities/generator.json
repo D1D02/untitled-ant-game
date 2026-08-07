@@ -32,8 +32,8 @@
       "start_delay":0,
       "ratio": 100,
       "time_spent": 0,
-      "min_distance": 100,
-      "max_distance": 200
+      "min_distance": 300,
+      "max_distance": 400
     }
   }
 },

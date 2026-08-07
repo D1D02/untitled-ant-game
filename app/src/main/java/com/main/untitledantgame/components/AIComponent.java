@@ -14,15 +14,6 @@ import com.main.untitledantgame.map.GameWorld;
 import com.main.untitledantgame.screen.GameScreen;
 import com.main.untitledantgame.utility.ecs.Entity;
 
-enum Behaviour {
-    WANDERING,
-    FOLLOWING,
-    RETURNING,
-    DRAGGING,
-    WAITING
-}
-
-
 public class AIComponent implements Component {
 
 
@@ -59,7 +50,10 @@ public class AIComponent implements Component {
                 return updateWandering( antBody, force, screen, deltaTime );
 
             case RETURNING:
-                return followTrail( antBody, force, screen );
+                return followTrail( antBody, force, screen, false );
+
+            case FOLLOWING:
+                return followTrail( antBody, force, screen, true );
 
             case WAITING:
                 return 2;
@@ -96,18 +90,15 @@ public class AIComponent implements Component {
     }
 
 
-    public float followTrail( Body antBody, float force, GameScreen screen ) {
+    public float followTrail( Body antBody, float force, GameScreen screen, Boolean forward ) {
 
-        if( inc_id == 0 ) state = Behaviour.WAITING;
+        if( forward && inc_id == 0 ) state = Behaviour.WAITING;
 
         Entity pheromone = screen.nextTrailPheromone( path_id, inc_id);
 
         Log.d("TRAIL", "Path_id:"+path_id+" Inc_id:"+inc_id);
-        Vec2 antPos = antBody.getPosition();
-        Vec2 pheromonePos = pheromone.getComponent(BodyComponent.class).body.getPosition();
-        Vec2 d = new Vec2((pheromonePos.getX() - antPos.getX()), pheromonePos.getY() - antPos.getY());
 
-        if(carriedFood != null && inc_id == 0 ) {
+        if( !forward && carriedFood != null && inc_id == 0 ) {
 
 
             if (carryJoint != null)
@@ -121,22 +112,32 @@ public class AIComponent implements Component {
 
             return 1;
         }
-        else if(Math.abs(d.getX()) < 1.1f && Math.abs(d.getY()) < 1.1f ) {
-            inc_id--;
-            antBody.setLinearVelocity(new Vec2(0f, 0f));
+
+        Vec2 antPos = antBody.getPosition();
+
+        if(pheromone != null) {
+            Vec2 pheromonePos = pheromone.getComponent(BodyComponent.class).body.getPosition();
+            Vec2 d = new Vec2((pheromonePos.getX() - antPos.getX()), pheromonePos.getY() - antPos.getY());
+            if (Math.abs(d.getX()) < 1.1f && Math.abs(d.getY()) < 1.1f) {
+                if (forward) inc_id++;
+                else inc_id--;
+                antBody.setLinearVelocity(new Vec2(0f, 0f));
+            }
+            Vec2.normalize(d);
+
+            d.setX(d.getX() * force);
+            d.setY(d.getY() * force);
+
+            //Log.d("AI_Normalized_Vector", "x: " + d.getX() + " y:"+ d.getY());
+
+            antBody.applyForceToCenter(d, true);
+
+            antBody.setLinearDamping(0.5f);
         }
-
-        Vec2.normalize(d);
-
-        d.setX(d.getX() * force);
-        d.setY(d.getY() * force);
-
-        //Log.d("AI_Normalized_Vector", "x: " + d.getX() + " y:"+ d.getY());
-
-        antBody.applyForceToCenter( d, true );
-
-        antBody.setLinearDamping(0.5f);
-
+        else
+        {
+            state = Behaviour.WAITING;
+        }
         return antBody.getAngle();
     }
 

@@ -20,6 +20,7 @@ import com.main.untitledantgame.collision.GameContactListener;
 import com.main.untitledantgame.components.AIComponent;
 import com.main.untitledantgame.components.AliveComponent;
 import com.main.untitledantgame.components.AntStatsComponent;
+import com.main.untitledantgame.components.Behaviour;
 import com.main.untitledantgame.components.BodyComponent;
 import com.main.untitledantgame.components.GeneratorComponent;
 import com.main.untitledantgame.components.IdentifierComponent;
@@ -398,5 +399,10 @@ public class GameScreen extends Screen {
         if (joint != null) world.physicsWorld.destroyJoint(joint);
     }
 
-
+    public void followingPath(int path_id){
+        Entity ant = spawnEntity("Ant", 0, 0);
+        AIComponent ant_ai = ant.getComponent(AIComponent.class);
+        ant_ai.path_id = path_id;
+        ant_ai.state = Behaviour.FOLLOWING;
+    }
 }
