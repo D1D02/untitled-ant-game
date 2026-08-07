@@ -26,8 +26,7 @@
             "fixture": {
                 "density": 0.1,
                 "friction": 1,
-                "restitution": 2,
-                "isSensor": 0
+                "restitution": 2
             }
         },
         "sensor": {
@@ -59,14 +58,8 @@
             "fixed_rotation": "true",
             "gravity_scale": 0.0,
             "polygon_shape": {
-                "dimension_1": 1.1,
-                "dimension_2": 1.1
-            },
-            "fixture": {
-                "density": 0,
-                "friction": 0,
-                "restitution": 2,
-                "isSensor": 1
+                "dimension_1": 0.001,
+                "dimension_2": 0.001
             }
         },
         "sprite": {
@@ -84,20 +77,22 @@
                 "fixed_rotation": "true",
                 "gravity_scale": 0.0,
                 "polygon_shape": {
-                    "dimension_1": 0.5,
-                    "dimension_2": 0.5
+                    "dimension_1": 10.0,
+                    "dimension_2": 10.0
                 },
                 "fixture": {
-                    "density": 1,
-                    "friction": 1,
-                    "restitution": 2,
-                    "isSensor": 0
+                    "density": 0.000001,
+                    "friction": 0.0001,
+                    "restitution": 2
                 }
             },
             "sprite": {
                 "pathname": "sugar.png",
                 "width": "30",
                 "height": "30"
+            },
+            "food": {
+                "food": 10
             }
         }
     },
@@ -113,10 +108,9 @@
                     "dimension_2": 10.01
                 },
                 "fixture": {
-                    "density": 5,
-                    "friction": 1,
-                    "restitution": 2,
-                    "isSensor": 1
+                    "density": 20,
+                    "friction": 20,
+                    "restitution": 2
                 }
             },
             "sprite": {
