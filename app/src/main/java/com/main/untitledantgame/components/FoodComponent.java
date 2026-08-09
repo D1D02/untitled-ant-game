@@ -13,6 +13,7 @@ public class FoodComponent implements Component {
 
         if( this.last_consumed > this.consuming_timer ){
             this.last_consumed -= this.consuming_timer;
+            this.food--;
             if(this.food == 0) return true;
         }
 

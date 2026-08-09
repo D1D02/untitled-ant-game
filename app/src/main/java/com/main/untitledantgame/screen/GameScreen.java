@@ -113,7 +113,7 @@ public class GameScreen extends Screen {
             }
         }
         //FISICA
-         moveAnts(deltaTime);
+        moveAnts(deltaTime);
         world.physicsWorld.step(deltaTime, 8, 3, 3);
         //handleCollisions(contactListener.getCollisions());
         dispatchCollisions();
@@ -159,6 +159,7 @@ public class GameScreen extends Screen {
             {
                 AIComponent agent = e.getComponent(AIComponent.class);
                 if(e.getComponent(FoodComponent.class).isFoodEnded(deltaTime)) world.removeEntity(e);
+                Log.d("FoodComponent", "Time passed" + e.getComponent(FoodComponent.class).last_consumed);
                 float agentAngle = agent.updatePosition(e.getComponent(BodyComponent.class).body, e.getComponent(AntStatsComponent.class).force, this, deltaTime);
 
             }

@@ -91,7 +91,7 @@ public class AIComponent implements Component {
 
         Entity pheromone = screen.nextTrailPheromone( path_id, inc_id);
 
-        Log.d("TRAIL", "Path_id:"+path_id+" Inc_id:"+inc_id);
+        //Log.d("TRAIL", "Path_id:"+path_id+" Inc_id:"+inc_id);
 
         if( !forward && carriedFood != null && inc_id == 0 ) {
 
@@ -168,7 +168,7 @@ public class AIComponent implements Component {
             state = Behaviour.RETURNING;
 
 
-            Log.d( "AI", "Food grabbed" );
+            Log.d( "AI", "Rock detected" );
         }
 
     }
