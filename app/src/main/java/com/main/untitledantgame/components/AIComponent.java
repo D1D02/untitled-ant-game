@@ -108,6 +108,7 @@ public class AIComponent implements Component {
         if(pheromone != null) {
             Vec2 pheromonePos = pheromone.getComponent(BodyComponent.class).body.getPosition();
             Vec2 d = new Vec2((pheromonePos.getX() - antPos.getX()), pheromonePos.getY() - antPos.getY());
+            wanderAngle = (float) Math.atan2(d.getY(), d.getX());
             if (Math.abs(d.getX()) < 1.1f && Math.abs(d.getY()) < 1.1f) {
                 if (forward) inc_id++;
                 else inc_id--;
@@ -128,7 +129,7 @@ public class AIComponent implements Component {
         {
             state = Behaviour.WAITING;
         }
-        return antBody.getAngle();
+        return wanderAngle;
     }
 
 
