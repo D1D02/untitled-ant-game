@@ -86,7 +86,7 @@ public class Anthill extends Entity {
 
     void levelUp(){
         level++;
-        maxExp += 25;
+        maxExp += (int) (Math.exp(level + 1) * 25);
         expbar.maxValue = maxExp;
     }
 }

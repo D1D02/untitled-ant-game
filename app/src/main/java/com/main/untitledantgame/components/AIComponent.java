@@ -92,6 +92,7 @@ public class AIComponent implements Component {
                 screen.destroyJoint(carryJoint);
                 Entity ant = (Entity)antBody.getUserData();
                 screen.anthill.addFood(carriedFood.getComponent(FoodComponent.class).food + ant.getComponent(FoodComponent.class).food);
+                screen.anthill.addExp(25);
                 screen.world.removeEntity(carriedFood);
                 screen.world.removeEntity(ant);
                 carryJoint = null;
