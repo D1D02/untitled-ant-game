@@ -14,6 +14,7 @@ import android.graphics.Paint.Style;
 import android.graphics.Rect;
 import android.graphics.Typeface;
 
+import com.badlogic.androidgames.framework.Color;
 import com.badlogic.androidgames.framework.Graphics;
 import com.badlogic.androidgames.framework.Pixmap;
 
@@ -134,6 +135,17 @@ public class AndroidGraphics implements Graphics {
 
         canvas.drawBitmap(((AndroidPixmap) pixmap).bitmap, srcRect, dstRect,
                 null);
+    }
+
+    public void drawPixmap(Pixmap pixmap, int x, int y, int srcX, int srcY,
+                           int srcWidth, int srcHeight,int dstWidth, int dstHeight, float rotation){
+        int xPivot = x + (dstWidth/2);
+        int yPivot = y + (dstHeight/2);
+
+        canvas.rotate(rotation, xPivot, yPivot);
+        drawPixmap(pixmap, x, y, srcX, srcY, srcWidth, srcHeight, dstWidth, dstHeight);
+        //drawPixel(xPivot, yPivot, Color.convert(255, 0, 0, 255));
+        canvas.rotate(-rotation, xPivot, yPivot);
     }
     
     @Override

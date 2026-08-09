@@ -1,5 +1,6 @@
 package com.main.untitledantgame.screen;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.util.Log;
@@ -8,17 +9,11 @@ import com.badlogic.androidgames.framework.Game;
 import com.badlogic.androidgames.framework.Graphics;
 import com.badlogic.androidgames.framework.Pixmap;
 import com.badlogic.androidgames.framework.Screen;
+import com.badlogic.androidgames.framework.impl.AndroidAudio;
 import com.google.gson.JsonArray;
-import com.main.untitledantgame.components.LifeComponent;
-import com.main.untitledantgame.map.Generator;
-import com.main.untitledantgame.utility.GeneratorLoader;
-import com.main.untitledantgame.utility.ecs.Entity;
-import com.main.untitledantgame.utility.ecs.EntityFactory;
 import com.main.untitledantgame.utility.ecs.PrototypeRegistry;
 import com.main.untitledantgame.visuals.Assets;
 import com.main.untitledantgame.utility.JsonLoader;
-
-import java.util.List;
 
 public class LoadingScreen extends Screen {
 
@@ -77,6 +72,11 @@ public class LoadingScreen extends Screen {
 
         Assets.anthill = loadSprite("anthill.png", game);
         Assets.background = loadSprite("grass.png", game);
+
+        AndroidAudio audio = new AndroidAudio((Activity)game);
+        Assets.soundtrack = audio.newMusic("soundtrack.mp3");
+        Assets.eatSound = audio.newSound("eat.mp3");
+        //AudioManager.initialize(((Context) game).getApplicationContext());
         // Passo al menu principale
         game.setScreen(new MainMenuScreen(game));
     }

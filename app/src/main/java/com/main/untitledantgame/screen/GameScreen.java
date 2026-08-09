@@ -2,19 +2,12 @@ package com.main.untitledantgame.screen;
 
 import android.util.Log;
 
-import com.badlogic.androidgames.framework.Color;
 import com.badlogic.androidgames.framework.Game;
 import com.badlogic.androidgames.framework.Graphics;
 import com.badlogic.androidgames.framework.Input;
-import com.badlogic.androidgames.framework.Pixmap;
 import com.badlogic.androidgames.framework.Screen;
-import com.google.fpl.liquidfun.DistanceJoint;
-import com.google.fpl.liquidfun.DistanceJointDef;
 import com.google.fpl.liquidfun.Joint;
-import com.google.fpl.liquidfun.RevoluteJoint;
-import com.google.fpl.liquidfun.RevoluteJointDef;
 import com.google.fpl.liquidfun.Vec2;
-import com.google.fpl.liquidfun.World;
 import com.main.untitledantgame.collision.Collision;
 import com.main.untitledantgame.collision.GameContactListener;
 import com.main.untitledantgame.components.AIComponent;
@@ -23,7 +16,6 @@ import com.main.untitledantgame.components.BodyComponent;
 import com.main.untitledantgame.components.GeneratorComponent;
 import com.main.untitledantgame.components.IdentifierComponent;
 import com.main.untitledantgame.components.ObstacleComponent;
-import com.main.untitledantgame.components.PositionComponent;
 import com.main.untitledantgame.components.SpriteComponent;
 import com.main.untitledantgame.components.ui.UIBarComponent;
 import com.main.untitledantgame.components.ui.UIButtonComponent;
@@ -69,6 +61,7 @@ public class GameScreen extends Screen {
     Entity[][] trails;
 
     int curr_path_id = 0;
+
 
     public GameScreen(Game game) {
         super(game);
@@ -171,8 +164,9 @@ public class GameScreen extends Screen {
             BodyComponent body = e.getComponent(BodyComponent.class);
             int posX = (int)body.body.getPositionX() + g.getWidth()/2 - sprite.width/2 + xOffset;
             int posY = (int)body.body.getPositionY() + g.getHeight()/2 - sprite.height/2 + yOffset;
-            g.drawPixmap(sprite.sprite,posX,posY, 0, 0, sprite.sprite.getWidth(), sprite.sprite.getHeight(), sprite.width, sprite.height);
-
+            float rot = body.body.getAngle();
+            //g.drawPixmap(sprite.sprite,posX,posY, 0, 0, sprite.sprite.getWidth(), sprite.sprite.getHeight(), sprite.width, sprite.height, rot);
+            g.drawPixmap(sprite.sprite, posX, posY, 0, 0, sprite.sprite.getWidth(), sprite.sprite.getHeight(), sprite.width, sprite.height, (float)Math.toDegrees((double)rot));
         }
 
         List<Entity> uiElements = canvas.elements;
@@ -258,8 +252,11 @@ public class GameScreen extends Screen {
         //PULSANTE SPEDIZIONE
         Entity exploration = entityFactory.create("ExplorationButton", world.physicsWorld, game);
         UIButtonComponent.setOnClickEvent(exploration, ()->{
-            if(anthill.consumeFood(10))
+            if(anthill.consumeFood(10)){
+                // AudioManager.playSound(0);
+                //Assets.eatSound.play(1);
                 spawnEntity("Ant", 0, 0);
+            }
         });
         canvas.addElement(exploration);
 

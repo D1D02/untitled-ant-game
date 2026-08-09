@@ -24,6 +24,7 @@ public class MainMenuScreen extends Screen {
     public MainMenuScreen(Game game) {
         super(game);
         initUI();
+        Assets.soundtrack.play();
     }
 
     @Override

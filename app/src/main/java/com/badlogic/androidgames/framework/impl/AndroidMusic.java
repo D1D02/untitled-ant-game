@@ -22,6 +22,7 @@ public class AndroidMusic implements Music, OnCompletionListener {
             mediaPlayer.prepare();
             isPrepared = true;
             mediaPlayer.setOnCompletionListener(this);
+            mediaPlayer.setLooping(true);
         } catch (Exception e) {
             throw new RuntimeException("Couldn't load music", e);
         }
