@@ -169,7 +169,7 @@ public class AIComponent implements Component {
         }
         else if( state == Behaviour.WANDERING && Objects.equals(b.type,"Rock") )
         {
-            screen.addToBoard(b);
+            screen.addToBoard(b, path_id);
             state = Behaviour.RETURNING;
 
 
