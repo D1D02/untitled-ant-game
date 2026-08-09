@@ -152,8 +152,8 @@ public class GameScreen extends Screen {
                 AIComponent agent = e.getComponent(AIComponent.class);
                 if(e.getComponent(FoodComponent.class).isFoodEnded(deltaTime)) world.removeEntity(e);
                 Log.d("FoodComponent", "Time passed" + e.getComponent(FoodComponent.class).last_consumed);
-                float agentAngle = agent.updatePosition(e.getComponent(BodyComponent.class).body, e.getComponent(AntStatsComponent.class).force, this, deltaTime);
-
+                float rot = agent.updatePosition(e.getComponent(BodyComponent.class).body, e.getComponent(AntStatsComponent.class).force, this, deltaTime);
+                e.getComponent(SpriteComponent.class).rotation =(float) Math.toDegrees(rot) + 90f;
             }
         }
     }
@@ -174,9 +174,8 @@ public class GameScreen extends Screen {
             BodyComponent body = e.getComponent(BodyComponent.class);
             int posX = (int)body.body.getPositionX() + g.getWidth()/2 - sprite.width/2 + xOffset;
             int posY = (int)body.body.getPositionY() + g.getHeight()/2 - sprite.height/2 + yOffset;
-            float rot = body.body.getAngle();
             //g.drawPixmap(sprite.sprite,posX,posY, 0, 0, sprite.sprite.getWidth(), sprite.sprite.getHeight(), sprite.width, sprite.height, rot);
-            g.drawPixmap(sprite.sprite, posX, posY, 0, 0, sprite.sprite.getWidth(), sprite.sprite.getHeight(), sprite.width, sprite.height, (float)Math.toDegrees((double)rot));
+            g.drawPixmap(sprite.sprite, posX, posY, 0, 0, sprite.sprite.getWidth(), sprite.sprite.getHeight(), sprite.width, sprite.height, sprite.rotation);
         }
 
         List<Entity> uiElements = canvas.elements;
