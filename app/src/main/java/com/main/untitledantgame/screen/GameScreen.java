@@ -288,12 +288,21 @@ public class GameScreen extends Screen {
         Log.d("OBSTACLES", "Ostacoli " +obSize);
         if(obSize <= index)
             return;
-        BodyComponent bc = obstacles.get(index).getComponent(BodyComponent.class);
+        Entity e = obstacles.get(index);
+        BodyComponent bc = e.getComponent(BodyComponent.class);
+        ObstacleComponent oc = e.getComponent(ObstacleComponent.class);
 
         //Graphics g = game.getGraphics();
         xOffset = -(int)(bc.body.getPositionX());// + g.getWidth()/2f);
         yOffset = -(int)(bc.body.getPositionY());// + g.getHeight()/2f);
         //Log.d("POS_DEBUG", xOffset + " " + yOffset);
+        for(int i = 0; i < 2; i++) {
+            Entity ant = spawnEntity("Ant", 0, 0);
+            AIComponent agent = ant.getComponent(AIComponent.class);
+            agent.path_id = oc.path_id;
+            agent.state = Behaviour.FOLLOWING;
+            agent.inc_id = 1;
+        }
     }
 
     public void addToBoard(Entity e, int id){
