@@ -38,11 +38,6 @@ public class AIComponent implements Component {
 
 
 
-    private static final float REACHED_RADIUS = 8f;
-    private static final float STEERING = 1.5f;
-
-
-
     public float updatePosition( Body antBody, float force, GameScreen screen, float deltaTime ){
 
         switch(state){
@@ -169,7 +164,7 @@ public class AIComponent implements Component {
         }
         else if( state == Behaviour.WANDERING && Objects.equals(b.type,"Rock") )
         {
-            screen.addToBoard(b);
+            screen.addToBoard(b, path_id);
             state = Behaviour.RETURNING;
 
 
