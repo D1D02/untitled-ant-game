@@ -12,6 +12,8 @@ import com.main.untitledantgame.collision.Collision;
 import com.main.untitledantgame.collision.GameContactListener;
 import com.main.untitledantgame.components.AIComponent;
 import com.main.untitledantgame.components.AliveComponent;
+import com.main.untitledantgame.components.AntStatsComponent;
+import com.main.untitledantgame.components.Behaviour;
 import com.main.untitledantgame.components.BodyComponent;
 import com.main.untitledantgame.components.GeneratorComponent;
 import com.main.untitledantgame.components.IdentifierComponent;
@@ -40,10 +42,10 @@ public class GameScreen extends Screen {
     float camVelocityX = 0, camVelocityY = 0, camSpeed = 120;
 
     boolean dragged = false;
-    GameWorld world;
+    public GameWorld world;
     UICanvas canvas;
 
-    Anthill anthill;
+    public Anthill anthill;
 
     GameContactListener contactListener;
 
@@ -144,7 +146,7 @@ public class GameScreen extends Screen {
             if(!e.hasComponent(AIComponent.class))
                 continue;
             AIComponent agent = e.getComponent(AIComponent.class);
-            float agentAngle = agent.updatePosition(e.getComponent(BodyComponent.class).body, 5000f, this, deltaTime);
+            float agentAngle = agent.updatePosition(e.getComponent(BodyComponent.class).body, e.getComponent(AntStatsComponent.class).force, this, deltaTime);
         }
     }
 
@@ -269,6 +271,9 @@ public class GameScreen extends Screen {
                 spawnEntity("Rock", rockGen.getRandomPosition(), rockGen.getRandomPosition());
             }
         }
+
+        pheromones_pool = new EntityPool(1000, "Pheromone", world.physicsWorld, game);
+        trails = new Entity[1000][1000];
     }
 
     void selectBoardEvent(int index){
@@ -305,8 +310,6 @@ public class GameScreen extends Screen {
             }
         }
 
-        pheromones_pool = new EntityPool(1000, "Pheromone", world.physicsWorld, game);
-        trails = new Entity[1000][1000];
 
     }
     void generateItems( float deltaTime ) {
@@ -334,14 +337,11 @@ public class GameScreen extends Screen {
 
         Entity newPheromone = pheromones_pool.acquire();
 
-        newPheromone.getComponent(BodyComponent.class)
-                .body.setTransform(x,y,0);
+        newPheromone.getComponent(BodyComponent.class).body.setTransform(x,y,0);
 
         newPheromone.getComponent(IdentifierComponent.class).inc_id = inc_id;
 
         trails[path_id][inc_id] = newPheromone;
-
-
 
         mortalEntities.add(newPheromone);
 
@@ -354,12 +354,12 @@ public class GameScreen extends Screen {
 
         for(Collision event : collisions) {
             if( !event.sensor ) {
-                if(Objects.equals(event.a.type, "Ant")) event.a.getComponent(AIComponent.class).handleCollision( event.a, event.b, world);
-                else if(Objects.equals(event.b.type, "Ant")) event.b.getComponent(AIComponent.class).handleCollision( event.b, event.a, world);
+                if(Objects.equals(event.a.type, "Ant")) event.a.getComponent(AIComponent.class).handleCollision( event.a, event.b, world, this);
+                else if(Objects.equals(event.b.type, "Ant")) event.b.getComponent(AIComponent.class).handleCollision( event.b, event.a, world, this);
             }
             else{
-                if(Objects.equals(event.a.type, "Ant")) event.a.getComponent(AIComponent.class).handleSensorCollision( event.a, event.b, world);
-                else if(Objects.equals(event.b.type, "Ant")) event.b.getComponent(AIComponent.class).handleSensorCollision( event.b, event.a, world);
+                //if(Objects.equals(event.a.type, "Ant")) event.a.getComponent(AIComponent.class).handleSensorCollision( event.a, event.b, world);
+                //else if(Objects.equals(event.b.type, "Ant")) event.b.getComponent(AIComponent.class).handleSensorCollision( event.b, event.a, world);
             }
         }
     }
@@ -394,28 +394,15 @@ public class GameScreen extends Screen {
         return trails[path_id][inc_id];
     }
 
-    public int fun() {
-        Entity newPheromone = pheromones_pool.acquire();
-
-        newPheromone.getComponent(BodyComponent.class)
-                .body.setTransform(0,0,0);
-
-        return 1;
-    }
-
-    public Vec2 getAnthillPosition() {
-        return new Vec2(0, 0); // il formicaio viene creato in (0,0) in initWorld()
-    }
 
     public void destroyJoint(Joint joint) {
         if (joint != null) world.physicsWorld.destroyJoint(joint);
     }
 
-    public void removeEntity(Entity e) {
-        if (e != null) world.removeEntity(e);
-    }
-
-    public void depositFood(int amount) {
-        anthill.addFood(amount); // adatta al nome reale del metodo nella tua classe Anthill
+    public void followingPath(int path_id){
+        Entity ant = spawnEntity("Ant", 0, 0);
+        AIComponent ant_ai = ant.getComponent(AIComponent.class);
+        ant_ai.path_id = path_id;
+        ant_ai.state = Behaviour.FOLLOWING;
     }
 }
