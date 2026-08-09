@@ -2,19 +2,11 @@ package com.main.untitledantgame.screen;
 
 import android.util.Log;
 
-import com.badlogic.androidgames.framework.Color;
 import com.badlogic.androidgames.framework.Game;
 import com.badlogic.androidgames.framework.Graphics;
 import com.badlogic.androidgames.framework.Input;
-import com.badlogic.androidgames.framework.Pixmap;
 import com.badlogic.androidgames.framework.Screen;
-import com.google.fpl.liquidfun.DistanceJoint;
-import com.google.fpl.liquidfun.DistanceJointDef;
 import com.google.fpl.liquidfun.Joint;
-import com.google.fpl.liquidfun.RevoluteJoint;
-import com.google.fpl.liquidfun.RevoluteJointDef;
-import com.google.fpl.liquidfun.Vec2;
-import com.google.fpl.liquidfun.World;
 import com.main.untitledantgame.collision.Collision;
 import com.main.untitledantgame.collision.GameContactListener;
 import com.main.untitledantgame.components.AIComponent;
@@ -26,7 +18,6 @@ import com.main.untitledantgame.components.FoodComponent;
 import com.main.untitledantgame.components.GeneratorComponent;
 import com.main.untitledantgame.components.IdentifierComponent;
 import com.main.untitledantgame.components.ObstacleComponent;
-import com.main.untitledantgame.components.PositionComponent;
 import com.main.untitledantgame.components.SpriteComponent;
 import com.main.untitledantgame.components.ui.UIBarComponent;
 import com.main.untitledantgame.components.ui.UIButtonComponent;

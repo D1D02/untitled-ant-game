@@ -16,15 +16,12 @@ import com.main.untitledantgame.utility.ecs.Entity;
 
 public class AIComponent implements Component {
 
-
     public Behaviour state = Behaviour.WANDERING;
-
 
     public float wanderAngle = 0f;
     public float directionAngle = 0f;
 
     public float maxSpeed = 5.0f;
-
 
     public int path_id = -1;
     public int inc_id = -1;
@@ -35,7 +32,6 @@ public class AIComponent implements Component {
 
     private float time_spent = 0;
     private float max_time = 0.3f;
-
 
 
     public float updatePosition( Body antBody, float force, GameScreen screen, float deltaTime ){
@@ -56,9 +52,6 @@ public class AIComponent implements Component {
                 return antBody.getAngle();
         }
     }
-
-
-
 
     public float updateWandering( Body antBody, float force, GameScreen screen, float deltaTime ){
 
@@ -84,7 +77,6 @@ public class AIComponent implements Component {
         return angle;
     }
 
-
     public float followTrail( Body antBody, float force, GameScreen screen, Boolean forward ) {
 
         if( forward && inc_id == 0 ) state = Behaviour.WAITING;
@@ -95,14 +87,16 @@ public class AIComponent implements Component {
 
         if( !forward && carriedFood != null && inc_id == 0 ) {
 
-
             if (carryJoint != null)
             {
                 screen.destroyJoint(carryJoint);
-                carryJoint = null;
-                screen.anthill.addFood(carriedFood.getComponent(FoodComponent.class).food);
+                Entity ant = (Entity)antBody.getUserData();
+                screen.anthill.addFood(carriedFood.getComponent(FoodComponent.class).food + ant.getComponent(FoodComponent.class).food);
                 screen.world.removeEntity(carriedFood);
+                screen.world.removeEntity(ant);
+                carryJoint = null;
                 carriedFood = null;
+                ant = null;
             }
 
             return 1;
