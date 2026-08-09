@@ -7,7 +7,6 @@ import com.badlogic.androidgames.framework.Graphics;
 import com.badlogic.androidgames.framework.Input;
 import com.badlogic.androidgames.framework.Screen;
 import com.google.fpl.liquidfun.Joint;
-import com.google.fpl.liquidfun.Vec2;
 import com.main.untitledantgame.collision.Collision;
 import com.main.untitledantgame.collision.GameContactListener;
 import com.main.untitledantgame.components.AIComponent;
@@ -15,6 +14,7 @@ import com.main.untitledantgame.components.AliveComponent;
 import com.main.untitledantgame.components.AntStatsComponent;
 import com.main.untitledantgame.components.Behaviour;
 import com.main.untitledantgame.components.BodyComponent;
+import com.main.untitledantgame.components.FoodComponent;
 import com.main.untitledantgame.components.GeneratorComponent;
 import com.main.untitledantgame.components.IdentifierComponent;
 import com.main.untitledantgame.components.ObstacleComponent;
@@ -59,6 +59,8 @@ public class GameScreen extends Screen {
     int obMax = 10;
     UIButtonComponent[] boardButtons = new UIButtonComponent[3];
     EntityPool pheromones_pool;
+
+    float move_ants = 0.0f;
 
     Entity[][] trails;
 
@@ -143,10 +145,16 @@ public class GameScreen extends Screen {
         List<Entity> entities = world.entities;
         for(int i = 0; i < entities.size();i++){ //l'enhanced for è meno efficiente perchè alloca memoria per la variabile di scorrimento
             Entity e = entities.get(i);
-            if(!e.hasComponent(AIComponent.class))
-                continue;
-            AIComponent agent = e.getComponent(AIComponent.class);
-            float agentAngle = agent.updatePosition(e.getComponent(BodyComponent.class).body, e.getComponent(AntStatsComponent.class).force, this, deltaTime);
+
+
+            if("Ant".equals(e.type))
+            {
+                AIComponent agent = e.getComponent(AIComponent.class);
+                if(e.getComponent(FoodComponent.class).isFoodEnded(deltaTime)) world.removeEntity(e);
+                Log.d("FoodComponent", "Time passed" + e.getComponent(FoodComponent.class).last_consumed);
+                float agentAngle = agent.updatePosition(e.getComponent(BodyComponent.class).body, e.getComponent(AntStatsComponent.class).force, this, deltaTime);
+
+            }
         }
     }
 
@@ -254,10 +262,11 @@ public class GameScreen extends Screen {
         //PULSANTE SPEDIZIONE
         Entity exploration = entityFactory.create("ExplorationButton", world.physicsWorld, game);
         UIButtonComponent.setOnClickEvent(exploration, ()->{
-            if(anthill.consumeFood(10)){
-                // AudioManager.playSound(0);
-                //Assets.eatSound.play(1);
-                spawnEntity("Ant", 0, 0);
+
+            if(anthill.consumeFood(10)) {
+                Entity ant = spawnEntity("Ant", 0, 0);
+                ant.getComponent(AIComponent.class).wanderAngle = (float)(Math.random()-1f);
+
             }
         });
         canvas.addElement(exploration);

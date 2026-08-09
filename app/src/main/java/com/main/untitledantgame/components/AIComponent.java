@@ -16,15 +16,12 @@ import com.main.untitledantgame.utility.ecs.Entity;
 
 public class AIComponent implements Component {
 
-
     public Behaviour state = Behaviour.WANDERING;
-
 
     public float wanderAngle = 0f;
     public float directionAngle = 0f;
 
     public float maxSpeed = 5.0f;
-
 
     public int path_id = -1;
     public int inc_id = -1;
@@ -35,12 +32,6 @@ public class AIComponent implements Component {
 
     private float time_spent = 0;
     private float max_time = 0.3f;
-
-
-
-    private static final float REACHED_RADIUS = 8f;
-    private static final float STEERING = 1.5f;
-
 
 
     public float updatePosition( Body antBody, float force, GameScreen screen, float deltaTime ){
@@ -61,9 +52,6 @@ public class AIComponent implements Component {
                 return antBody.getAngle();
         }
     }
-
-
-
 
     public float updateWandering( Body antBody, float force, GameScreen screen, float deltaTime ){
 
@@ -89,25 +77,27 @@ public class AIComponent implements Component {
         return angle;
     }
 
-
     public float followTrail( Body antBody, float force, GameScreen screen, Boolean forward ) {
 
         if( forward && inc_id == 0 ) state = Behaviour.WAITING;
 
         Entity pheromone = screen.nextTrailPheromone( path_id, inc_id);
 
-        Log.d("TRAIL", "Path_id:"+path_id+" Inc_id:"+inc_id);
+        //Log.d("TRAIL", "Path_id:"+path_id+" Inc_id:"+inc_id);
 
         if( !forward && carriedFood != null && inc_id == 0 ) {
-
 
             if (carryJoint != null)
             {
                 screen.destroyJoint(carryJoint);
-                carryJoint = null;
-                screen.anthill.addFood(carriedFood.getComponent(FoodComponent.class).food);
+                Entity ant = (Entity)antBody.getUserData();
+                screen.anthill.addFood(carriedFood.getComponent(FoodComponent.class).food + ant.getComponent(FoodComponent.class).food);
+                screen.anthill.addExp(25);
                 screen.world.removeEntity(carriedFood);
+                screen.world.removeEntity(ant);
+                carryJoint = null;
                 carriedFood = null;
+                ant = null;
             }
 
             return 1;
@@ -118,6 +108,7 @@ public class AIComponent implements Component {
         if(pheromone != null) {
             Vec2 pheromonePos = pheromone.getComponent(BodyComponent.class).body.getPosition();
             Vec2 d = new Vec2((pheromonePos.getX() - antPos.getX()), pheromonePos.getY() - antPos.getY());
+            wanderAngle = (float) Math.atan2(d.getY(), d.getX());
             if (Math.abs(d.getX()) < 1.1f && Math.abs(d.getY()) < 1.1f) {
                 if (forward) inc_id++;
                 else inc_id--;
@@ -138,7 +129,7 @@ public class AIComponent implements Component {
         {
             state = Behaviour.WAITING;
         }
-        return antBody.getAngle();
+        return wanderAngle;
     }
 
 
@@ -173,7 +164,7 @@ public class AIComponent implements Component {
             state = Behaviour.RETURNING;
 
 
-            Log.d( "AI", "Food grabbed" );
+            Log.d( "AI", "Rock detected" );
         }
 
     }

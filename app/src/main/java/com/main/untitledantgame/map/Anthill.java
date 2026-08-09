@@ -57,20 +57,6 @@ public class Anthill extends Entity {
 
         bc.body = world.createBody(bDef);
 
-        PolygonShape shape = new PolygonShape();
-        shape.setAsBox(20, 20);
-
-        FixtureDef fDef = new FixtureDef();
-        fDef.setShape(shape);
-        fDef.setDensity(1f);
-        fDef.setFriction(1f);
-        fDef.setRestitution(0f);
-
-        //bc.body.createFixture(fDef);
-        shape.delete();
-        fDef.delete();
-
-        shape.delete();
         bDef.delete();
         return bc;
     }
@@ -88,18 +74,6 @@ public class Anthill extends Entity {
         foodBar.value = food;
     }
 
-    public boolean consumePhero(int amount){
-        if(amount > phero)
-            return false;
-        phero -= amount;
-        pheroBar.value = phero;
-        return true;
-    }
-
-    public void addPhero(int amount){
-        phero = Math.min(phero + amount, maxPhero);
-        pheroBar.value = phero;
-    }
 
     public void addExp(int amount){
         exp += amount;
@@ -112,7 +86,7 @@ public class Anthill extends Entity {
 
     void levelUp(){
         level++;
-        maxExp += 25;
+        maxExp += (int) (Math.exp(level + 1) * 25);
         expbar.maxValue = maxExp;
     }
 }

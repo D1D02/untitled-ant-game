@@ -109,7 +109,7 @@
                 },
                 "fixture": {
                     "density": 20,
-                    "friction": 20,
+                    "friction": 200,
                     "restitution": 2
                 }
             },

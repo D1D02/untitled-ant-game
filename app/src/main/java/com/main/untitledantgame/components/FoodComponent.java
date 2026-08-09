@@ -7,12 +7,13 @@ public class FoodComponent implements Component {
     public float last_consumed = 0;
 
 
-    boolean isFoodEnded(float deltaTime) {
+    public boolean isFoodEnded(float deltaTime) {
 
         this.last_consumed += deltaTime;
 
         if( this.last_consumed > this.consuming_timer ){
             this.last_consumed -= this.consuming_timer;
+            this.food--;
             if(this.food == 0) return true;
         }
 
