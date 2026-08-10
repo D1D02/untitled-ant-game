@@ -13,6 +13,7 @@ import com.google.fpl.liquidfun.Vec2;
 import com.main.untitledantgame.map.GameWorld;
 import com.main.untitledantgame.screen.GameScreen;
 import com.main.untitledantgame.utility.ecs.Entity;
+import com.main.untitledantgame.visuals.Assets;
 
 public class AIComponent implements Component {
 
@@ -153,6 +154,7 @@ public class AIComponent implements Component {
 
 
             Log.d( "AI", "Food grabbed" );
+            Assets.pickupSound.play(1);
 
         }
         else if( state == Behaviour.WANDERING && Objects.equals(b.type,"Rock") )

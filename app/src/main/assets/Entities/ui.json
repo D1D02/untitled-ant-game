@@ -41,12 +41,9 @@
         "width": 34,
         "height": 20,
         "text": "PLAY",
-        "R": 100,
-        "G": 100,
-        "B": 100,
         "textR": 255,
         "textG": 255,
-        "textB": 255
+        "textB": 0
       }
     }
   },
@@ -59,12 +56,9 @@
         "width": 15,
         "height": 15,
         "text": "CENTER",
-        "R": 100,
-        "G": 100,
-        "B": 100,
         "textR": 255,
         "textG": 255,
-        "textB": 255
+        "textB": 0
       }
     }
   },
@@ -77,12 +71,9 @@
         "width": 20,
         "height": 20,
         "text": "EXPLORE",
-        "R": 100,
-        "G": 100,
-        "B": 100,
         "textR": 255,
         "textG": 255,
-        "textB": 255
+        "textB": 0
       }
     }
   },
@@ -95,12 +86,9 @@
         "width": 25,
         "height": 15,
         "text": "oggetto 1",
-        "R": 100,
-        "G": 100,
-        "B": 100,
         "textR": 255,
         "textG": 255,
-        "textB": 255
+        "textB": 0
       }
     }
   },
@@ -113,12 +101,9 @@
         "width": 25,
         "height": 15,
         "text": "oggetto 2",
-        "R": 100,
-        "G": 100,
-        "B": 100,
         "textR": 255,
         "textG": 255,
-        "textB": 255
+        "textB": 0
       }
     }
   },
@@ -131,12 +116,9 @@
         "width": 25,
         "height": 15,
         "text": "oggetto 2",
-        "R": 100,
-        "G": 100,
-        "B": 100,
         "textR": 255,
         "textG": 255,
-        "textB": 255
+        "textB": 0
       }
     }
   },
@@ -149,12 +131,9 @@
         "width": 10,
         "height": 15,
         "text": "v",
-        "R": 100,
-        "G": 100,
-        "B": 100,
         "textR": 255,
         "textG": 255,
-        "textB": 255
+        "textB": 0
       }
     }
   }]

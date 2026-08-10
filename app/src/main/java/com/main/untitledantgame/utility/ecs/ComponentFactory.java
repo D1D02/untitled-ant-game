@@ -178,7 +178,7 @@ public class ComponentFactory {
                 buttonComponent.posY = data.get("y").getAsInt();
                 buttonComponent.width = data.get("width").getAsInt();
                 buttonComponent.height = data.get("height").getAsInt();
-                buttonComponent.color = Color.convert(data.get("R").getAsInt(),data.get("G").getAsInt(),data.get("B").getAsInt(),255);
+                //buttonComponent.color = Color.convert(data.get("R").getAsInt(),data.get("G").getAsInt(),data.get("B").getAsInt(),255);
                 buttonComponent.text = data.get("text").getAsString();
                 buttonComponent.textColor = Color.convert(data.get("textR").getAsInt(),data.get("textG").getAsInt(),data.get("textB").getAsInt(),255);
 

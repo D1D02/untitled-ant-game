@@ -9,7 +9,7 @@ import com.main.untitledantgame.visuals.Assets;
 public class UIButtonComponent extends UIElementComponent{
 
     OnClick onClickEvent;
-    public int color = Color.convert(100, 100, 100, 255);
+    //public int color = Color.convert(100, 100, 100, 255);
     public String text = "BUTTON";
     public int textColor = Color.convert(0, 0, 0, 255);
 

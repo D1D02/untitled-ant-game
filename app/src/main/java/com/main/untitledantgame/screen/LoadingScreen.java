@@ -79,6 +79,8 @@ public class LoadingScreen extends Screen {
         Assets.eatSound = audio.newSound("eat.mp3");
         Assets.levelUpSound = audio.newSound("level_up.mp3");
         Assets.buttonSound = audio.newSound("button.mp3");
+        Assets.pickupSound = audio.newSound("pickup.mp3");
+        Assets.boardSound = audio.newSound("board.mp3");
         //AudioManager.initialize(((Context) game).getApplicationContext());
         // Passo al menu principale
         game.setScreen(new MainMenuScreen(game));

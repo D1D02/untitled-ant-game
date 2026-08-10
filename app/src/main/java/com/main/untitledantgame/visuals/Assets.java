@@ -25,4 +25,8 @@ public class Assets {
     public static Sound levelUpSound;
 
     public static Sound buttonSound;
+
+    public static Sound pickupSound;
+
+    public static Sound boardSound;
 }
