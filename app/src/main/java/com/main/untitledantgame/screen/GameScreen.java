@@ -264,7 +264,7 @@ public class GameScreen extends Screen {
 
             if(anthill.consumeFood(10)) {
                 Entity ant = spawnEntity("Ant", 0, 0);
-                ant.getComponent(AIComponent.class).wanderAngle = (float)(Math.random()-1f);
+                ant.getComponent(AIComponent.class).wanderAngle = (float) (Math.random() * Math.PI * 2);
 
             }
         });

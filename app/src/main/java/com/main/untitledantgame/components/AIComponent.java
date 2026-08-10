@@ -19,7 +19,9 @@ public class AIComponent implements Component {
     public Behaviour state = Behaviour.WANDERING;
 
     public float wanderAngle = 0f;
-    public float directionAngle = 0f;
+
+    private float w_time_spent = 0;
+    private float w_max_time = 1.5f;
 
     public float maxSpeed = 5.0f;
 
@@ -30,8 +32,8 @@ public class AIComponent implements Component {
     private Joint carryJoint = null;
 
 
-    private float time_spent = 0;
-    private float max_time = 0.3f;
+    private float p_time_spent = 0;
+    private float p_max_time = 0.3f;
 
 
     public float updatePosition( Body antBody, float force, GameScreen screen, float deltaTime ){
@@ -55,8 +57,15 @@ public class AIComponent implements Component {
 
     public float updateWandering( Body antBody, float force, GameScreen screen, float deltaTime ){
 
+        w_time_spent+=deltaTime;
 
-        wanderAngle += (float)((Math.random()-0.5f)*0.5f);
+        if(w_time_spent>=w_max_time){
+
+            wanderAngle += (float)((Math.random()-0.5f)*0.5f);
+            w_time_spent-=w_max_time;
+
+        }
+
 
         float angle = antBody.getAngle()+wanderAngle;
 
@@ -83,20 +92,19 @@ public class AIComponent implements Component {
 
         //Log.d("TRAIL", "Path_id:"+path_id+" Inc_id:"+inc_id);
 
-        if( !forward && carriedFood != null && inc_id == 0 ) {
-
-            if (carryJoint != null)
+        if( !forward  && inc_id == 0 ) {
+            Entity ant = (Entity)antBody.getUserData();
+            if (carryJoint != null && carriedFood != null)
             {
                 screen.destroyJoint(carryJoint);
-                Entity ant = (Entity)antBody.getUserData();
+
                 screen.anthill.addFood(carriedFood.getComponent(FoodComponent.class).food + ant.getComponent(FoodComponent.class).food);
                 screen.anthill.addExp(25);
                 screen.world.removeEntity(carriedFood);
-                screen.world.removeEntity(ant);
                 carryJoint = null;
                 carriedFood = null;
-                ant = null;
             }
+            screen.world.removeEntity(ant);
 
             return 1;
         }
@@ -169,9 +177,9 @@ public class AIComponent implements Component {
 
     private void generatePheromone( Body antBody, GameScreen screen, float deltaTime ){
 
-        time_spent+=deltaTime;
+        p_time_spent+=deltaTime;
 
-        if(time_spent>=max_time){
+        if(p_time_spent>=p_max_time){
 
             float x = antBody.getPositionX();
             float y = antBody.getPositionY();
@@ -179,7 +187,7 @@ public class AIComponent implements Component {
             inc_id++;
             path_id = screen.generatePheromone( x, y, path_id, inc_id );
 
-            time_spent-=max_time;
+            p_time_spent-=p_max_time;
 
         }
 
