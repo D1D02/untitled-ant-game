@@ -16,23 +16,6 @@
   }
 },
   {
-    "name": "PheroBar",
-    "components": {
-      "uibar": {
-        "x": 35,
-        "y": 0,
-        "width": 30,
-        "height": 10,
-        "bgR": 100,
-        "bgG": 100,
-        "bgB": 100,
-        "fillR": 200,
-        "fillG": 0,
-        "fillB": 150
-      }
-    }
-  },
-  {
     "name": "ExpBar",
     "components": {
       "uibar": {

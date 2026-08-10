@@ -20,12 +20,12 @@ import com.main.untitledantgame.utility.ecs.Entity;
 import com.main.untitledantgame.visuals.Assets;
 
 public class Anthill extends Entity {
-    UIBarComponent foodBar, pheroBar, expbar;
-    int food = 100, phero = 0, exp = 0;
-    int maxFood = 100, maxPhero = 100, maxExp = 100;
+    UIBarComponent foodBar, expbar;
+    int food = 100, exp = 0;
+    int maxFood = 100,maxExp = 100;
     int level = 1;
 
-    public Anthill(int x, int y, UIBarComponent foodBar, UIBarComponent pheroBar, UIBarComponent expbar, World world, Game game){
+    public Anthill(int x, int y, UIBarComponent foodBar, UIBarComponent expbar, World world, Game game){
         BodyComponent body = generateBody(x, y, world);
 
         addComponent(body);
@@ -39,12 +39,9 @@ public class Anthill extends Entity {
         addComponent(sprite);
 
         this.foodBar = foodBar;
-        this.pheroBar = pheroBar;
         this.expbar = expbar;
         foodBar.maxValue = maxFood;
         foodBar.value = food;
-        pheroBar.maxValue = maxPhero;
-        pheroBar.value = phero;
         expbar.maxValue = maxExp;
         expbar.value = exp;
     }
@@ -72,6 +69,7 @@ public class Anthill extends Entity {
     public void addFood(int amount){
         food = Math.min(food+amount, maxFood);
         foodBar.value = food;
+        Assets.eatSound.play(1);
     }
 
 
@@ -85,6 +83,7 @@ public class Anthill extends Entity {
     }
 
     void levelUp(){
+        Assets.levelUpSound.play(1);
         level++;
         maxExp += (int) (Math.exp(level + 1) * 25);
         expbar.maxValue = maxExp;

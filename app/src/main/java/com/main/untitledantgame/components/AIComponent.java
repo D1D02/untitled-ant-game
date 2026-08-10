@@ -66,7 +66,6 @@ public class AIComponent implements Component {
         float fy = (float)Math.sin(angle)*force;
 
 
-
         antBody.applyForceToCenter( new Vec2(fx,fy), true );
         //Log.d("WANDERING", "x: " + fx + " y:"+ fy);
 

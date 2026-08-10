@@ -14,9 +14,15 @@ import java.util.List;
 public class Assets {
     public static Pixmap background;
     public static Pixmap anthill;
+
+    public static Pixmap button;
     public static PrototypeRegistry prototypeRegistry;
     public static List<Generator> generators;
 
     public static Music soundtrack;
     public static Sound eatSound;
+
+    public static Sound levelUpSound;
+
+    public static Sound buttonSound;
 }

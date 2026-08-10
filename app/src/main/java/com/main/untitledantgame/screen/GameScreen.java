@@ -198,10 +198,8 @@ public class GameScreen extends Screen {
         //UI
         canvas = new UICanvas();
         Entity foodBarEntity = entityFactory.create("FoodBar", world.physicsWorld, game);
-        Entity pheroBarEntity = entityFactory.create("PheroBar", world.physicsWorld, game);
         Entity expBarEntity = entityFactory.create("ExpBar", world.physicsWorld, game);
         canvas.addElement(foodBarEntity);
-        canvas.addElement(pheroBarEntity);
         canvas.addElement(expBarEntity);
 
         Entity reset = entityFactory.create("ResetCameraButton", world.physicsWorld, game);
@@ -254,7 +252,7 @@ public class GameScreen extends Screen {
 
         //FORMICAIO
 
-        anthill = new Anthill(0, 0, foodBarEntity.getComponent(UIBarComponent.class), pheroBarEntity.getComponent(UIBarComponent.class), expBarEntity.getComponent(UIBarComponent.class), world.physicsWorld, game);
+        anthill = new Anthill(0, 0, foodBarEntity.getComponent(UIBarComponent.class),expBarEntity.getComponent(UIBarComponent.class), world.physicsWorld, game);
 
         world.addEntity(anthill);
 
@@ -296,7 +294,11 @@ public class GameScreen extends Screen {
         xOffset = -(int)(bc.body.getPositionX());// + g.getWidth()/2f);
         yOffset = -(int)(bc.body.getPositionY());// + g.getHeight()/2f);
         //Log.d("POS_DEBUG", xOffset + " " + yOffset);
-        for(int i = 0; i < 2; i++) {
+        int antAmount = 2;
+        if(!anthill.consumeFood(10*antAmount))
+            return;
+
+        for(int i = 0; i < antAmount; i++) {
             Entity ant = spawnEntity("Ant", 0, 0);
             AIComponent agent = ant.getComponent(AIComponent.class);
             agent.path_id = oc.path_id;
