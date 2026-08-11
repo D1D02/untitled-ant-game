@@ -11,6 +11,7 @@ import com.badlogic.androidgames.framework.Pixmap;
 import com.badlogic.androidgames.framework.Screen;
 import com.badlogic.androidgames.framework.impl.AndroidAudio;
 import com.google.gson.JsonArray;
+import com.main.untitledantgame.utility.Quiz;
 import com.main.untitledantgame.utility.ecs.PrototypeRegistry;
 import com.main.untitledantgame.visuals.Assets;
 import com.main.untitledantgame.utility.JsonLoader;
@@ -84,6 +85,8 @@ public class LoadingScreen extends Screen {
         //AudioManager.initialize(((Context) game).getApplicationContext());
         // Passo al menu principale
         game.setScreen(new MainMenuScreen(game));
+
+        Quiz.init();
     }
 
     @Override

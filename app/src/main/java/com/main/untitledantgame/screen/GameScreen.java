@@ -1,5 +1,7 @@
 package com.main.untitledantgame.screen;
 
+import static com.main.untitledantgame.utility.Quiz.getQuestion;
+
 import android.util.Log;
 
 import com.badlogic.androidgames.framework.Game;
@@ -27,6 +29,7 @@ import com.main.untitledantgame.map.Anthill;
 import com.main.untitledantgame.map.GameWorld;
 import com.main.untitledantgame.pools.EntityPool;
 import com.main.untitledantgame.ui.UICanvas;
+import com.main.untitledantgame.utility.Quiz;
 import com.main.untitledantgame.utility.ecs.Entity;
 import com.main.untitledantgame.utility.ecs.EntityFactory;
 import com.main.untitledantgame.visuals.Assets;
@@ -260,6 +263,10 @@ public class GameScreen extends Screen {
 
         Entity quizTrue = entityFactory.create("QuizTrue", world.physicsWorld, game);
         Entity quizFalse = entityFactory.create("QuizFalse", world.physicsWorld, game);
+        UIButtonComponent.setOnClickEvent(quizTrue, ()->{
+            quizAnswer(Quiz.answer(true)); });
+        UIButtonComponent.setOnClickEvent(quizFalse, ()->{quizAnswer(Quiz.answer(false));});
+
         this.quizTrue = quizTrue.getComponent(UIButtonComponent.class);
         this.quizFalse = quizFalse.getComponent(UIButtonComponent.class);
         this.quizTrue.enabled = false;
@@ -322,10 +329,21 @@ public class GameScreen extends Screen {
     }
 
     void startQuiz(){
+        quizLabel.text = Quiz.getQuestion();
         quizLabel.enabled = true;
         quizButton.enabled = false;
         quizTrue.enabled = true;
         quizFalse.enabled = true;
+    }
+
+    void quizAnswer(boolean right){
+        if(right)
+            Assets.pickupSound.play(10);
+        else
+            Assets.eatSound.play(10);
+        quizLabel.enabled = false;
+        quizTrue.enabled = false;
+        quizFalse.enabled = false;
     }
 
     void selectBoardEvent(int index){
