@@ -30,7 +30,8 @@ public class AIComponent implements Component {
 
     private Entity carriedFood = null;
     private Joint carryJoint = null;
-
+    public Entity carriedRock= null;
+    private Joint carryJointRock = null;
 
     private float p_time_spent = 0;
     private float p_max_time = 0.3f;
@@ -47,6 +48,9 @@ public class AIComponent implements Component {
 
             case FOLLOWING:
                 return followTrail( antBody, force, screen, true );
+
+            case DRAGGING:
+                return dragRock( antBody, force, screen );
 
             case WAITING:
                 return 2;
@@ -131,32 +135,68 @@ public class AIComponent implements Component {
 
             antBody.setLinearDamping(0.5f);
         }
-        else
+        else if( carriedRock != null )
         {
-            state = Behaviour.WAITING;
+            Entity ant = (Entity) antBody.getUserData();
+            carryJointRock = screen.createJoint(ant, carriedRock);
+            state = Behaviour.DRAGGING;
         }
         return wanderAngle;
     }
 
+    public float dragRock( Body antBody, float force, GameScreen screen )
+    {
+        Entity pheromone = screen.nextTrailPheromone( path_id, inc_id - 1);
+        //Log.d("DragRock", "Path_id: "+path_id+" Inc_id: "+inc_id);
+        if(carryJointRock == null || carriedRock == null) state = Behaviour.RETURNING;
+
+        if(pheromone != null) {
+            Vec2 antPos = antBody.getPosition();
+            Vec2 pheromonePos = pheromone.getComponent(BodyComponent.class).body.getPosition();
+            Vec2 d = new Vec2((pheromonePos.getX() - antPos.getX()), pheromonePos.getY() - antPos.getY());
+            if( ( d.getY() * d.getY() + d.getX() * d.getX() ) > 3500 )
+            {
+                Entity ant = (Entity)antBody.getUserData();
+                if (carryJointRock != null && carriedRock != null)
+                {
+                    screen.destroyJoint(carryJointRock);
+
+                    screen.world.removeEntity(carriedRock);
+                    carryJointRock = null;
+                    carriedRock = null;
+                }
+                state = Behaviour.RETURNING;
+            }else{
+                wanderAngle = (float) Math.atan2(-d.getY(), -d.getX());
+                Log.d("DragRock", "Angle: "+wanderAngle);
+
+                Vec2.normalize(d);
+
+                d.setX(-d.getX() * force);
+                d.setY(-d.getY() * force);
+
+
+                antBody.applyForceToCenter(d, true);
+
+                antBody.setLinearDamping(0.5f);
+            }
+
+
+
+            /**/
+
+        }
+
+
+        return wanderAngle;
+    }
 
     public void handleCollision( Entity ant, Entity b, GameWorld world, GameScreen screen ){
 
         if( state == Behaviour.WANDERING && Objects.equals(b.type,"Food") )
         {
-            RevoluteJointDef def = new RevoluteJointDef();
-
-            def.setBodyA( ant.getComponent(BodyComponent.class).body );
-
-            def.setBodyB( b.getComponent(BodyComponent.class).body );
-
-            def.setLocalAnchorA(0,0);
-            def.setLocalAnchorB(0,0);
-
-            carryJoint = world.physicsWorld.createJoint(def);
-
+            carryJoint = screen.createJoint(ant, b);
             carriedFood = b;
-
-            def.delete();
 
             state = Behaviour.RETURNING;
 
@@ -172,7 +212,17 @@ public class AIComponent implements Component {
 
             Log.d( "AI", "Rock detected" );
         }
+        else if( state == Behaviour.FOLLOWING && Objects.equals(b.type,"Rock") )
+        {
+            carryJointRock = screen.createJoint(ant, b);
+            carriedRock = b;
 
+
+            state = Behaviour.DRAGGING;
+
+
+            Log.d( "AI", "Food grabbed" );
+        }
     }
 
     private void generatePheromone( Body antBody, GameScreen screen, float deltaTime ){

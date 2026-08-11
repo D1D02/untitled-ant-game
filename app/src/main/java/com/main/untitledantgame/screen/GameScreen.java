@@ -7,6 +7,7 @@ import com.badlogic.androidgames.framework.Graphics;
 import com.badlogic.androidgames.framework.Input;
 import com.badlogic.androidgames.framework.Screen;
 import com.google.fpl.liquidfun.Joint;
+import com.google.fpl.liquidfun.RevoluteJointDef;
 import com.main.untitledantgame.collision.Collision;
 import com.main.untitledantgame.collision.GameContactListener;
 import com.main.untitledantgame.components.AIComponent;
@@ -151,7 +152,6 @@ public class GameScreen extends Screen {
             {
                 AIComponent agent = e.getComponent(AIComponent.class);
                 if(e.getComponent(FoodComponent.class).isFoodEnded(deltaTime)) world.removeEntity(e);
-                Log.d("FoodComponent", "Time passed" + e.getComponent(FoodComponent.class).last_consumed);
                 float rot = agent.updatePosition(e.getComponent(BodyComponent.class).body, e.getComponent(AntStatsComponent.class).force, this, deltaTime);
                 e.getComponent(SpriteComponent.class).rotation =(float) Math.toDegrees(rot) + 90f;
             }
@@ -302,6 +302,7 @@ public class GameScreen extends Screen {
             agent.path_id = oc.path_id;
             agent.state = Behaviour.FOLLOWING;
             agent.inc_id = 1;
+            agent.carriedRock =  e;
         }
     }
 
@@ -411,6 +412,24 @@ public class GameScreen extends Screen {
         return trails[path_id][inc_id];
     }
 
+
+    public Joint createJoint(Entity ant, Entity b) {
+        RevoluteJointDef def = new RevoluteJointDef();
+
+        def.setBodyA( ant.getComponent(BodyComponent.class).body );
+
+        def.setBodyB( b.getComponent(BodyComponent.class).body );
+
+        def.setLocalAnchorA(0,0);
+        def.setLocalAnchorB(0,0);
+
+        Joint carryJoint = world.physicsWorld.createJoint(def);
+
+
+        def.delete();
+
+        return carryJoint;
+    }
 
     public void destroyJoint(Joint joint) {
         if (joint != null) world.physicsWorld.destroyJoint(joint);
