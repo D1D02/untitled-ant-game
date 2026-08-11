@@ -22,6 +22,7 @@ import com.main.untitledantgame.components.SpriteComponent;
 import com.main.untitledantgame.components.ui.UIBarComponent;
 import com.main.untitledantgame.components.ui.UIButtonComponent;
 import com.main.untitledantgame.components.ui.UIElementComponent;
+import com.main.untitledantgame.components.ui.UILabelComponent;
 import com.main.untitledantgame.map.Anthill;
 import com.main.untitledantgame.map.GameWorld;
 import com.main.untitledantgame.pools.EntityPool;
@@ -58,6 +59,14 @@ public class GameScreen extends Screen {
     int obSize = 0;
     int obMax = 10;
     UIButtonComponent[] boardButtons = new UIButtonComponent[3];
+
+    UIButtonComponent quizButton;
+    float quizTimer = 0f;
+    float quizWaitTime = 5f;
+    UILabelComponent quizLabel;
+    UIButtonComponent quizTrue;
+    UIButtonComponent quizFalse;
+
     EntityPool pheromones_pool;
 
     float move_ants = 0.0f;
@@ -119,6 +128,11 @@ public class GameScreen extends Screen {
         }
 
         pendingEntities.clear();
+
+        //QUIZ
+        quizTimer += deltaTime;
+        if(quizTimer >= quizWaitTime)
+            quizReady();
     }
 
     @Override
@@ -235,10 +249,30 @@ public class GameScreen extends Screen {
             }
         });
 
+        Entity quiz = entityFactory.create("QuizButton", world.physicsWorld, game);
+        Entity quizLabel = entityFactory.create("QuizLabel", world.physicsWorld, game);
+        this.quizLabel = quizLabel.getComponent(UILabelComponent.class);
+
+        UIButtonComponent.setOnClickEvent(quiz, ()->{startQuiz();});
+        quizButton = quiz.getComponent(UIButtonComponent.class);
+        this.quizLabel.enabled = false;
+        quizButton.enabled = false;
+
+        Entity quizTrue = entityFactory.create("QuizTrue", world.physicsWorld, game);
+        Entity quizFalse = entityFactory.create("QuizFalse", world.physicsWorld, game);
+        this.quizTrue = quizTrue.getComponent(UIButtonComponent.class);
+        this.quizFalse = quizFalse.getComponent(UIButtonComponent.class);
+        this.quizTrue.enabled = false;
+        this.quizFalse.enabled = false;
+
         canvas.addElement(board1);
         canvas.addElement(board2);
         canvas.addElement(board3);
         canvas.addElement(toggleBoard);
+        canvas.addElement(quiz);
+        canvas.addElement(quizLabel);
+        canvas.addElement(quizTrue);
+        canvas.addElement(quizFalse);
 
         updateBoard();
 
@@ -280,6 +314,18 @@ public class GameScreen extends Screen {
 
         pheromones_pool = new EntityPool(1000, "Pheromone", world.physicsWorld, game);
         trails = new Entity[1000][1000];
+    }
+
+    void quizReady(){
+        quizButton.enabled = true;
+        quizTimer = 0;
+    }
+
+    void startQuiz(){
+        quizLabel.enabled = true;
+        quizButton.enabled = false;
+        quizTrue.enabled = true;
+        quizFalse.enabled = true;
     }
 
     void selectBoardEvent(int index){

@@ -31,7 +31,8 @@ public class AndroidGraphics implements Graphics {
         this.frameBuffer = frameBuffer;
         this.canvas = new Canvas(frameBuffer);
         this.paint = new Paint();
-        paint.setTextSize(30);
+        paint.setTextSize(25);
+        paint.setTextScaleX(0.8f);
         paint.setTypeface(Typeface.SANS_SERIF);
         paint.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD));
     }
