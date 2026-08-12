@@ -24,6 +24,7 @@ import com.badlogic.androidgames.framework.Color;
 import com.google.gson.JsonObject;
 
 import com.main.untitledantgame.components.*;
+import com.main.untitledantgame.components.ui.UILabelComponent;
 
 public class ComponentFactory {
 
@@ -178,11 +179,21 @@ public class ComponentFactory {
                 buttonComponent.posY = data.get("y").getAsInt();
                 buttonComponent.width = data.get("width").getAsInt();
                 buttonComponent.height = data.get("height").getAsInt();
-                buttonComponent.color = Color.convert(data.get("R").getAsInt(),data.get("G").getAsInt(),data.get("B").getAsInt(),255);
+                //buttonComponent.color = Color.convert(data.get("R").getAsInt(),data.get("G").getAsInt(),data.get("B").getAsInt(),255);
                 buttonComponent.text = data.get("text").getAsString();
                 buttonComponent.textColor = Color.convert(data.get("textR").getAsInt(),data.get("textG").getAsInt(),data.get("textB").getAsInt(),255);
 
                 return buttonComponent;
+            case "uilabel":
+                UILabelComponent labelComponent = new UILabelComponent();
+                labelComponent.posX = data.get("x").getAsInt();
+                labelComponent.posY = data.get("y").getAsInt();
+                labelComponent.width = data.get("width").getAsInt();
+                labelComponent.height = data.get("height").getAsInt();
+                labelComponent.text = data.get("text").getAsString();
+                labelComponent.textColor = Color.convert(data.get("textR").getAsInt(),data.get("textG").getAsInt(),data.get("textB").getAsInt(),255);
+
+                return labelComponent;
             case "obstacle":
                 ObstacleComponent oc = new ObstacleComponent();
                 oc.name = data.get("name").getAsString();

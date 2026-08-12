@@ -31,7 +31,8 @@ public class AndroidGraphics implements Graphics {
         this.frameBuffer = frameBuffer;
         this.canvas = new Canvas(frameBuffer);
         this.paint = new Paint();
-        paint.setTextSize(30);
+        paint.setTextSize(25);
+        paint.setTextScaleX(0.8f);
         paint.setTypeface(Typeface.SANS_SERIF);
         paint.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD));
     }
@@ -158,7 +159,14 @@ public class AndroidGraphics implements Graphics {
         paint.setColor(color);
         canvas.drawText(text, x, y, paint);
     }
-
+    @Override
+    public void drawText(String text, int x, int y, int color, int lineLength){
+        paint.setColor(color);
+        int lines = text.length()/lineLength;
+        int yOffset =(int)( 20 * ((float)lines/2f));
+        for(int i = 0; i <= lines; i++)
+            canvas.drawText(text.substring(i*lineLength, Math.min((i+1)*lineLength, text.length())), x, y+(i*20) - yOffset, paint);
+    }
     @Override
     public int getWidth() {
         return frameBuffer.getWidth();

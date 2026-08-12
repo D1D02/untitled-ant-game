@@ -16,23 +16,6 @@
   }
 },
   {
-    "name": "PheroBar",
-    "components": {
-      "uibar": {
-        "x": 35,
-        "y": 0,
-        "width": 30,
-        "height": 10,
-        "bgR": 100,
-        "bgG": 100,
-        "bgB": 100,
-        "fillR": 200,
-        "fillG": 0,
-        "fillB": 150
-      }
-    }
-  },
-  {
     "name": "ExpBar",
     "components": {
       "uibar": {
@@ -58,12 +41,9 @@
         "width": 34,
         "height": 20,
         "text": "PLAY",
-        "R": 100,
-        "G": 100,
-        "B": 100,
         "textR": 255,
         "textG": 255,
-        "textB": 255
+        "textB": 0
       }
     }
   },
@@ -71,17 +51,14 @@
     "name": "ResetCameraButton",
     "components": {
       "uibutton": {
-        "x": 80,
-        "y": 60,
-        "width": 15,
-        "height": 15,
+        "x": 75,
+        "y": 55,
+        "width": 25,
+        "height": 20,
         "text": "CENTER",
-        "R": 100,
-        "G": 100,
-        "B": 100,
         "textR": 255,
         "textG": 255,
-        "textB": 255
+        "textB": 0
       }
     }
   },
@@ -89,17 +66,14 @@
     "name": "ExplorationButton",
     "components": {
       "uibutton": {
-        "x": 80,
+        "x": 75,
         "y": 80,
-        "width": 20,
+        "width": 25,
         "height": 20,
         "text": "EXPLORE",
-        "R": 100,
-        "G": 100,
-        "B": 100,
         "textR": 255,
         "textG": 255,
-        "textB": 255
+        "textB": 0
       }
     }
   },
@@ -112,12 +86,9 @@
         "width": 25,
         "height": 15,
         "text": "oggetto 1",
-        "R": 100,
-        "G": 100,
-        "B": 100,
         "textR": 255,
         "textG": 255,
-        "textB": 255
+        "textB": 0
       }
     }
   },
@@ -130,12 +101,9 @@
         "width": 25,
         "height": 15,
         "text": "oggetto 2",
-        "R": 100,
-        "G": 100,
-        "B": 100,
         "textR": 255,
         "textG": 255,
-        "textB": 255
+        "textB": 0
       }
     }
   },
@@ -148,12 +116,9 @@
         "width": 25,
         "height": 15,
         "text": "oggetto 2",
-        "R": 100,
-        "G": 100,
-        "B": 100,
         "textR": 255,
         "textG": 255,
-        "textB": 255
+        "textB": 0
       }
     }
   },
@@ -166,12 +131,70 @@
         "width": 10,
         "height": 15,
         "text": "v",
-        "R": 100,
-        "G": 100,
-        "B": 100,
         "textR": 255,
         "textG": 255,
-        "textB": 255
+        "textB": 0
       }
     }
-  }]
+  },
+  {
+    "name": "QuizButton",
+    "components": {
+      "uibutton": {
+        "x": 90,
+        "y": 40,
+        "width": 10,
+        "height": 15,
+        "text": "?",
+        "textR": 255,
+        "textG": 0,
+        "textB": 0
+      }
+    }
+  },
+  {
+  "name": "QuizLabel",
+  "components": {
+    "uilabel": {
+      "x": 10,
+      "y": 20,
+      "width": 80,
+      "height": 40,
+      "text": "Passare a Youtube \nPremium? Eddai :)",
+      "textR": 255,
+      "textG": 255,
+      "textB": 0
+    }
+  }
+},
+  {
+    "name": "QuizTrue",
+    "components": {
+      "uibutton": {
+        "x": 10,
+        "y": 65,
+        "width": 35,
+        "height": 20,
+        "text": "TRUE",
+        "textR": 255,
+        "textG": 255,
+        "textB": 0
+      }
+    }
+  },
+  {
+    "name": "QuizFalse",
+    "components": {
+      "uibutton": {
+        "x": 55,
+        "y": 65,
+        "width": 35,
+        "height": 20,
+        "text": "FALSE",
+        "textR": 255,
+        "textG": 255,
+        "textB": 0
+      }
+    }
+  }
+]

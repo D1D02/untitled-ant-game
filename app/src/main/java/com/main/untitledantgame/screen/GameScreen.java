@@ -1,5 +1,7 @@
 package com.main.untitledantgame.screen;
 
+import static com.main.untitledantgame.utility.Quiz.getQuestion;
+
 import android.util.Log;
 
 import com.badlogic.androidgames.framework.Game;
@@ -23,10 +25,12 @@ import com.main.untitledantgame.components.SpriteComponent;
 import com.main.untitledantgame.components.ui.UIBarComponent;
 import com.main.untitledantgame.components.ui.UIButtonComponent;
 import com.main.untitledantgame.components.ui.UIElementComponent;
+import com.main.untitledantgame.components.ui.UILabelComponent;
 import com.main.untitledantgame.map.Anthill;
 import com.main.untitledantgame.map.GameWorld;
 import com.main.untitledantgame.pools.EntityPool;
 import com.main.untitledantgame.ui.UICanvas;
+import com.main.untitledantgame.utility.Quiz;
 import com.main.untitledantgame.utility.ecs.Entity;
 import com.main.untitledantgame.utility.ecs.EntityFactory;
 import com.main.untitledantgame.visuals.Assets;
@@ -59,6 +63,14 @@ public class GameScreen extends Screen {
     int obSize = 0;
     int obMax = 10;
     UIButtonComponent[] boardButtons = new UIButtonComponent[3];
+
+    UIButtonComponent quizButton;
+    float quizTimer = 0f;
+    float quizWaitTime = 60f;
+    UILabelComponent quizLabel;
+    UIButtonComponent quizTrue;
+    UIButtonComponent quizFalse;
+
     EntityPool pheromones_pool;
 
     float move_ants = 0.0f;
@@ -120,6 +132,11 @@ public class GameScreen extends Screen {
         }
 
         pendingEntities.clear();
+
+        //QUIZ
+        quizTimer += deltaTime;
+        if(quizTimer >= quizWaitTime)
+            quizReady();
     }
 
     @Override
@@ -198,10 +215,8 @@ public class GameScreen extends Screen {
         //UI
         canvas = new UICanvas();
         Entity foodBarEntity = entityFactory.create("FoodBar", world.physicsWorld, game);
-        Entity pheroBarEntity = entityFactory.create("PheroBar", world.physicsWorld, game);
         Entity expBarEntity = entityFactory.create("ExpBar", world.physicsWorld, game);
         canvas.addElement(foodBarEntity);
-        canvas.addElement(pheroBarEntity);
         canvas.addElement(expBarEntity);
 
         Entity reset = entityFactory.create("ResetCameraButton", world.physicsWorld, game);
@@ -237,10 +252,34 @@ public class GameScreen extends Screen {
             }
         });
 
+        Entity quiz = entityFactory.create("QuizButton", world.physicsWorld, game);
+        Entity quizLabel = entityFactory.create("QuizLabel", world.physicsWorld, game);
+        this.quizLabel = quizLabel.getComponent(UILabelComponent.class);
+
+        UIButtonComponent.setOnClickEvent(quiz, ()->{startQuiz();});
+        quizButton = quiz.getComponent(UIButtonComponent.class);
+        this.quizLabel.enabled = false;
+        quizButton.enabled = false;
+
+        Entity quizTrue = entityFactory.create("QuizTrue", world.physicsWorld, game);
+        Entity quizFalse = entityFactory.create("QuizFalse", world.physicsWorld, game);
+        UIButtonComponent.setOnClickEvent(quizTrue, ()->{
+            quizAnswer(Quiz.answer(true)); });
+        UIButtonComponent.setOnClickEvent(quizFalse, ()->{quizAnswer(Quiz.answer(false));});
+
+        this.quizTrue = quizTrue.getComponent(UIButtonComponent.class);
+        this.quizFalse = quizFalse.getComponent(UIButtonComponent.class);
+        this.quizTrue.enabled = false;
+        this.quizFalse.enabled = false;
+
         canvas.addElement(board1);
         canvas.addElement(board2);
         canvas.addElement(board3);
         canvas.addElement(toggleBoard);
+        canvas.addElement(quiz);
+        canvas.addElement(quizLabel);
+        canvas.addElement(quizTrue);
+        canvas.addElement(quizFalse);
 
         updateBoard();
 
@@ -254,7 +293,7 @@ public class GameScreen extends Screen {
 
         //FORMICAIO
 
-        anthill = new Anthill(0, 0, foodBarEntity.getComponent(UIBarComponent.class), pheroBarEntity.getComponent(UIBarComponent.class), expBarEntity.getComponent(UIBarComponent.class), world.physicsWorld, game);
+        anthill = new Anthill(0, 0, foodBarEntity.getComponent(UIBarComponent.class),expBarEntity.getComponent(UIBarComponent.class), world.physicsWorld, game);
 
         world.addEntity(anthill);
 
@@ -284,6 +323,29 @@ public class GameScreen extends Screen {
         trails = new Entity[1000][1000];
     }
 
+    void quizReady(){
+        quizButton.enabled = true;
+        quizTimer = 0;
+    }
+
+    void startQuiz(){
+        quizLabel.text = Quiz.getQuestion();
+        quizLabel.enabled = true;
+        quizButton.enabled = false;
+        quizTrue.enabled = true;
+        quizFalse.enabled = true;
+    }
+
+    void quizAnswer(boolean right){
+        if(right)
+            Assets.pickupSound.play(10);
+        else
+            Assets.eatSound.play(10);
+        quizLabel.enabled = false;
+        quizTrue.enabled = false;
+        quizFalse.enabled = false;
+    }
+
     void selectBoardEvent(int index){
         Log.d("OBSTACLES", "Ostacoli " +obSize);
         if(obSize <= index)
@@ -296,7 +358,11 @@ public class GameScreen extends Screen {
         xOffset = -(int)(bc.body.getPositionX());// + g.getWidth()/2f);
         yOffset = -(int)(bc.body.getPositionY());// + g.getHeight()/2f);
         //Log.d("POS_DEBUG", xOffset + " " + yOffset);
-        for(int i = 0; i < 2; i++) {
+        int antAmount = 2;
+        if(!anthill.consumeFood(10*antAmount))
+            return;
+
+        for(int i = 0; i < antAmount; i++) {
             Entity ant = spawnEntity("Ant", 0, 0);
             AIComponent agent = ant.getComponent(AIComponent.class);
             agent.path_id = oc.path_id;
@@ -310,6 +376,7 @@ public class GameScreen extends Screen {
         if(obSize >= obMax){
             return;
         }
+        Assets.boardSound.play(1);
         ObstacleComponent oc = e.getComponent(ObstacleComponent.class);
         oc.path_id = id;
         oc.spotted = true;

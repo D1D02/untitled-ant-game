@@ -11,6 +11,7 @@ import com.badlogic.androidgames.framework.Pixmap;
 import com.badlogic.androidgames.framework.Screen;
 import com.badlogic.androidgames.framework.impl.AndroidAudio;
 import com.google.gson.JsonArray;
+import com.main.untitledantgame.utility.Quiz;
 import com.main.untitledantgame.utility.ecs.PrototypeRegistry;
 import com.main.untitledantgame.visuals.Assets;
 import com.main.untitledantgame.utility.JsonLoader;
@@ -72,13 +73,20 @@ public class LoadingScreen extends Screen {
 
         Assets.anthill = loadSprite("anthill.png", game);
         Assets.background = loadSprite("grass.png", game);
+        Assets.button = loadSprite("button.png", game);
 
         AndroidAudio audio = new AndroidAudio((Activity)game);
         Assets.soundtrack = audio.newMusic("soundtrack.mp3");
         Assets.eatSound = audio.newSound("eat.mp3");
+        Assets.levelUpSound = audio.newSound("level_up.mp3");
+        Assets.buttonSound = audio.newSound("button.mp3");
+        Assets.pickupSound = audio.newSound("pickup.mp3");
+        Assets.boardSound = audio.newSound("board.mp3");
         //AudioManager.initialize(((Context) game).getApplicationContext());
         // Passo al menu principale
         game.setScreen(new MainMenuScreen(game));
+
+        Quiz.init((Context) game);
     }
 
     @Override
@@ -105,7 +113,7 @@ public class LoadingScreen extends Screen {
             return game.getGraphics()
                     .newPixmap(sprite, Graphics.PixmapFormat.ARGB8888);
         } catch (Exception e) {
-            Log.e("ECS", "Errore sprite: anthill.png");
+            Log.e("ECS", "Errore sprite");
         }
         return null;
     }
