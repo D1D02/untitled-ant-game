@@ -165,7 +165,7 @@ public class AndroidGraphics implements Graphics {
         int lines = text.length()/lineLength;
         int yOffset =(int)( 20 * ((float)lines/2f));
         for(int i = 0; i <= lines; i++)
-            canvas.drawText(text.substring(i*lineLength, Math.min((i+1)*lineLength, text.length())), x, y+(i*20) + yOffset, paint);
+            canvas.drawText(text.substring(i*lineLength, Math.min((i+1)*lineLength, text.length())), x, y+(i*20) - yOffset, paint);
     }
     @Override
     public int getWidth() {
