@@ -1,0 +1,42 @@
+[
+  {
+    "question": "Ants can lift objects that are many times heavier than their own body weight",
+    "answer" : "true"
+  },
+  {
+    "question": "All ants in a colony have wings",
+    "answer" : "false"
+  },
+  {
+  "question": "Ants have lungs to breathe oxygen",
+  "answer" : "false"
+  },
+  {
+    "question": "Some species of ants farm other insects, such as aphids",
+    "answer" : "true"
+  },
+  {
+    "question": "Ant ears are located on their antennae",
+    "answer" : "false"
+  },
+  {
+    "question": "An ant colony can have more than one queen",
+    "answer" : "true"
+  },
+  {
+    "question": "Ants are capable of living in frozen glaciers and permanently icy environments",
+    "answer" : "false"
+  },
+  {
+    "question": "Fire ants got their name because of their bright red coloration and the burning sensation caused by their sting",
+    "answer" : "true"
+  },
+  {
+    "question": "The primary role of male ants in a colony is to forage for food and defend the nest",
+    "answer" : "false"
+  },
+  {
+    "question": "Ants communicate with each other primarily through chemical signals called pheromones",
+    "answer" : "true"
+  }
+]

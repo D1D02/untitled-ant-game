@@ -65,7 +65,7 @@ public class GameScreen extends Screen {
 
     UIButtonComponent quizButton;
     float quizTimer = 0f;
-    float quizWaitTime = 5f;
+    float quizWaitTime = 60f;
     UILabelComponent quizLabel;
     UIButtonComponent quizTrue;
     UIButtonComponent quizFalse;

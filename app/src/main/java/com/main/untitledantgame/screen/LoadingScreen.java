@@ -86,7 +86,7 @@ public class LoadingScreen extends Screen {
         // Passo al menu principale
         game.setScreen(new MainMenuScreen(game));
 
-        Quiz.init();
+        Quiz.init((Context) game);
     }
 
     @Override
