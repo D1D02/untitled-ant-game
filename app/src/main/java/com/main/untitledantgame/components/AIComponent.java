@@ -209,8 +209,8 @@ public class AIComponent implements Component {
         {
             screen.addToBoard(b, path_id);
             state = Behaviour.RETURNING;
-
-
+            b.getComponent(BodyComponent.class).body.setLinearVelocity(new Vec2(0f, 0f));
+            b.getComponent(BodyComponent.class).body.setAngularVelocity(0);
             Log.d( "AI", "Rock detected" );
         }
         else if( state == Behaviour.FOLLOWING && Objects.equals(b.type,"Rock") )
