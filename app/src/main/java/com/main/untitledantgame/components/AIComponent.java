@@ -94,9 +94,10 @@ public class AIComponent implements Component {
 
         Entity pheromone = screen.nextTrailPheromone( path_id, inc_id);
 
+        Vec2 antPos = antBody.getPosition();
         //Log.d("TRAIL", "Path_id:"+path_id+" Inc_id:"+inc_id);
-
-        if( !forward  && inc_id == 0 ) {
+        Vec2 d_spawn = new Vec2((0 - antPos.getX()), 0 - antPos.getY());
+        if( ( !forward  && inc_id == 0 ) || ( Math.abs(d_spawn.getX()) < 10.1f && Math.abs(d_spawn.getY()) < 10.1f ) ) {
             Entity ant = (Entity)antBody.getUserData();
             if (carryJoint != null && carriedFood != null)
             {
@@ -113,7 +114,6 @@ public class AIComponent implements Component {
             return 1;
         }
 
-        Vec2 antPos = antBody.getPosition();
 
         if(pheromone != null) {
             Vec2 pheromonePos = pheromone.getComponent(BodyComponent.class).body.getPosition();
