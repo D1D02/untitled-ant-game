@@ -31,7 +31,7 @@ public class AIComponent implements Component {
 
     private Entity carriedFood = null;
     private Joint carryJoint = null;
-    public Entity carriedRock= null;
+    public int carriedRock = -1;
     private Joint carryJointRock = null;
 
     private float p_time_spent = 0;
@@ -95,7 +95,7 @@ public class AIComponent implements Component {
         Entity pheromone = screen.nextTrailPheromone( path_id, inc_id);
 
         Vec2 antPos = antBody.getPosition();
-        //Log.d("TRAIL", "Path_id:"+path_id+" Inc_id:"+inc_id);
+        Log.d("TRAIL", "Path_id:"+path_id+" Inc_id:"+inc_id);
         Vec2 d_spawn = new Vec2((0 - antPos.getX()), 0 - antPos.getY());
         if ( !forward  && (inc_id == 0  || ( Math.abs(d_spawn.getX()) < 10.1f && Math.abs(d_spawn.getY()) < 10.1f )  ) ) {
             Entity ant = (Entity)antBody.getUserData();
@@ -135,10 +135,11 @@ public class AIComponent implements Component {
 
             antBody.setLinearDamping(0.5f);
         }
-        else if( carriedRock != null )
+        else if( carriedRock != -1 )
         {
             Entity ant = (Entity) antBody.getUserData();
-            carryJointRock = screen.createJoint(ant, carriedRock);
+            Entity rock = screen.obstacles.get(carriedRock);
+            carryJointRock = screen.createJoint(ant, rock);
             state = Behaviour.DRAGGING;
         }
         return wanderAngle;
@@ -148,7 +149,7 @@ public class AIComponent implements Component {
     {
         Entity pheromone = screen.nextTrailPheromone( path_id, inc_id - 1);
         //Log.d("DragRock", "Path_id: "+path_id+" Inc_id: "+inc_id);
-        if(carryJointRock == null || carriedRock == null) state = Behaviour.RETURNING;
+        if(carryJointRock == null || carriedRock == -1) state = Behaviour.RETURNING;
 
         if(pheromone != null) {
             Vec2 antPos = antBody.getPosition();
@@ -156,22 +157,17 @@ public class AIComponent implements Component {
             Vec2 d = new Vec2((pheromonePos.getX() - antPos.getX()), pheromonePos.getY() - antPos.getY());
             if( ( d.getY() * d.getY() + d.getX() * d.getX() ) > 3500 )
             {
-                try {
-                    if (carryJointRock != null && carriedRock != null) {
-                        screen.destroyJoint(carryJointRock);
-
-                        screen.world.removeEntity(carriedRock);
-                        carryJointRock = null;
-                        carriedRock = null;
-                    }
-                } catch (Exception e) {
+                if (carryJointRock != null && carriedRock != -1) {
+                    screen.destroyJoint(carryJointRock);
+                    screen.destroyObstacle(carriedRock);
+                    carriedRock = -1;
                     carryJointRock = null;
-                    carriedRock = null;
                 }
+                inc_id--;
                 state = Behaviour.RETURNING;
             }else{
                 wanderAngle = (float) Math.atan2(-d.getY(), -d.getX());
-                Log.d("DragRock", "Angle: "+wanderAngle);
+                //Log.d("DragRock", "Angle: "+wanderAngle);
 
                 Vec2.normalize(d);
 
@@ -185,8 +181,6 @@ public class AIComponent implements Component {
             }
 
 
-
-            /**/
 
         }
 
@@ -219,7 +213,6 @@ public class AIComponent implements Component {
         else if( state == Behaviour.FOLLOWING && Objects.equals(b.type,"Rock") )
         {
             carryJointRock = screen.createJoint(ant, b);
-            carriedRock = b;
 
 
             state = Behaviour.DRAGGING;

@@ -59,7 +59,7 @@ public class GameScreen extends Screen {
     List<Entity> generators = new ArrayList<>(5);
     List<Entity> mortalEntities = new ArrayList<>(100);
 
-    List<Entity> obstacles = new ArrayList<>(10);
+    public List<Entity> obstacles = new ArrayList<>(10);
     int obSize = 0;
     int obMax = 10;
     UIButtonComponent[] boardButtons = new UIButtonComponent[3];
@@ -358,7 +358,7 @@ public class GameScreen extends Screen {
         xOffset = -(int)(bc.body.getPositionX());// + g.getWidth()/2f);
         yOffset = -(int)(bc.body.getPositionY());// + g.getHeight()/2f);
         //Log.d("POS_DEBUG", xOffset + " " + yOffset);
-        int antAmount = 2;
+        int antAmount = 1;
         if(!anthill.consumeFood(10*antAmount))
             return;
 
@@ -367,7 +367,7 @@ public class GameScreen extends Screen {
             AIComponent agent = ant.getComponent(AIComponent.class);
             agent.path_id = oc.path_id;
             agent.inc_id = 1;
-            agent.carriedRock =  e;
+            agent.carriedRock =  index;
 
             agent.state = Behaviour.FOLLOWING;
         }
@@ -508,5 +508,17 @@ public class GameScreen extends Screen {
         AIComponent ant_ai = ant.getComponent(AIComponent.class);
         ant_ai.path_id = path_id;
         ant_ai.state = Behaviour.FOLLOWING;
+    }
+
+    public void destroyObstacle( int index ) {
+        if(obSize <= index)
+            return;
+        obSize--;
+
+        Entity obstacle = obstacles.remove(index);
+
+        if(obstacle != null ) world.removeEntity(obstacle);
+
+        updateBoard();
     }
 }
