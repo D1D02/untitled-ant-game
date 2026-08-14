@@ -366,9 +366,10 @@ public class GameScreen extends Screen {
             Entity ant = spawnEntity("Ant", 0, 0);
             AIComponent agent = ant.getComponent(AIComponent.class);
             agent.path_id = oc.path_id;
-            agent.state = Behaviour.FOLLOWING;
             agent.inc_id = 1;
             agent.carriedRock =  e;
+
+            agent.state = Behaviour.FOLLOWING;
         }
     }
 

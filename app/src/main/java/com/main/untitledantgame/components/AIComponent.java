@@ -97,7 +97,7 @@ public class AIComponent implements Component {
         Vec2 antPos = antBody.getPosition();
         //Log.d("TRAIL", "Path_id:"+path_id+" Inc_id:"+inc_id);
         Vec2 d_spawn = new Vec2((0 - antPos.getX()), 0 - antPos.getY());
-        if( ( !forward  && inc_id == 0 ) || ( Math.abs(d_spawn.getX()) < 10.1f && Math.abs(d_spawn.getY()) < 10.1f ) ) {
+        if ( !forward  && (inc_id == 0  || ( Math.abs(d_spawn.getX()) < 10.1f && Math.abs(d_spawn.getY()) < 10.1f )  ) ) {
             Entity ant = (Entity)antBody.getUserData();
             if (carryJoint != null && carriedFood != null)
             {
@@ -156,12 +156,15 @@ public class AIComponent implements Component {
             Vec2 d = new Vec2((pheromonePos.getX() - antPos.getX()), pheromonePos.getY() - antPos.getY());
             if( ( d.getY() * d.getY() + d.getX() * d.getX() ) > 3500 )
             {
-                Entity ant = (Entity)antBody.getUserData();
-                if (carryJointRock != null && carriedRock != null)
-                {
-                    screen.destroyJoint(carryJointRock);
+                try {
+                    if (carryJointRock != null && carriedRock != null) {
+                        screen.destroyJoint(carryJointRock);
 
-                    screen.world.removeEntity(carriedRock);
+                        screen.world.removeEntity(carriedRock);
+                        carryJointRock = null;
+                        carriedRock = null;
+                    }
+                } catch (Exception e) {
                     carryJointRock = null;
                     carriedRock = null;
                 }
