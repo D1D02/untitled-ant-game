@@ -158,8 +158,7 @@ public class AIComponent implements Component {
             if( ( d.getY() * d.getY() + d.getX() * d.getX() ) > 3500 )
             {
                 if (carryJointRock != null && carriedRock != -1) {
-                    screen.destroyJoint(carryJointRock);
-                    screen.destroyObstacle(carriedRock);
+                    screen.destroyObstacle(carriedRock, carryJointRock);
                     carriedRock = -1;
                     carryJointRock = null;
                 }
@@ -190,7 +189,7 @@ public class AIComponent implements Component {
 
     public void handleCollision( Entity ant, Entity b, GameWorld world, GameScreen screen ){
 
-        if( state == Behaviour.WANDERING && Objects.equals(b.type,"Food") )
+        if( state == Behaviour.WANDERING && Objects.equals(b.type,"Food") && carriedRock ==-1 )
         {
             carryJoint = screen.createJoint(ant, b);
             carriedFood = b;

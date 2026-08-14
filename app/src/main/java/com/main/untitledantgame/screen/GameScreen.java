@@ -362,7 +362,7 @@ public class GameScreen extends Screen {
         xOffset = -(int)(bc.body.getPositionX());// + g.getWidth()/2f);
         yOffset = -(int)(bc.body.getPositionY());// + g.getHeight()/2f);
         //Log.d("POS_DEBUG", xOffset + " " + yOffset);
-        int antAmount = 1;
+        int antAmount = 2;
         if(!anthill.consumeFood(10*antAmount))
             return;
 
@@ -514,13 +514,14 @@ public class GameScreen extends Screen {
         ant_ai.state = Behaviour.FOLLOWING;
     }
 
-    public void destroyObstacle( int index ) {
+    public void destroyObstacle( int index, Joint rockJoint ) {
         if(obSize <= index)
             return;
         obSize--;
 
         Entity obstacle = obstacles.remove(index);
 
+        if(rockJoint != null ) destroyJoint(rockJoint);
         if(obstacle != null ) world.removeEntity(obstacle);
 
         updateBoard();
