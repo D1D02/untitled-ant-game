@@ -21,7 +21,7 @@ import com.main.untitledantgame.visuals.Assets;
 
 public class Anthill extends Entity {
     UIBarComponent foodBar, expbar;
-    int food = 100, exp = 0;
+    public int food = 100, exp = 0;
     int maxFood = 100,maxExp = 100;
     int level = 1;
 

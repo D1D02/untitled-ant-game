@@ -337,10 +337,14 @@ public class GameScreen extends Screen {
     }
 
     void quizAnswer(boolean right){
-        if(right)
-            Assets.pickupSound.play(10);
-        else
-            Assets.eatSound.play(10);
+        if(right) {
+            Assets.correctSound.play(20);
+            anthill.addExp(50);
+        }
+        else {
+            Assets.wrongSound.play(10);
+            anthill.consumeFood(Math.min(anthill.food, 20));
+        }
         quizLabel.enabled = false;
         quizTrue.enabled = false;
         quizFalse.enabled = false;
