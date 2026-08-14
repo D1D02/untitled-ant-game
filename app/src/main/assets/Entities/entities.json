@@ -108,8 +108,8 @@
                     "dimension_2": 10.01
                 },
                 "fixture": {
-                    "density": 20,
-                    "friction": 200,
+                    "density": 10,
+                    "friction": 200000000,
                     "restitution": 2
                 }
             },

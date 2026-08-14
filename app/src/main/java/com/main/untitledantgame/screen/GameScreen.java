@@ -9,6 +9,7 @@ import com.badlogic.androidgames.framework.Graphics;
 import com.badlogic.androidgames.framework.Input;
 import com.badlogic.androidgames.framework.Screen;
 import com.google.fpl.liquidfun.Joint;
+import com.google.fpl.liquidfun.RevoluteJointDef;
 import com.main.untitledantgame.collision.Collision;
 import com.main.untitledantgame.collision.GameContactListener;
 import com.main.untitledantgame.components.AIComponent;
@@ -58,7 +59,7 @@ public class GameScreen extends Screen {
     List<Entity> generators = new ArrayList<>(5);
     List<Entity> mortalEntities = new ArrayList<>(100);
 
-    List<Entity> obstacles = new ArrayList<>(10);
+    public List<Entity> obstacles = new ArrayList<>(10);
     int obSize = 0;
     int obMax = 10;
     UIButtonComponent[] boardButtons = new UIButtonComponent[3];
@@ -168,7 +169,6 @@ public class GameScreen extends Screen {
             {
                 AIComponent agent = e.getComponent(AIComponent.class);
                 if(e.getComponent(FoodComponent.class).isFoodEnded(deltaTime)) world.removeEntity(e);
-                Log.d("FoodComponent", "Time passed" + e.getComponent(FoodComponent.class).last_consumed);
                 float rot = agent.updatePosition(e.getComponent(BodyComponent.class).body, e.getComponent(AntStatsComponent.class).force, this, deltaTime);
                 e.getComponent(SpriteComponent.class).rotation =(float) Math.toDegrees(rot) + 90f;
             }
@@ -303,7 +303,7 @@ public class GameScreen extends Screen {
 
             if(anthill.consumeFood(10)) {
                 Entity ant = spawnEntity("Ant", 0, 0);
-                ant.getComponent(AIComponent.class).wanderAngle = (float)(Math.random()-1f);
+                ant.getComponent(AIComponent.class).wanderAngle = (float) (Math.random() * Math.PI * 2);
 
             }
         });
@@ -319,7 +319,7 @@ public class GameScreen extends Screen {
             }
         }
 
-        pheromones_pool = new EntityPool(1000, "Pheromone", world.physicsWorld, game);
+        pheromones_pool = new EntityPool(5000, "Pheromone", world.physicsWorld, game);
         trails = new Entity[1000][1000];
     }
 
@@ -362,7 +362,7 @@ public class GameScreen extends Screen {
         xOffset = -(int)(bc.body.getPositionX());// + g.getWidth()/2f);
         yOffset = -(int)(bc.body.getPositionY());// + g.getHeight()/2f);
         //Log.d("POS_DEBUG", xOffset + " " + yOffset);
-        int antAmount = 2;
+        int antAmount = 1;
         if(!anthill.consumeFood(10*antAmount))
             return;
 
@@ -370,8 +370,10 @@ public class GameScreen extends Screen {
             Entity ant = spawnEntity("Ant", 0, 0);
             AIComponent agent = ant.getComponent(AIComponent.class);
             agent.path_id = oc.path_id;
-            agent.state = Behaviour.FOLLOWING;
             agent.inc_id = 1;
+            agent.carriedRock =  index;
+
+            agent.state = Behaviour.FOLLOWING;
         }
     }
 
@@ -483,6 +485,24 @@ public class GameScreen extends Screen {
     }
 
 
+    public Joint createJoint(Entity ant, Entity b) {
+        RevoluteJointDef def = new RevoluteJointDef();
+
+        def.setBodyA( ant.getComponent(BodyComponent.class).body );
+
+        def.setBodyB( b.getComponent(BodyComponent.class).body );
+
+        def.setLocalAnchorA(0,0);
+        def.setLocalAnchorB(0,0);
+
+        Joint carryJoint = world.physicsWorld.createJoint(def);
+
+
+        def.delete();
+
+        return carryJoint;
+    }
+
     public void destroyJoint(Joint joint) {
         if (joint != null) world.physicsWorld.destroyJoint(joint);
     }
@@ -492,5 +512,17 @@ public class GameScreen extends Screen {
         AIComponent ant_ai = ant.getComponent(AIComponent.class);
         ant_ai.path_id = path_id;
         ant_ai.state = Behaviour.FOLLOWING;
+    }
+
+    public void destroyObstacle( int index ) {
+        if(obSize <= index)
+            return;
+        obSize--;
+
+        Entity obstacle = obstacles.remove(index);
+
+        if(obstacle != null ) world.removeEntity(obstacle);
+
+        updateBoard();
     }
 }
