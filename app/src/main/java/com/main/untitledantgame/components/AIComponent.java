@@ -35,7 +35,7 @@ public class AIComponent implements Component {
     private Joint carryJointRock = null;
 
     private float p_time_spent = 1.5f;
-    private final float p_max_time = 1.5f;
+    private final float p_max_time = 2f;
 
 
     public float updatePosition( Body antBody, float force, GameScreen screen, float deltaTime ){
@@ -235,7 +235,7 @@ public class AIComponent implements Component {
 
             inc_id++;
             path_id = screen.generatePheromone( x, y, path_id, inc_id );
-
+            antBody.setAngularVelocity(0);
             p_time_spent-=p_max_time;
 
         }
