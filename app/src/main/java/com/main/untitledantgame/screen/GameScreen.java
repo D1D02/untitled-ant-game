@@ -216,7 +216,7 @@ public class GameScreen extends Screen {
             int posX = (int)body.body.getPositionX() + g.getWidth()/2 - sprite.width/2 + xOffset;
             int posY = (int)body.body.getPositionY() + g.getHeight()/2 - sprite.height/2 + yOffset;
             //g.drawPixmap(sprite.sprite,posX,posY, 0, 0, sprite.sprite.getWidth(), sprite.sprite.getHeight(), sprite.width, sprite.height, rot);
-            g.drawPixmap(sprite.sprite, posX, posY, 0, 0, sprite.sprite.getWidth(), sprite.sprite.getHeight(), sprite.width, sprite.height, sprite.rotation);
+            g.drawPixmap(sprite.sprite, posX, posY, sprite.windowX, sprite.windowY, sprite.sprite.getWidth(), sprite.sprite.getHeight(), sprite.width, sprite.height, sprite.rotation);
         }
 
         List<Entity> uiElements = canvas.elements;

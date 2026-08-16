@@ -148,19 +148,17 @@ public class ComponentFactory {
                 return life;
 
             case "sprite":
-                SpriteComponent sprite = new SpriteComponent();
-
-                sprite.width = data.get("width").getAsInt();
-                sprite.height = data.get("height").getAsInt();
                 String path = data.get("pathname").getAsString();
-
+                Pixmap pixmap = null;
                 try {
-                    Pixmap pixmap = game.getGraphics()
+                    pixmap = game.getGraphics()
                             .newPixmap(path, Graphics.PixmapFormat.ARGB8888);
-                    sprite.sprite = pixmap;
                 } catch (Exception e) {
                     Log.e("ECS", "Errore sprite: " + path);
                 }
+                SpriteComponent sprite = new SpriteComponent(pixmap);
+                sprite.width = data.get("width").getAsInt();
+                sprite.height = data.get("height").getAsInt();
 
                 return sprite;
             case "uibar":

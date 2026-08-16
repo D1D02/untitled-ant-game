@@ -7,5 +7,17 @@ public class SpriteComponent implements Component{
     public float rotation = 0f;
     public int width = 40;
     public int height = 40;
+    public int windowX = 0;
+    public int windowY = 0;
+    public int windowWidth;
+    public int windowHeight;
+
+    public SpriteComponent(Pixmap sprite){
+        this.sprite = sprite;
+        if(sprite != null){
+            windowWidth = sprite.getWidth();
+            windowHeight = sprite.getHeight();
+        }
+    }
 
 }
