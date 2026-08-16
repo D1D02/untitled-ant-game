@@ -6,7 +6,9 @@ import com.badlogic.androidgames.framework.Pixmap;
 import com.badlogic.androidgames.framework.Sound;
 import com.badlogic.androidgames.framework.impl.AndroidAudio;
 import com.badlogic.androidgames.framework.impl.AndroidMusic;
+import com.main.untitledantgame.map.GameWorld;
 import com.main.untitledantgame.map.Generator;
+import com.main.untitledantgame.pools.EntityPool;
 import com.main.untitledantgame.utility.ecs.PrototypeRegistry;
 
 import java.util.List;
@@ -18,6 +20,10 @@ public class Assets {
     public static Pixmap button;
     public static PrototypeRegistry prototypeRegistry;
     public static List<Generator> generators;
+
+    public static EntityPool pheromones_pool;
+
+    public static GameWorld world;
 
     public static Music soundtrack;
     public static Sound eatSound;

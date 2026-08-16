@@ -24,6 +24,7 @@ import com.badlogic.androidgames.framework.Color;
 import com.google.gson.JsonObject;
 
 import com.main.untitledantgame.components.*;
+import com.main.untitledantgame.components.ui.UIFlashLabelComponent;
 import com.main.untitledantgame.components.ui.UILabelComponent;
 
 public class ComponentFactory {
@@ -194,6 +195,16 @@ public class ComponentFactory {
                 labelComponent.textColor = Color.convert(data.get("textR").getAsInt(),data.get("textG").getAsInt(),data.get("textB").getAsInt(),255);
 
                 return labelComponent;
+            case "uiflashlabel":
+                UIFlashLabelComponent flashLabelComponent = new UIFlashLabelComponent();
+                flashLabelComponent.posX = data.get("x").getAsInt();
+                flashLabelComponent.posY = data.get("y").getAsInt();
+                flashLabelComponent.width = data.get("width").getAsInt();
+                flashLabelComponent.height = data.get("height").getAsInt();
+                flashLabelComponent.text = data.get("text").getAsString();
+                flashLabelComponent.textColor = Color.convert(data.get("textR").getAsInt(),data.get("textG").getAsInt(),data.get("textB").getAsInt(),255);
+
+                return flashLabelComponent;
             case "obstacle":
                 ObstacleComponent oc = new ObstacleComponent();
                 oc.name = data.get("name").getAsString();

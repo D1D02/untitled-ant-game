@@ -21,6 +21,8 @@ import java.util.List;
 public class MainMenuScreen extends Screen {
 
     UICanvas canvas;
+
+    boolean gameStarted = false;
     public MainMenuScreen(Game game) {
         super(game);
         initUI();
@@ -100,7 +102,12 @@ public class MainMenuScreen extends Screen {
         this.canvas = new UICanvas();
 
         Entity play = factory.create("PlayButton", null, null);
-        UIButtonComponent.setOnClickEvent(play, ()->{game.setScreen(new GameScreen(game));});
+        UIButtonComponent.setOnClickEvent(play, ()->{
+            if(gameStarted)
+                return;
+            gameStarted = true;
+            game.setScreen(new GameScreen(game));
+        });
 
         canvas.addElement(play);
     }

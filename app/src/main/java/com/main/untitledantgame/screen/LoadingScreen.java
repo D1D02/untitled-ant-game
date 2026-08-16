@@ -11,6 +11,9 @@ import com.badlogic.androidgames.framework.Pixmap;
 import com.badlogic.androidgames.framework.Screen;
 import com.badlogic.androidgames.framework.impl.AndroidAudio;
 import com.google.gson.JsonArray;
+import com.main.untitledantgame.collision.GameContactListener;
+import com.main.untitledantgame.map.GameWorld;
+import com.main.untitledantgame.pools.EntityPool;
 import com.main.untitledantgame.utility.Quiz;
 import com.main.untitledantgame.utility.ecs.PrototypeRegistry;
 import com.main.untitledantgame.visuals.Assets;
@@ -88,6 +91,12 @@ public class LoadingScreen extends Screen {
         // Passo al menu principale
         game.setScreen(new MainMenuScreen(game));
 
+
+        Assets.world = new GameWorld();
+
+        //Assets.world.physicsWorld.setContactListener(new GameContactListener());
+
+        Assets.pheromones_pool = new EntityPool(1000, "Pheromone", Assets.world.physicsWorld, game);
         Quiz.init((Context) game);
     }
 
