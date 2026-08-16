@@ -101,11 +101,17 @@ public class AIComponent implements Component {
             Entity ant = (Entity)antBody.getUserData();
             if (carryJoint != null && carriedFood != null)
             {
-                screen.destroyJoint(carryJoint);
 
-                screen.anthill.addFood(carriedFood.getComponent(FoodComponent.class).food + ant.getComponent(FoodComponent.class).food);
-                screen.anthill.addExp(25);
-                screen.world.removeEntity(carriedFood);
+                if(carriedFood.getComponent(BodyComponent.class).body != null){
+                    Log.d("AI Component", "Food dropped in anthill");
+                    screen.anthill.addFood(carriedFood.getComponent(FoodComponent.class).food + ant.getComponent(FoodComponent.class).food);
+                    screen.anthill.addExp(25);
+                    screen.destroyJoint(carryJoint);
+                    screen.world.removeEntity(carriedFood);
+
+                }
+                else screen.anthill.addFood(ant.getComponent(FoodComponent.class).food);
+
                 carryJoint = null;
                 carriedFood = null;
             }
