@@ -34,8 +34,8 @@ public class AIComponent implements Component {
     public int carriedRock = -1;
     private Joint carryJointRock = null;
 
-    private float p_time_spent = 0;
-    private final float p_max_time = 0.3f;
+    private float p_time_spent = 1.5f;
+    private final float p_max_time = 1.5f;
 
 
     public float updatePosition( Body antBody, float force, GameScreen screen, float deltaTime ){
