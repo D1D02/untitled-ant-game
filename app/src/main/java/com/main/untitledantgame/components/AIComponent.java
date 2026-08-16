@@ -35,7 +35,7 @@ public class AIComponent implements Component {
     private Joint carryJointRock = null;
 
     private float p_time_spent = 0;
-    private float p_max_time = 0.3f;
+    private final float p_max_time = 0.3f;
 
 
     public float updatePosition( Body antBody, float force, GameScreen screen, float deltaTime ){
@@ -71,12 +71,9 @@ public class AIComponent implements Component {
 
         }
 
-
         float angle = antBody.getAngle()+wanderAngle;
 
         float fx = (float)Math.cos(angle)*force;
-
-
         float fy = (float)Math.sin(angle)*force;
 
 

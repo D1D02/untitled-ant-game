@@ -8,6 +8,7 @@ import com.badlogic.androidgames.framework.Game;
 import com.badlogic.androidgames.framework.Graphics;
 import com.badlogic.androidgames.framework.Input;
 import com.badlogic.androidgames.framework.Screen;
+import com.google.fpl.liquidfun.DistanceJointDef;
 import com.google.fpl.liquidfun.Joint;
 import com.google.fpl.liquidfun.RevoluteJointDef;
 import com.main.untitledantgame.collision.Collision;
@@ -469,7 +470,7 @@ public class GameScreen extends Screen {
                     /*if (trails[id.path_id][id.inc_id] == mortalEntity) {
                         trails[id.path_id][id.inc_id] = null;
                     }*/
-                    pheromones_pool.release(mortalEntity.pool_id);
+                    pheromones_pool.release(mortalEntity);
                 }
             }
         }
@@ -486,14 +487,24 @@ public class GameScreen extends Screen {
 
 
     public Joint createJoint(Entity ant, Entity b) {
-        RevoluteJointDef def = new RevoluteJointDef();
+        /*RevoluteJointDef def = new RevoluteJointDef();
 
         def.setBodyA( ant.getComponent(BodyComponent.class).body );
 
         def.setBodyB( b.getComponent(BodyComponent.class).body );
 
         def.setLocalAnchorA(0,0);
+        def.setLocalAnchorB(0,0);*/
+
+        DistanceJointDef def = new DistanceJointDef();
+
+        def.setBodyA( ant.getComponent(BodyComponent.class).body );
+        def.setBodyB( b.getComponent(BodyComponent.class).body );
+
+        def.setLocalAnchorA(0,0);
         def.setLocalAnchorB(0,0);
+
+        def.setLength(15);
 
         Joint carryJoint = world.physicsWorld.createJoint(def);
 
