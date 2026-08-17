@@ -43,5 +43,14 @@ public class Entity {
         }
         return null;
     }
+
+    public <T extends Component> boolean hasSuperComponent(Class<T> type) {
+        for (Component comp : components.values()) {
+            if (type.isAssignableFrom(comp.getClass())) {
+                return true;
+            }
+        }
+        return false;
+    }
 }
 

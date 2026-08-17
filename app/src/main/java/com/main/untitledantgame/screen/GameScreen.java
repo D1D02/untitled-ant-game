@@ -13,6 +13,7 @@ import com.main.untitledantgame.collision.Collision;
 import com.main.untitledantgame.collision.GameContactListener;
 import com.main.untitledantgame.components.AIComponent;
 import com.main.untitledantgame.components.AliveComponent;
+import com.main.untitledantgame.components.AnimatedSpriteComponent;
 import com.main.untitledantgame.components.AntStatsComponent;
 import com.main.untitledantgame.components.Behaviour;
 import com.main.untitledantgame.components.BodyComponent;
@@ -155,7 +156,7 @@ public class GameScreen extends Screen {
 
     @Override
     public void present(float deltaTime) {
-        drawWorld();
+        drawWorld(deltaTime);
     }
 
     @Override
@@ -185,12 +186,12 @@ public class GameScreen extends Screen {
                 if(e.getComponent(FoodComponent.class).isFoodEnded(deltaTime)) world.removeEntity(e);
                 Log.d("FoodComponent", "Time passed" + e.getComponent(FoodComponent.class).last_consumed);
                 float rot = agent.updatePosition(e.getComponent(BodyComponent.class).body, e.getComponent(AntStatsComponent.class).force, this, deltaTime);
-                e.getComponent(SpriteComponent.class).rotation =(float) Math.toDegrees(rot) + 90f;
+                e.getWithSuperComponent(SpriteComponent.class).rotation =(float) Math.toDegrees(rot) + 90f;
             }
         }
     }
 
-    void drawWorld(){
+    void drawWorld(float deltaTime){
         Graphics g = game.getGraphics();
 
         //SFONDO
@@ -209,14 +210,19 @@ public class GameScreen extends Screen {
         List<Entity> entities = world.entities;
         for(int i = 0; i < entities.size();i++){ //l'enhanced for è meno efficiente perchè alloca memoria per la variabile di scorrimento
             Entity e = entities.get(i);
-            if(!e.hasComponent(SpriteComponent.class) || !e.hasComponent(BodyComponent.class))
+            if(!e.hasSuperComponent(SpriteComponent.class) || !e.hasComponent(BodyComponent.class))
                 continue;
-            SpriteComponent sprite = e.getComponent(SpriteComponent.class);
+            SpriteComponent sprite = e.getWithSuperComponent(SpriteComponent.class);
             BodyComponent body = e.getComponent(BodyComponent.class);
             int posX = (int)body.body.getPositionX() + g.getWidth()/2 - sprite.width/2 + xOffset;
             int posY = (int)body.body.getPositionY() + g.getHeight()/2 - sprite.height/2 + yOffset;
             //g.drawPixmap(sprite.sprite,posX,posY, 0, 0, sprite.sprite.getWidth(), sprite.sprite.getHeight(), sprite.width, sprite.height, rot);
-            g.drawPixmap(sprite.sprite, posX, posY, sprite.windowX, sprite.windowY, sprite.sprite.getWidth(), sprite.sprite.getHeight(), sprite.width, sprite.height, sprite.rotation);
+            if(sprite instanceof AnimatedSpriteComponent){
+                ((AnimatedSpriteComponent) sprite).update(deltaTime);
+                AnimatedSpriteComponent as = (AnimatedSpriteComponent) sprite;
+                Log.d("ANIMATION", as.windowX + " " + as.windowY + " /// " + as.windowWidth + " " + as.windowHeight);
+            }
+            g.drawPixmap(sprite.sprite, posX, posY, sprite.windowX, sprite.windowY, sprite.windowWidth, sprite.windowHeight, sprite.width, sprite.height, sprite.rotation);
         }
 
         List<Entity> uiElements = canvas.elements;

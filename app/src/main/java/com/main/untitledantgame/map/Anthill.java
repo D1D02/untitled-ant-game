@@ -31,10 +31,15 @@ public class Anthill extends Entity {
         BodyComponent body = generateBody(x, y, world);
 
         addComponent(body);
-        SpriteComponent sprite = new SpriteComponent(Assets.anthill);
+        SpriteComponent sprite = new SpriteComponent();
 
+        sprite.sprite = Assets.anthill;
         sprite.width = 100;
         sprite.height = 100;
+        sprite.windowX = 0;
+        sprite.windowY = 0;
+        sprite.windowWidth = sprite.sprite.getWidth();
+        sprite.windowHeight = sprite.sprite.getHeight();
 
         addComponent(sprite);
 

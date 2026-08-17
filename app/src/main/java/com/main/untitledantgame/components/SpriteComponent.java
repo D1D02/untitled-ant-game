@@ -12,12 +12,4 @@ public class SpriteComponent implements Component{
     public int windowWidth;
     public int windowHeight;
 
-    public SpriteComponent(Pixmap sprite){
-        this.sprite = sprite;
-        if(sprite != null){
-            windowWidth = sprite.getWidth();
-            windowHeight = sprite.getHeight();
-        }
-    }
-
 }
