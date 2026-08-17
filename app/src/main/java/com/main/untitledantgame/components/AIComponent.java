@@ -34,8 +34,8 @@ public class AIComponent implements Component {
     public int carriedRock = -1;
     private Joint carryJointRock = null;
 
-    private float p_time_spent = 1.5f;
-    private final float p_max_time = 2f;
+    private final float p_max_time = 1.5f;
+    private float p_time_spent = p_max_time;
 
 
     public float updatePosition( Body antBody, float force, GameScreen screen, float deltaTime ){
@@ -94,7 +94,7 @@ public class AIComponent implements Component {
         Vec2 antPos = antBody.getPosition();
         Log.d("TRAIL", "Path_id:"+path_id+" Inc_id:"+inc_id);
         Vec2 d_spawn = new Vec2((0 - antPos.getX()), 0 - antPos.getY());
-        if ( !forward  && (inc_id == 0  || ( Math.abs(d_spawn.getX()) < 10.1f && Math.abs(d_spawn.getY()) < 10.1f )  ) ) {
+        if ( !forward  && (inc_id == 0  || ( Math.abs(d_spawn.getX()) < 5.1f && Math.abs(d_spawn.getY()) < 5.1f )  ) ) {
             Entity ant = (Entity)antBody.getUserData();
             if (carryJoint != null && carriedFood != null)
             {
