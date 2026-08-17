@@ -6,8 +6,6 @@ import com.main.untitledantgame.visuals.Assets;
 
 import com.google.fpl.liquidfun.World;
 
-import java.lang.reflect.Array;
-import java.util.ArrayList;
 
 import com.badlogic.androidgames.framework.Game;
 
@@ -17,28 +15,31 @@ public class EntityPool {
     EntityFactory entityFactory;
 
     String entity_type;
-
-    int num_entities;
+    int capacity;
+    int remaining;
+    ExtendPool extendPool;
 
     public EntityPool(int init_num_entities, String entity_t, World world, Game game)
     {
+
+
         this.entity_type = entity_t;
         entityFactory = new EntityFactory(Assets.prototypeRegistry);
 
-        this.num_entities = init_num_entities;
+        this.remaining = init_num_entities;
+        this.capacity = init_num_entities;
+        entities = new Entity[remaining];
 
-        entities = new Entity[num_entities];
+        extendPool = new ExtendPool();
+        extendPool.entityFactory = this.entityFactory;
+        extendPool.entities = this.entities;
+        extendPool.entity_type = this.entity_type;
+        extendPool.world = world;
+        extendPool.game = game;
 
         for( int i = 0; i < init_num_entities; ++i )
         {
             Entity entity = entityFactory.create(entity_type, world, game);
-
-            entity.pool_id = i;
-
-            if (entity.hasComponent(com.main.untitledantgame.components.BodyComponent.class))
-            {
-                entity.getComponent(com.main.untitledantgame.components.BodyComponent.class).body.setActive(false);
-            }
 
             entities[i] = entity;
         }     
@@ -46,17 +47,28 @@ public class EntityPool {
 
     public Entity acquire()
     {
-        if (num_entities==0)
+        if (remaining <= (capacity * 0.4) && !extendPool.isActive){
+            extendPool.isActive = true;
+            extendPool.capacity = capacity;
+            extendPool.run();
+        }else if(remaining <= (capacity * 0.4) && extendPool.isEnded){
+            entities = extendPool.entities;
+            extendPool.isEnded = false;
+            extendPool.isActive = false;
+            remaining += extendPool.remaining;
+            capacity = extendPool.capacity;
+        }
+        if (remaining ==0)
             throw new IllegalStateException();
-        num_entities--;
-        return entities[num_entities];
+        remaining--;
+        return entities[remaining];
     }
 
     public void release( Entity e )
     {
-        if (num_entities==entities.length) return;
-        entities[num_entities] = e;
-        num_entities++;
+        if (remaining ==entities.length) return;
+        entities[remaining] = e;
+        remaining++;
     }
 
 }
