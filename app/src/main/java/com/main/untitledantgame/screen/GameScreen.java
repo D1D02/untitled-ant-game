@@ -8,6 +8,8 @@ import com.badlogic.androidgames.framework.Game;
 import com.badlogic.androidgames.framework.Graphics;
 import com.badlogic.androidgames.framework.Input;
 import com.badlogic.androidgames.framework.Screen;
+import com.google.fpl.liquidfun.Body;
+import com.google.fpl.liquidfun.DistanceJointDef;
 import com.google.fpl.liquidfun.Joint;
 import com.google.fpl.liquidfun.RevoluteJointDef;
 import com.main.untitledantgame.collision.Collision;
@@ -72,6 +74,7 @@ public class GameScreen extends Screen {
     UIButtonComponent quizFalse;
 
     EntityPool pheromones_pool;
+    EntityPool ants_pool;
 
     float move_ants = 0.0f;
 
@@ -302,9 +305,8 @@ public class GameScreen extends Screen {
         UIButtonComponent.setOnClickEvent(exploration, ()->{
 
             if(anthill.consumeFood(10)) {
-                Entity ant = spawnEntity("Ant", 0, 0);
+                Entity ant = spawnAnt();
                 ant.getComponent(AIComponent.class).wanderAngle = (float) (Math.random() * Math.PI * 2);
-
             }
         });
         canvas.addElement(exploration);
@@ -319,8 +321,11 @@ public class GameScreen extends Screen {
             }
         }
 
-        pheromones_pool = new EntityPool(5000, "Pheromone", world.physicsWorld, game);
+        pheromones_pool = new EntityPool(1000, "Pheromone", world.physicsWorld, game);
         trails = new Entity[1000][1000];
+
+        ants_pool = new EntityPool(10, "Ant", world.physicsWorld, game);
+
     }
 
     void quizReady(){
@@ -362,12 +367,12 @@ public class GameScreen extends Screen {
         xOffset = -(int)(bc.body.getPositionX());// + g.getWidth()/2f);
         yOffset = -(int)(bc.body.getPositionY());// + g.getHeight()/2f);
         //Log.d("POS_DEBUG", xOffset + " " + yOffset);
-        int antAmount = 1;
+        int antAmount = 2;
         if(!anthill.consumeFood(10*antAmount))
             return;
 
         for(int i = 0; i < antAmount; i++) {
-            Entity ant = spawnEntity("Ant", 0, 0);
+            Entity ant = spawnAnt();
             AIComponent agent = ant.getComponent(AIComponent.class);
             agent.path_id = oc.path_id;
             agent.inc_id = 1;
@@ -415,27 +420,42 @@ public class GameScreen extends Screen {
     Entity spawnEntity(String name, float x, float y){
         Entity newEntity = entityFactory.create(name, world.physicsWorld, game);
         newEntity.getComponent(BodyComponent.class).body.setTransform(x, y, 0);
+        newEntity.getComponent(BodyComponent.class).body.setActive(true);
         world.addEntity(newEntity);
 
         return newEntity;
+    }
+
+    Entity spawnAnt(){
+        Entity ant = ants_pool.acquire();
+        Body antBody = ant.getComponent(BodyComponent.class).body;
+        antBody.setTransform(0,0, 0);
+        antBody.setActive(true);
+        world.addEntity(ant);
+
+        return ant;
     }
 
     public int generatePheromone(float x, float y, int path_id, int inc_id){
 
         if(path_id == -1 ) path_id = this.curr_path_id++;
 
+        try {
+            Entity newPheromone = pheromones_pool.acquire();
 
-        Entity newPheromone = pheromones_pool.acquire();
+            newPheromone.getComponent(BodyComponent.class).body.setTransform(x, y, 0);
 
-        newPheromone.getComponent(BodyComponent.class).body.setTransform(x,y,0);
+            newPheromone.getComponent(IdentifierComponent.class).inc_id = inc_id;
 
-        newPheromone.getComponent(IdentifierComponent.class).inc_id = inc_id;
+            trails[path_id][inc_id] = newPheromone;
 
-        trails[path_id][inc_id] = newPheromone;
+            mortalEntities.add(newPheromone);
 
-        mortalEntities.add(newPheromone);
+            pendingEntities.add(newPheromone);
+        }catch (Exception e)
+        {
 
-        pendingEntities.add(newPheromone);
+        }
         return  path_id;
     }
 
@@ -443,14 +463,8 @@ public class GameScreen extends Screen {
         Collection<Collision> collisions = contactListener.getCollisions();
 
         for(Collision event : collisions) {
-            if( !event.sensor ) {
                 if(Objects.equals(event.a.type, "Ant")) event.a.getComponent(AIComponent.class).handleCollision( event.a, event.b, world, this);
                 else if(Objects.equals(event.b.type, "Ant")) event.b.getComponent(AIComponent.class).handleCollision( event.b, event.a, world, this);
-            }
-            else{
-                //if(Objects.equals(event.a.type, "Ant")) event.a.getComponent(AIComponent.class).handleSensorCollision( event.a, event.b, world);
-                //else if(Objects.equals(event.b.type, "Ant")) event.b.getComponent(AIComponent.class).handleSensorCollision( event.b, event.a, world);
-            }
         }
     }
 
@@ -469,7 +483,7 @@ public class GameScreen extends Screen {
                     /*if (trails[id.path_id][id.inc_id] == mortalEntity) {
                         trails[id.path_id][id.inc_id] = null;
                     }*/
-                    pheromones_pool.release(mortalEntity.pool_id);
+                    pheromones_pool.release(mortalEntity);
                 }
             }
         }
@@ -486,14 +500,15 @@ public class GameScreen extends Screen {
 
 
     public Joint createJoint(Entity ant, Entity b) {
-        RevoluteJointDef def = new RevoluteJointDef();
+        DistanceJointDef def = new DistanceJointDef();
 
         def.setBodyA( ant.getComponent(BodyComponent.class).body );
-
         def.setBodyB( b.getComponent(BodyComponent.class).body );
 
         def.setLocalAnchorA(0,0);
         def.setLocalAnchorB(0,0);
+
+        def.setLength(15);
 
         Joint carryJoint = world.physicsWorld.createJoint(def);
 
@@ -507,20 +522,14 @@ public class GameScreen extends Screen {
         if (joint != null) world.physicsWorld.destroyJoint(joint);
     }
 
-    public void followingPath(int path_id){
-        Entity ant = spawnEntity("Ant", 0, 0);
-        AIComponent ant_ai = ant.getComponent(AIComponent.class);
-        ant_ai.path_id = path_id;
-        ant_ai.state = Behaviour.FOLLOWING;
-    }
-
-    public void destroyObstacle( int index ) {
+    public void destroyObstacle( int index, Joint rockJoint ) {
         if(obSize <= index)
             return;
         obSize--;
 
         Entity obstacle = obstacles.remove(index);
 
+        if(rockJoint != null ) destroyJoint(rockJoint);
         if(obstacle != null ) world.removeEntity(obstacle);
 
         updateBoard();

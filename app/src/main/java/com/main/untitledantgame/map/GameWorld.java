@@ -21,9 +21,14 @@ public class GameWorld {
         entities.add(e);
     }
     public void removeEntity(Entity e){
-        if(e.hasComponent(BodyComponent.class)) physicsWorld.destroyBody(e.getComponent(BodyComponent.class).body);
+        if(e.hasComponent(BodyComponent.class))
+        {
+            BodyComponent bodyComp = e.getComponent(BodyComponent.class);
+            physicsWorld.destroyBody(bodyComp.body);
+            bodyComp.body.delete();
+            bodyComp.body = null;
+        }
         entities.remove(e);
-
     }
 
 }

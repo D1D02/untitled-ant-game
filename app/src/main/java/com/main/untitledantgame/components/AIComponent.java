@@ -34,8 +34,8 @@ public class AIComponent implements Component {
     public int carriedRock = -1;
     private Joint carryJointRock = null;
 
-    private float p_time_spent = 0;
-    private float p_max_time = 0.3f;
+    private final float p_max_time = 1.5f;
+    private float p_time_spent = p_max_time;
 
 
     public float updatePosition( Body antBody, float force, GameScreen screen, float deltaTime ){
@@ -71,12 +71,9 @@ public class AIComponent implements Component {
 
         }
 
-
         float angle = antBody.getAngle()+wanderAngle;
 
         float fx = (float)Math.cos(angle)*force;
-
-
         float fy = (float)Math.sin(angle)*force;
 
 
@@ -97,15 +94,21 @@ public class AIComponent implements Component {
         Vec2 antPos = antBody.getPosition();
         Log.d("TRAIL", "Path_id:"+path_id+" Inc_id:"+inc_id);
         Vec2 d_spawn = new Vec2((0 - antPos.getX()), 0 - antPos.getY());
-        if ( !forward  && (inc_id == 0  || ( Math.abs(d_spawn.getX()) < 10.1f && Math.abs(d_spawn.getY()) < 10.1f )  ) ) {
+        if ( !forward  && (inc_id == 0  || ( Math.abs(d_spawn.getX()) < 5.1f && Math.abs(d_spawn.getY()) < 5.1f )  ) ) {
             Entity ant = (Entity)antBody.getUserData();
             if (carryJoint != null && carriedFood != null)
             {
-                screen.destroyJoint(carryJoint);
 
-                screen.anthill.addFood(carriedFood.getComponent(FoodComponent.class).food + ant.getComponent(FoodComponent.class).food);
-                screen.anthill.addExp(25);
-                screen.world.removeEntity(carriedFood);
+                if(carriedFood.getComponent(BodyComponent.class).body != null){
+                    Log.d("AI Component", "Food dropped in anthill");
+                    screen.anthill.addFood(carriedFood.getComponent(FoodComponent.class).food + ant.getComponent(FoodComponent.class).food);
+                    screen.anthill.addExp(25);
+                    screen.destroyJoint(carryJoint);
+                    screen.world.removeEntity(carriedFood);
+
+                }
+                else screen.anthill.addFood(ant.getComponent(FoodComponent.class).food);
+
                 carryJoint = null;
                 carriedFood = null;
             }
@@ -158,8 +161,7 @@ public class AIComponent implements Component {
             if( ( d.getY() * d.getY() + d.getX() * d.getX() ) > 3500 )
             {
                 if (carryJointRock != null && carriedRock != -1) {
-                    screen.destroyJoint(carryJointRock);
-                    screen.destroyObstacle(carriedRock);
+                    screen.destroyObstacle(carriedRock, carryJointRock);
                     carriedRock = -1;
                     carryJointRock = null;
                 }
@@ -190,7 +192,7 @@ public class AIComponent implements Component {
 
     public void handleCollision( Entity ant, Entity b, GameWorld world, GameScreen screen ){
 
-        if( state == Behaviour.WANDERING && Objects.equals(b.type,"Food") )
+        if( state == Behaviour.WANDERING && Objects.equals(b.type,"Food") && carriedRock ==-1 )
         {
             carryJoint = screen.createJoint(ant, b);
             carriedFood = b;
@@ -233,7 +235,7 @@ public class AIComponent implements Component {
 
             inc_id++;
             path_id = screen.generatePheromone( x, y, path_id, inc_id );
-
+            antBody.setAngularVelocity(0);
             p_time_spent-=p_max_time;
 
         }

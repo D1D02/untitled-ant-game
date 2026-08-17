@@ -6,72 +6,69 @@ import com.main.untitledantgame.visuals.Assets;
 
 import com.google.fpl.liquidfun.World;
 
-import java.lang.reflect.Array;
-import java.util.ArrayList;
 
 import com.badlogic.androidgames.framework.Game;
 
 public class EntityPool {
 
-    ArrayList<Entity> entities = new ArrayList<>();
+    Entity[] entities;
     EntityFactory entityFactory;
 
     String entity_type;
-    int curr = -1;    
-    int rel = -1;
-
-    int num_entities;
+    int capacity;
+    int remaining;
+    ExtendPool extendPool;
 
     public EntityPool(int init_num_entities, String entity_t, World world, Game game)
     {
+
+
         this.entity_type = entity_t;
         entityFactory = new EntityFactory(Assets.prototypeRegistry);
 
-        this.num_entities = init_num_entities;
+        this.remaining = init_num_entities;
+        this.capacity = init_num_entities;
+        entities = new Entity[remaining];
+
+        extendPool = new ExtendPool();
+        extendPool.entityFactory = this.entityFactory;
+        extendPool.entities = this.entities;
+        extendPool.entity_type = this.entity_type;
+        extendPool.world = world;
+        extendPool.game = game;
 
         for( int i = 0; i < init_num_entities; ++i )
         {
             Entity entity = entityFactory.create(entity_type, world, game);
 
-            entity.pool_id = i;
-
-            if (entity.hasComponent(com.main.untitledantgame.components.BodyComponent.class))
-            {
-                entity.getComponent(com.main.untitledantgame.components.BodyComponent.class).body.setActive(false);
-            }
-
-            entities.add(entity);
+            entities[i] = entity;
         }     
     }
 
     public Entity acquire()
     {
-        curr++;
-        if( curr == num_entities && rel != 0 ) curr = 0;
-        Entity entity = entities.get(curr);
-        if (entity.hasComponent(com.main.untitledantgame.components.BodyComponent.class))
-        {
-            entity.getComponent(com.main.untitledantgame.components.BodyComponent.class).body.setActive(true);
+        if (remaining <= (capacity * 0.4) && !extendPool.isActive){
+            extendPool.isActive = true;
+            extendPool.capacity = capacity;
+            extendPool.run();
+        }else if(remaining <= (capacity * 0.4) && extendPool.isEnded){
+            entities = extendPool.entities;
+            extendPool.isEnded = false;
+            extendPool.isActive = false;
+            remaining += extendPool.remaining;
+            capacity = extendPool.capacity;
         }
-        return entity;
+        if (remaining ==0)
+            throw new IllegalStateException();
+        remaining--;
+        return entities[remaining];
     }
 
-    public void release( int entity_id ) 
+    public void release( Entity e )
     {
-        if (entity_id >= rel || rel == num_entities - 1) 
-        {
-            Entity entity = entities.get(entity_id);
-            if (entity.hasComponent(com.main.untitledantgame.components.BodyComponent.class))
-            {
-                entity.getComponent(com.main.untitledantgame.components.BodyComponent.class).body.setActive(false);
-            }
-            rel = entity_id;
-        }
-    }
-
-    public Entity getEntity( int id )
-    {
-        return entities.get(id);
+        if (remaining ==entities.length) return;
+        entities[remaining] = e;
+        remaining++;
     }
 
 }

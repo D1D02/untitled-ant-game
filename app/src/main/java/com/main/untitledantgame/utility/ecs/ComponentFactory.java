@@ -60,7 +60,7 @@ public class ComponentFactory {
                             pos.get("y").getAsFloat()
                     );
                 }
-
+                bDef.setActive(false);
                 bc.body = world.createBody(bDef);
 
                 bc.body.setUserData(entity);
