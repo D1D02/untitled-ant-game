@@ -16,6 +16,8 @@ public class GeneratorComponent implements Component {
     }
 
     public float getRandomPosition(){
-        return  ((float)Math.random()-0.5f) * max_distance;
+        float distance = ((max_distance - min_distance) * (float)Math.random()) + min_distance;
+        if(Math.random() < 0.5) distance = -distance;
+        return distance;
     }
 }
