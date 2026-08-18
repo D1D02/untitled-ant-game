@@ -160,7 +160,7 @@
       "y": 20,
       "width": 80,
       "height": 40,
-      "text": "Passare a Youtube \nPremium? Eddai :)",
+      "text": "domanda",
       "textR": 255,
       "textG": 255,
       "textB": 255
@@ -209,6 +209,36 @@
         "textR": 255,
         "textG": 255,
         "textB": 255
+      }
+    }
+  },
+  {
+    "name": "LevelLabel",
+    "components": {
+      "uilabel": {
+        "x": 40,
+        "y": 0,
+        "width": 20,
+        "height": 15,
+        "text": "1",
+        "textR": 255,
+        "textG": 255,
+        "textB": 0
+      }
+    }
+  },
+  {
+    "name": "GameOverTimerLabel",
+    "components": {
+      "uilabel": {
+        "x": 40,
+        "y": 85,
+        "width": 20,
+        "height": 15,
+        "text": "99",
+        "textR": 255,
+        "textG": 0,
+        "textB": 0
       }
     }
   }

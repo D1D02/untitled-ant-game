@@ -16,6 +16,7 @@ import com.main.untitledantgame.components.PositionComponent;
 import com.main.untitledantgame.components.SpriteComponent;
 import com.main.untitledantgame.components.ui.UIBarComponent;
 import com.main.untitledantgame.components.ui.UIFlashLabelComponent;
+import com.main.untitledantgame.components.ui.UILabelComponent;
 import com.main.untitledantgame.utility.ecs.ComponentFactory;
 import com.main.untitledantgame.utility.ecs.Entity;
 import com.main.untitledantgame.visuals.Assets;
@@ -23,11 +24,16 @@ import com.main.untitledantgame.visuals.Assets;
 public class Anthill extends Entity {
     UIBarComponent foodBar, expbar;
     UIFlashLabelComponent levelUpLabel;
+
+    UILabelComponent levelLabel;
+
+    UILabelComponent gameOverTimer;
     public int food = 100, exp = 0;
     int maxFood = 100,maxExp = 100;
     int level = 1;
 
-    public Anthill(int x, int y, UIBarComponent foodBar, UIBarComponent expbar, World world, UIFlashLabelComponent levelUpLabel){
+    public Anthill(int x, int y, UIBarComponent foodBar, UIBarComponent expbar, World world,
+                   UIFlashLabelComponent levelUpLabel, UILabelComponent levelLabel, UILabelComponent gameOverTimer){
         BodyComponent body = generateBody(x, y, world);
 
         addComponent(body);
@@ -51,6 +57,8 @@ public class Anthill extends Entity {
         expbar.value = exp;
 
         this.levelUpLabel = levelUpLabel;
+        this.levelLabel = levelLabel;
+        this.gameOverTimer = gameOverTimer;
     }
 
     private BodyComponent generateBody(float x, float y, World world){
@@ -70,6 +78,8 @@ public class Anthill extends Entity {
             return false;
         food -= amount;
         foodBar.value = food;
+        if(food <= 0)
+            gameOverTimer.enabled = true;
         return true;
     }
 
@@ -77,6 +87,7 @@ public class Anthill extends Entity {
         food = Math.min(food+amount, maxFood);
         foodBar.value = food;
         Assets.eatSound.play(1);
+        gameOverTimer.enabled = false;
     }
 
 
@@ -93,7 +104,8 @@ public class Anthill extends Entity {
         Assets.levelUpSound.play(1);
         levelUpLabel.play = true;
         level++;
-        maxExp += (int) (Math.exp(level + 1) * 25);
+        maxExp += (int) (Math.exp(level + 1) * 12);
         expbar.maxValue = maxExp;
+        levelLabel.text = level + "";
     }
 }
