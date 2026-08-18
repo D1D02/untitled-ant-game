@@ -426,6 +426,11 @@ public class GameScreen extends Screen {
         if(obSize >= obMax){
             return;
         }
+
+        for( Entity obstacle:  obstacles )
+        {
+            if(obstacle.equals(e)) return;
+        }
         Assets.boardSound.play(1);
         ObstacleComponent oc = e.getComponent(ObstacleComponent.class);
         oc.path_id = id;

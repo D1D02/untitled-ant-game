@@ -119,24 +119,30 @@ public class AIComponent implements Component {
 
 
         if(pheromone != null) {
-            Vec2 pheromonePos = pheromone.getComponent(BodyComponent.class).body.getPosition();
-            Vec2 d = new Vec2((pheromonePos.getX() - antPos.getX()), pheromonePos.getY() - antPos.getY());
-            wanderAngle = (float) Math.atan2(d.getY(), d.getX());
-            if (Math.abs(d.getX()) < 10.1f && Math.abs(d.getY()) < 10.1f) {
-                if (forward) inc_id++;
-                else inc_id--;
-                antBody.setLinearVelocity(new Vec2(0f, 0f));
+            try {
+                Vec2 pheromonePos = pheromone.getComponent(BodyComponent.class).body.getPosition();
+                Vec2 d = new Vec2((pheromonePos.getX() - antPos.getX()), pheromonePos.getY() - antPos.getY());
+                wanderAngle = (float) Math.atan2(d.getY(), d.getX());
+                if (Math.abs(d.getX()) < 10.1f && Math.abs(d.getY()) < 10.1f) {
+                    if (forward) inc_id++;
+                    else inc_id--;
+                    antBody.setLinearVelocity(new Vec2(0f, 0f));
+                }
+                Vec2.normalize(d);
+
+                d.setX(d.getX() * force);
+                d.setY(d.getY() * force);
+
+                //Log.d("AI_Normalized_Vector", "x: " + d.getX() + " y:"+ d.getY());
+
+                antBody.applyForceToCenter(d, true);
+
+                antBody.setLinearDamping(0.5f);
+            } catch (Exception e) {
+                state = Behaviour.WAITING;
+                antBody.setAngularVelocity(10);
             }
-            Vec2.normalize(d);
 
-            d.setX(d.getX() * force);
-            d.setY(d.getY() * force);
-
-            //Log.d("AI_Normalized_Vector", "x: " + d.getX() + " y:"+ d.getY());
-
-            antBody.applyForceToCenter(d, true);
-
-            antBody.setLinearDamping(0.5f);
         }
         else if( carriedRock != -1 )
         {
@@ -154,36 +160,37 @@ public class AIComponent implements Component {
         //Log.d("DragRock", "Path_id: "+path_id+" Inc_id: "+inc_id);
         if(carryJointRock == null || carriedRock == -1) state = Behaviour.RETURNING;
 
-        if(pheromone != null) {
-            Vec2 antPos = antBody.getPosition();
-            Vec2 pheromonePos = pheromone.getComponent(BodyComponent.class).body.getPosition();
-            Vec2 d = new Vec2((pheromonePos.getX() - antPos.getX()), pheromonePos.getY() - antPos.getY());
-            if( ( d.getY() * d.getY() + d.getX() * d.getX() ) > 3500 )
-            {
-                if (carryJointRock != null && carriedRock != -1) {
-                    screen.destroyObstacle(carriedRock, carryJointRock);
-                    carriedRock = -1;
-                    carryJointRock = null;
+        try {
+            if (pheromone != null) {
+                Vec2 antPos = antBody.getPosition();
+                Vec2 pheromonePos = pheromone.getComponent(BodyComponent.class).body.getPosition();
+                Vec2 d = new Vec2((pheromonePos.getX() - antPos.getX()), pheromonePos.getY() - antPos.getY());
+                if ((d.getY() * d.getY() + d.getX() * d.getX()) > 3500) {
+                    if (carryJointRock != null && carriedRock != -1) {
+                        screen.destroyObstacle(carriedRock, carryJointRock);
+                        carriedRock = -1;
+                        carryJointRock = null;
+                    }
+                    inc_id--;
+                    state = Behaviour.RETURNING;
+                } else {
+                    wanderAngle = (float) Math.atan2(-d.getY(), -d.getX());
+                    //Log.d("DragRock", "Angle: "+wanderAngle);
+
+                    Vec2.normalize(d);
+
+                    d.setX(-d.getX() * force);
+                    d.setY(-d.getY() * force);
+
+
+                    antBody.applyForceToCenter(d, true);
+
+                    antBody.setLinearDamping(0.5f);
                 }
-                inc_id--;
-                state = Behaviour.RETURNING;
-            }else{
-                wanderAngle = (float) Math.atan2(-d.getY(), -d.getX());
-                //Log.d("DragRock", "Angle: "+wanderAngle);
-
-                Vec2.normalize(d);
-
-                d.setX(-d.getX() * force);
-                d.setY(-d.getY() * force);
-
-
-                antBody.applyForceToCenter(d, true);
-
-                antBody.setLinearDamping(0.5f);
             }
-
-
-
+        }catch(Exception e){
+            state = Behaviour.WAITING;
+            antBody.setAngularVelocity(2);
         }
 
 
