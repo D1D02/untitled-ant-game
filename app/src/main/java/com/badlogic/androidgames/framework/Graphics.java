@@ -25,6 +25,8 @@ public interface Graphics {
                            int srcWidth, int srcHeight,int dstWidth, int dstHeight, float rotation);
 
     public void drawPixmap(Pixmap pixmap, int x, int y);
+    public void drawPixmap(Pixmap pixmap, int x, int y, int srcX, int srcY,
+                           int srcWidth, int srcHeight,int dstWidth, int dstHeight, int alpha);
 
     public void drawText(String text, int x, int y, int color);
 

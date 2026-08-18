@@ -15,26 +15,31 @@ import com.main.untitledantgame.components.BodyComponent;
 import com.main.untitledantgame.components.PositionComponent;
 import com.main.untitledantgame.components.SpriteComponent;
 import com.main.untitledantgame.components.ui.UIBarComponent;
+import com.main.untitledantgame.components.ui.UIFlashLabelComponent;
 import com.main.untitledantgame.utility.ecs.ComponentFactory;
 import com.main.untitledantgame.utility.ecs.Entity;
 import com.main.untitledantgame.visuals.Assets;
 
 public class Anthill extends Entity {
     UIBarComponent foodBar, expbar;
+    UIFlashLabelComponent levelUpLabel;
     public int food = 100, exp = 0;
     int maxFood = 100,maxExp = 100;
     int level = 1;
 
-    public Anthill(int x, int y, UIBarComponent foodBar, UIBarComponent expbar, World world, Game game){
+    public Anthill(int x, int y, UIBarComponent foodBar, UIBarComponent expbar, World world, UIFlashLabelComponent levelUpLabel){
         BodyComponent body = generateBody(x, y, world);
 
         addComponent(body);
         SpriteComponent sprite = new SpriteComponent();
 
+        sprite.sprite = Assets.anthill;
         sprite.width = 100;
         sprite.height = 100;
-
-        sprite.sprite = Assets.anthill;
+        sprite.windowX = 0;
+        sprite.windowY = 0;
+        sprite.windowWidth = sprite.sprite.getWidth();
+        sprite.windowHeight = sprite.sprite.getHeight();
 
         addComponent(sprite);
 
@@ -44,6 +49,8 @@ public class Anthill extends Entity {
         foodBar.value = food;
         expbar.maxValue = maxExp;
         expbar.value = exp;
+
+        this.levelUpLabel = levelUpLabel;
     }
 
     private BodyComponent generateBody(float x, float y, World world){
@@ -84,6 +91,7 @@ public class Anthill extends Entity {
 
     void levelUp(){
         Assets.levelUpSound.play(1);
+        levelUpLabel.play = true;
         level++;
         maxExp += (int) (Math.exp(level + 1) * 25);
         expbar.maxValue = maxExp;

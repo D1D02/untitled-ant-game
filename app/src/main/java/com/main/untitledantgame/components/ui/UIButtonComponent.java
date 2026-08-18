@@ -41,8 +41,8 @@ public class UIButtonComponent extends UIElementComponent{
         int relativeX = button.getRelativeX(g), relativeY = button.getRelativeY(g);
         if(event.x > relativeX && event.x < relativeX + button.getRelativeWidth(g) - 1 &&
                 event.y > relativeY && event.y < relativeY + button.getRelativeHeight(g) - 1){
-            button.onClickEvent.run();
             Assets.buttonSound.play(1);
+            button.onClickEvent.run();
         }
     }
 }

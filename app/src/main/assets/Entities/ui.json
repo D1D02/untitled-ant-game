@@ -43,7 +43,7 @@
         "text": "PLAY",
         "textR": 255,
         "textG": 255,
-        "textB": 0
+        "textB": 255
       }
     }
   },
@@ -58,7 +58,7 @@
         "text": "CENTER",
         "textR": 255,
         "textG": 255,
-        "textB": 0
+        "textB": 255
       }
     }
   },
@@ -73,7 +73,7 @@
         "text": "EXPLORE",
         "textR": 255,
         "textG": 255,
-        "textB": 0
+        "textB": 255
       }
     }
   },
@@ -88,7 +88,7 @@
         "text": "oggetto 1",
         "textR": 255,
         "textG": 255,
-        "textB": 0
+        "textB": 255
       }
     }
   },
@@ -103,7 +103,7 @@
         "text": "oggetto 2",
         "textR": 255,
         "textG": 255,
-        "textB": 0
+        "textB": 255
       }
     }
   },
@@ -118,7 +118,7 @@
         "text": "oggetto 2",
         "textR": 255,
         "textG": 255,
-        "textB": 0
+        "textB": 255
       }
     }
   },
@@ -133,7 +133,7 @@
         "text": "v",
         "textR": 255,
         "textG": 255,
-        "textB": 0
+        "textB": 255
       }
     }
   },
@@ -163,7 +163,7 @@
       "text": "Passare a Youtube \nPremium? Eddai :)",
       "textR": 255,
       "textG": 255,
-      "textB": 0
+      "textB": 255
     }
   }
 },
@@ -178,7 +178,7 @@
         "text": "TRUE",
         "textR": 255,
         "textG": 255,
-        "textB": 0
+        "textB": 255
       }
     }
   },
@@ -193,7 +193,22 @@
         "text": "FALSE",
         "textR": 255,
         "textG": 255,
-        "textB": 0
+        "textB": 255
+      }
+    }
+  },
+  {
+    "name": "LevelUpLabel",
+    "components": {
+      "uiflashlabel": {
+        "x": 30,
+        "y": 30,
+        "width": 40,
+        "height": 30,
+        "text": "LEVEL UP!",
+        "textR": 255,
+        "textG": 255,
+        "textB": 255
       }
     }
   }

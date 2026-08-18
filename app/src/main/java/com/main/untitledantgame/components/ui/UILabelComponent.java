@@ -6,7 +6,7 @@ import com.main.untitledantgame.visuals.Assets;
 
 public class UILabelComponent extends UIElementComponent{
     public String text = "BUTTON";
-    public int textColor = Color.convert(0, 0, 0, 255);
+    public int textColor;
 
     @Override
     public void draw(Graphics g) {
@@ -17,6 +17,6 @@ public class UILabelComponent extends UIElementComponent{
 
         //g.drawRect(relativeX, relativeY,relativeWidth, relativeHeight, color);
         g.drawPixmap(Assets.button, relativeX, relativeY, 0, 0, Assets.button.getWidth(), Assets.button.getHeight(), relativeWidth, relativeHeight);
-        g.drawText(text, relativeX, relativeY+(relativeHeight/2)+10, textColor, 40);
+        g.drawText(text, relativeX + 10, relativeY+(relativeHeight/2)+10, textColor, 40);
     }
 }

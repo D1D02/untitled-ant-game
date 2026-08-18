@@ -24,6 +24,7 @@ import com.badlogic.androidgames.framework.Color;
 import com.google.gson.JsonObject;
 
 import com.main.untitledantgame.components.*;
+import com.main.untitledantgame.components.ui.UIFlashLabelComponent;
 import com.main.untitledantgame.components.ui.UILabelComponent;
 
 public class ComponentFactory {
@@ -148,11 +149,7 @@ public class ComponentFactory {
 
             case "sprite":
                 SpriteComponent sprite = new SpriteComponent();
-
-                sprite.width = data.get("width").getAsInt();
-                sprite.height = data.get("height").getAsInt();
                 String path = data.get("pathname").getAsString();
-
                 try {
                     Pixmap pixmap = game.getGraphics()
                             .newPixmap(path, Graphics.PixmapFormat.ARGB8888);
@@ -160,8 +157,33 @@ public class ComponentFactory {
                 } catch (Exception e) {
                     Log.e("ECS", "Errore sprite: " + path);
                 }
+                sprite.width = data.get("width").getAsInt();
+                sprite.height = data.get("height").getAsInt();
+                sprite.windowX = 0;
+                sprite.windowY = 0;
+                sprite.windowWidth = sprite.sprite.getWidth();
+                sprite.windowHeight = sprite.sprite.getHeight();
 
                 return sprite;
+            case "animated_sprite":
+                AnimatedSpriteComponent animatedSprite = new AnimatedSpriteComponent();
+                String sheet_path = data.get("pathname").getAsString();
+                try {
+                    Pixmap pixmap = game.getGraphics()
+                            .newPixmap(sheet_path, Graphics.PixmapFormat.ARGB8888);
+                    animatedSprite.sprite = pixmap;
+                } catch (Exception e) {
+                    Log.e("ECS", "Errore sprite: " + sheet_path);
+                }
+                animatedSprite.width = data.get("width").getAsInt();
+                animatedSprite.height = data.get("height").getAsInt();
+                animatedSprite.windowX = 0;
+                animatedSprite.windowY = 0;
+                animatedSprite.windowWidth = data.get("window_width").getAsInt();
+                animatedSprite.windowHeight = data.get("window_height").getAsInt();
+                animatedSprite.frameDuration = data.get("frame_duration").getAsInt();
+
+                return animatedSprite;
             case "uibar":
                 UIBarComponent barComponent = new UIBarComponent();
                 barComponent.posX = data.get("x").getAsInt();
@@ -194,6 +216,16 @@ public class ComponentFactory {
                 labelComponent.textColor = Color.convert(data.get("textR").getAsInt(),data.get("textG").getAsInt(),data.get("textB").getAsInt(),255);
 
                 return labelComponent;
+            case "uiflashlabel":
+                UIFlashLabelComponent flashLabelComponent = new UIFlashLabelComponent();
+                flashLabelComponent.posX = data.get("x").getAsInt();
+                flashLabelComponent.posY = data.get("y").getAsInt();
+                flashLabelComponent.width = data.get("width").getAsInt();
+                flashLabelComponent.height = data.get("height").getAsInt();
+                flashLabelComponent.text = data.get("text").getAsString();
+                flashLabelComponent.textColor = Color.convert(data.get("textR").getAsInt(),data.get("textG").getAsInt(),data.get("textB").getAsInt(),255);
+
+                return flashLabelComponent;
             case "obstacle":
                 ObstacleComponent oc = new ObstacleComponent();
                 oc.name = data.get("name").getAsString();

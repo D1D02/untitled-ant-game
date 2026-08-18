@@ -16,6 +16,7 @@ import com.main.untitledantgame.collision.Collision;
 import com.main.untitledantgame.collision.GameContactListener;
 import com.main.untitledantgame.components.AIComponent;
 import com.main.untitledantgame.components.AliveComponent;
+import com.main.untitledantgame.components.AnimatedSpriteComponent;
 import com.main.untitledantgame.components.AntStatsComponent;
 import com.main.untitledantgame.components.Behaviour;
 import com.main.untitledantgame.components.BodyComponent;
@@ -27,6 +28,7 @@ import com.main.untitledantgame.components.SpriteComponent;
 import com.main.untitledantgame.components.ui.UIBarComponent;
 import com.main.untitledantgame.components.ui.UIButtonComponent;
 import com.main.untitledantgame.components.ui.UIElementComponent;
+import com.main.untitledantgame.components.ui.UIFlashLabelComponent;
 import com.main.untitledantgame.components.ui.UILabelComponent;
 import com.main.untitledantgame.map.Anthill;
 import com.main.untitledantgame.map.GameWorld;
@@ -47,6 +49,8 @@ public class GameScreen extends Screen {
 
     int xOffset=0, yOffset=0, lastDragX, lastDragY; //servono per lo scorrimento della visuale
     float camVelocityX = 0, camVelocityY = 0, camSpeed = 120;
+
+    int bgWidth = Assets.background.getWidth(), bgHeight = Assets.background.getHeight();
 
     boolean dragged = false;
     public GameWorld world;
@@ -69,9 +73,14 @@ public class GameScreen extends Screen {
     UIButtonComponent quizButton;
     float quizTimer = 0f;
     float quizWaitTime = 60f;
+
+    float exploreCooldown = 3f;
+    float exploreTimer = 0f;
     UILabelComponent quizLabel;
     UIButtonComponent quizTrue;
     UIButtonComponent quizFalse;
+
+    UIFlashLabelComponent levelUpLabel;
 
     EntityPool pheromones_pool;
     EntityPool ants_pool;
@@ -136,15 +145,22 @@ public class GameScreen extends Screen {
 
         pendingEntities.clear();
 
-        //QUIZ
+        //COOLDOWN
         quizTimer += deltaTime;
         if(quizTimer >= quizWaitTime)
             quizReady();
+
+        if(exploreTimer > 0){
+            exploreTimer -= deltaTime;
+        }
+
+        //ANIMAZIONI
+        levelUpLabel.update(deltaTime);
     }
 
     @Override
     public void present(float deltaTime) {
-        drawWorld();
+        drawWorld(deltaTime);
     }
 
     @Override
@@ -173,29 +189,43 @@ public class GameScreen extends Screen {
                 AIComponent agent = e.getComponent(AIComponent.class);
                 if(e.getComponent(FoodComponent.class).isFoodEnded(deltaTime)) world.removeEntity(e);
                 float rot = agent.updatePosition(e.getComponent(BodyComponent.class).body, e.getComponent(AntStatsComponent.class).force, this, deltaTime);
-                e.getComponent(SpriteComponent.class).rotation =(float) Math.toDegrees(rot) + 90f;
+                e.getWithSuperComponent(SpriteComponent.class).rotation =(float) Math.toDegrees(rot) + 90f;
             }
         }
     }
 
-    void drawWorld(){
+    void drawWorld(float deltaTime){
         Graphics g = game.getGraphics();
 
-        //g.drawRect(0,0, 480, 320, Color.convert(120,210,50,255)); //sfondo provvisorio
-        g.drawPixmap(Assets.background, xOffset-500, yOffset-500);
+        //SFONDO
+        int bgCellX = -xOffset/bgWidth, bgCellY = -yOffset/bgHeight;
+        int xOffsetCell = 1, yOffsetCell = 1;
+        if(xOffset > 0)
+            xOffsetCell = -1;
+        if(yOffset > 0)
+            yOffsetCell = -1;
+        g.drawPixmap(Assets.background, xOffset + bgWidth*bgCellX, yOffset + bgHeight*bgCellY);
+        g.drawPixmap(Assets.background, xOffset + bgWidth*(bgCellX+xOffsetCell), yOffset + bgHeight*bgCellY);
+        g.drawPixmap(Assets.background, xOffset + bgWidth*bgCellX, yOffset + bgHeight*(bgCellY+yOffsetCell));
+        g.drawPixmap(Assets.background, xOffset + bgWidth*(bgCellX+xOffsetCell), yOffset + bgHeight*(bgCellY+yOffsetCell));
 
 
         List<Entity> entities = world.entities;
         for(int i = 0; i < entities.size();i++){ //l'enhanced for è meno efficiente perchè alloca memoria per la variabile di scorrimento
             Entity e = entities.get(i);
-            if(!e.hasComponent(SpriteComponent.class) || !e.hasComponent(BodyComponent.class))
+            if(!e.hasSuperComponent(SpriteComponent.class) || !e.hasComponent(BodyComponent.class))
                 continue;
-            SpriteComponent sprite = e.getComponent(SpriteComponent.class);
+            SpriteComponent sprite = e.getWithSuperComponent(SpriteComponent.class);
             BodyComponent body = e.getComponent(BodyComponent.class);
             int posX = (int)body.body.getPositionX() + g.getWidth()/2 - sprite.width/2 + xOffset;
             int posY = (int)body.body.getPositionY() + g.getHeight()/2 - sprite.height/2 + yOffset;
             //g.drawPixmap(sprite.sprite,posX,posY, 0, 0, sprite.sprite.getWidth(), sprite.sprite.getHeight(), sprite.width, sprite.height, rot);
-            g.drawPixmap(sprite.sprite, posX, posY, 0, 0, sprite.sprite.getWidth(), sprite.sprite.getHeight(), sprite.width, sprite.height, sprite.rotation);
+            if(sprite instanceof AnimatedSpriteComponent){
+                ((AnimatedSpriteComponent) sprite).update(deltaTime);
+                AnimatedSpriteComponent as = (AnimatedSpriteComponent) sprite;
+                Log.d("ANIMATION", as.windowX + " " + as.windowY + " /// " + as.windowWidth + " " + as.windowHeight);
+            }
+            g.drawPixmap(sprite.sprite, posX, posY, sprite.windowX, sprite.windowY, sprite.windowWidth, sprite.windowHeight, sprite.width, sprite.height, sprite.rotation);
         }
 
         List<Entity> uiElements = canvas.elements;
@@ -209,11 +239,11 @@ public class GameScreen extends Screen {
 
     void initWorld(){
         //WORLD
-        world = new GameWorld();
-        Graphics g = game.getGraphics();
-
+        world = Assets.world;
         contactListener = new GameContactListener();
         world.physicsWorld.setContactListener(contactListener);
+        //Graphics g = game.getGraphics();
+
 
         //UI
         canvas = new UICanvas();
@@ -223,7 +253,9 @@ public class GameScreen extends Screen {
         canvas.addElement(expBarEntity);
 
         Entity reset = entityFactory.create("ResetCameraButton", world.physicsWorld, game);
-        UIButtonComponent.setOnClickEvent(reset, ()->{xOffset = 0; yOffset = 0;});
+        UIButtonComponent.setOnClickEvent(reset, ()->{
+            xOffset = 0; yOffset = 0;
+        });
 
         canvas.addElement(reset);
 
@@ -275,6 +307,9 @@ public class GameScreen extends Screen {
         this.quizTrue.enabled = false;
         this.quizFalse.enabled = false;
 
+        Entity levelUpLabel = entityFactory.create("LevelUpLabel", world.physicsWorld, game);
+        this.levelUpLabel = levelUpLabel.getComponent(UIFlashLabelComponent.class);
+
         canvas.addElement(board1);
         canvas.addElement(board2);
         canvas.addElement(board3);
@@ -283,6 +318,7 @@ public class GameScreen extends Screen {
         canvas.addElement(quizLabel);
         canvas.addElement(quizTrue);
         canvas.addElement(quizFalse);
+        canvas.addElement(levelUpLabel);
 
         updateBoard();
 
@@ -296,15 +332,18 @@ public class GameScreen extends Screen {
 
         //FORMICAIO
 
-        anthill = new Anthill(0, 0, foodBarEntity.getComponent(UIBarComponent.class),expBarEntity.getComponent(UIBarComponent.class), world.physicsWorld, game);
+        anthill = new Anthill(0, 0, foodBarEntity.getComponent(UIBarComponent.class),expBarEntity.getComponent(UIBarComponent.class), world.physicsWorld, this.levelUpLabel);
 
         world.addEntity(anthill);
 
         //PULSANTE SPEDIZIONE
         Entity exploration = entityFactory.create("ExplorationButton", world.physicsWorld, game);
         UIButtonComponent.setOnClickEvent(exploration, ()->{
-
+            if(exploreTimer > 0)
+                return;
             if(anthill.consumeFood(10)) {
+                exploreTimer = exploreCooldown;
+
                 Entity ant = spawnAnt();
                 ant.getComponent(AIComponent.class).wanderAngle = (float) (Math.random() * Math.PI * 2);
             }
@@ -321,7 +360,8 @@ public class GameScreen extends Screen {
             }
         }
 
-        pheromones_pool = new EntityPool(1000, "Pheromone", world.physicsWorld, game);
+        //pheromones_pool = new EntityPool(1000, "Pheromone", world.physicsWorld, game);
+        pheromones_pool = Assets.pheromones_pool;
         trails = new Entity[1000][1000];
 
         ants_pool = new EntityPool(10, "Ant", world.physicsWorld, game);
