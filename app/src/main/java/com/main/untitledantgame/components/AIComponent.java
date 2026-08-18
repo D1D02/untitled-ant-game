@@ -94,7 +94,7 @@ public class AIComponent implements Component {
         Vec2 antPos = antBody.getPosition();
         //Log.d("TRAIL", "Path_id:"+path_id+" Inc_id:"+inc_id);
         Vec2 d_spawn = new Vec2((0 - antPos.getX()), 0 - antPos.getY());
-        if ( !forward  && (inc_id == 0  || ( Math.abs(d_spawn.getX()) < 5.1f && Math.abs(d_spawn.getY()) < 5.1f )  ) ) {
+        if ( !forward  && ( ( Math.abs(d_spawn.getX()) < 20.1f && Math.abs(d_spawn.getY()) < 20.1f )  ) ) {
             Entity ant = (Entity)antBody.getUserData();
             if (carryJoint != null && carriedFood != null)
             {
