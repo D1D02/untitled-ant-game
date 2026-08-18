@@ -74,7 +74,7 @@ public class GameScreen extends Screen {
     float quizTimer = 0f;
     float quizWaitTime = 60f;
 
-    float exploreCooldown = 3f;
+    float exploreCooldown = 0.5f;
     float exploreTimer = 0f;
     UILabelComponent quizLabel;
     UIButtonComponent quizTrue;
@@ -462,7 +462,7 @@ public class GameScreen extends Screen {
             }
         }
     }
-    Entity spawnEntity(String name, float x, float y){
+    public Entity spawnEntity(String name, float x, float y){
         Entity newEntity = entityFactory.create(name, world.physicsWorld, game);
         newEntity.getComponent(BodyComponent.class).body.setTransform(x, y, 0);
         newEntity.getComponent(BodyComponent.class).body.setActive(true);

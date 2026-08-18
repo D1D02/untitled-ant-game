@@ -170,8 +170,13 @@ public class AIComponent implements Component {
                         screen.destroyObstacle(carriedRock, carryJointRock);
                         carriedRock = -1;
                         carryJointRock = null;
+                        carriedFood = screen.spawnEntity("Food", antPos.getX(), antPos.getY());
+                        carryJoint = screen.createJoint((Entity) antBody.getUserData(), carriedFood);
+
                     }
                     inc_id--;
+
+
                     state = Behaviour.RETURNING;
                 } else {
                     wanderAngle = (float) Math.atan2(-d.getY(), -d.getX());
