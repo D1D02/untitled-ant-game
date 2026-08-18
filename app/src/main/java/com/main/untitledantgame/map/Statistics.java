@@ -16,7 +16,7 @@ public class Statistics {
         this.picked_food = 0;
         this.obstacle_moved = 0;
         this.enemies_killed = 0;
-        this.level = 0;
+        this.level = 1;
         this.coin = 0;
     }
 

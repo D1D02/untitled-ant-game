@@ -26,6 +26,7 @@ public class Anthill extends Entity {
     public int food = 100, exp = 0;
     int maxFood = 100,maxExp = 100;
     int level = 1;
+    public Statistics game_stats;
 
     public Anthill(int x, int y, UIBarComponent foodBar, UIBarComponent expbar, World world, UIFlashLabelComponent levelUpLabel){
         BodyComponent body = generateBody(x, y, world);
@@ -95,5 +96,6 @@ public class Anthill extends Entity {
         level++;
         maxExp += (int) (Math.exp(level + 1) * 25);
         expbar.maxValue = maxExp;
+        game_stats.level += 1;
     }
 }

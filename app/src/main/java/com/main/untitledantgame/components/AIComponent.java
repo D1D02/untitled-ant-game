@@ -105,7 +105,7 @@ public class AIComponent implements Component {
                     screen.anthill.addExp(25);
                     screen.destroyJoint(carryJoint);
                     screen.world.removeEntity(carriedFood);
-
+                    screen.anthill.game_stats.picked_food += 1;
                 }
 
 

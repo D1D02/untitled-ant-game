@@ -238,6 +238,9 @@ public class GameScreen extends Screen {
     }
 
     void initWorld(){
+        //RESET
+        anthill.game_stats.reset();
+
         //WORLD
         world = Assets.world;
         contactListener = new GameContactListener();
@@ -427,10 +430,10 @@ public class GameScreen extends Screen {
             return;
         }
 
-        for( Entity obstacle:  obstacles )
-        {
-            if(obstacle.equals(e)) return;
+        for( Entity obstacle:  obstacles ) {
+            if (obstacle.equals(e)) return;
         }
+
         Assets.boardSound.play(1);
         ObstacleComponent oc = e.getComponent(ObstacleComponent.class);
         oc.path_id = id;
@@ -478,6 +481,8 @@ public class GameScreen extends Screen {
         antBody.setActive(true);
         world.addEntity(ant);
 
+        anthill.game_stats.ants_spawned += 1;
+
         return ant;
     }
 
@@ -497,6 +502,9 @@ public class GameScreen extends Screen {
             mortalEntities.add(newPheromone);
 
             pendingEntities.add(newPheromone);
+
+            anthill.game_stats.pheromones_spawned += 1;
+
         }catch (Exception e)
         {
 
@@ -577,6 +585,7 @@ public class GameScreen extends Screen {
         if(rockJoint != null ) destroyJoint(rockJoint);
         if(obstacle != null ) world.removeEntity(obstacle);
 
+        anthill.game_stats.obstacle_moved += 1;
         updateBoard();
     }
 }

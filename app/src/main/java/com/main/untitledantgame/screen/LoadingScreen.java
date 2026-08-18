@@ -13,6 +13,7 @@ import com.badlogic.androidgames.framework.impl.AndroidAudio;
 import com.google.gson.JsonArray;
 import com.main.untitledantgame.collision.GameContactListener;
 import com.main.untitledantgame.map.GameWorld;
+import com.main.untitledantgame.map.Statistics;
 import com.main.untitledantgame.pools.EntityPool;
 import com.main.untitledantgame.utility.Quiz;
 import com.main.untitledantgame.utility.ecs.PrototypeRegistry;
@@ -34,6 +35,8 @@ public class LoadingScreen extends Screen {
     public void update(float deltaTime) {
         System.loadLibrary("liquidfun");
         System.loadLibrary("liquidfun_jni");
+
+        Statistics game_stats = new Statistics();
 
         JsonArray entitiesJson = JsonLoader.loadJsonArray((Context) game, "Entities/entities.json");
         if (entitiesJson == null) {
