@@ -5,4 +5,6 @@ public class AntStatsComponent implements Component{
     public float max_distance;
     public float range;
 
+    public float attack_damage;
+
 }

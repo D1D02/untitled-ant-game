@@ -235,7 +235,7 @@ public class ComponentFactory {
             case "ant_stats":
                 AntStatsComponent as = new AntStatsComponent();
                 as.force = data.get("force").getAsFloat();
-
+                as.attack_damage = data.get("attack_damage").getAsFloat();
                 return as;
             default:
                 return null;
