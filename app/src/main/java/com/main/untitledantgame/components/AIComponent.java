@@ -100,7 +100,7 @@ public class AIComponent implements Component {
             {
 
                 if(carriedFood.getComponent(BodyComponent.class).body != null){
-                    Log.d("AI Component", "Food dropped in anthill");
+                    Log.d("AI Component", " Food dropped in anthill");
                     screen.anthill.addFood(carriedFood.getComponent(FoodComponent.class).food + ant.getComponent(FoodComponent.class).food);
                     screen.anthill.addExp(25);
                     screen.destroyJoint(carryJoint);

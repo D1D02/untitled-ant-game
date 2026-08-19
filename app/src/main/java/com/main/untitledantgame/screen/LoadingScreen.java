@@ -36,8 +36,6 @@ public class LoadingScreen extends Screen {
         System.loadLibrary("liquidfun");
         System.loadLibrary("liquidfun_jni");
 
-        Statistics game_stats = new Statistics();
-
         JsonArray entitiesJson = JsonLoader.loadJsonArray((Context) game, "Entities/entities.json");
         if (entitiesJson == null) {
             Log.d("ECS", "Entities not loaded!");
@@ -98,7 +96,7 @@ public class LoadingScreen extends Screen {
         Assets.world = new GameWorld();
 
         //Assets.world.physicsWorld.setContactListener(new GameContactListener());
-
+        Assets.game_stats = new Statistics();
         Assets.pheromones_pool = new EntityPool(1000, "Pheromone", Assets.world.physicsWorld, game);
         Quiz.init((Context) game);
     }

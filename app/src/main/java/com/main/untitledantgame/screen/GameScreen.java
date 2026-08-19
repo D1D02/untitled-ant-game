@@ -242,7 +242,6 @@ public class GameScreen extends Screen {
 
     void initWorld(){
         //RESET
-        anthill.game_stats.reset();
 
         //WORLD
         world = Assets.world;
@@ -340,7 +339,7 @@ public class GameScreen extends Screen {
         //FORMICAIO
 
         anthill = new Anthill(0, 0, foodBarEntity.getComponent(UIBarComponent.class),expBarEntity.getComponent(UIBarComponent.class), world.physicsWorld, this.levelUpLabel);
-
+        anthill.game_stats = Assets.game_stats;
         world.addEntity(anthill);
 
         //PULSANTE SPEDIZIONE
