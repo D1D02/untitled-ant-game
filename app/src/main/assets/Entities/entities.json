@@ -99,6 +99,9 @@
             "ai":{
                 "wander_angle": "90",
                 "max_speed": "50"
+            },
+            "obstacle":{
+                "name" : "Wasp"
             }
         }
     },

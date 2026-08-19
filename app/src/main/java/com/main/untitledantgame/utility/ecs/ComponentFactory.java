@@ -229,7 +229,7 @@ public class ComponentFactory {
             case "obstacle":
                 ObstacleComponent oc = new ObstacleComponent();
                 oc.name = data.get("name").getAsString();
-                oc.weight = data.get("weight").getAsFloat();
+                if(data.get("weight") != null) oc.weight = data.get("weight").getAsFloat();
 
                 return oc;
             case "ant_stats":

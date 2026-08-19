@@ -335,7 +335,8 @@ public class GameScreen extends Screen {
         //generators.add(obstacle_generator);
         Entity rock_generator = entityFactory.create("RockGenerator", world.physicsWorld, game);
         generators.add(rock_generator);
-
+        Entity wasp_generator = entityFactory.create("WaspGenerator", world.physicsWorld, game);
+        generators.add(wasp_generator);
         //FORMICAIO
 
         anthill = new Anthill(0, 0, foodBarEntity.getComponent(UIBarComponent.class),expBarEntity.getComponent(UIBarComponent.class), world.physicsWorld, this.levelUpLabel);
@@ -429,19 +430,16 @@ public class GameScreen extends Screen {
     }
 
     public void addToBoard(Entity e, int id){
-        if(obSize >= obMax){
-            return;
-        }
 
         for( Entity obstacle:  obstacles ) {
             if (obstacle.equals(e)) return;
         }
-
         Assets.boardSound.play(1);
         ObstacleComponent oc = e.getComponent(ObstacleComponent.class);
         oc.path_id = id;
         oc.spotted = true;
         obstacles.add(e);
+
         obSize++;
         updateBoard();
     }
