@@ -50,6 +50,7 @@ public class GameScreen extends Screen {
     int bgWidth = Assets.background.getWidth(), bgHeight = Assets.background.getHeight();
 
     boolean dragged = false;
+    boolean game_over = false;
     public GameWorld world;
     UICanvas canvas;
 
@@ -84,6 +85,10 @@ public class GameScreen extends Screen {
     UILabelComponent gameOverTimerLabel;
 
     UIFlashLabelComponent levelUpLabel;
+
+    UIButtonComponent mainMenuButton;
+
+    UILabelComponent gameOverLabel;
 
     EntityPool pheromones_pool;
     EntityPool ants_pool;
@@ -132,6 +137,8 @@ public class GameScreen extends Screen {
                 }
             }
         }
+        if(game_over)
+            return;
         //FISICA
         moveAnts(deltaTime);
         world.physicsWorld.step(deltaTime, 8, 3, 3);
@@ -208,37 +215,40 @@ public class GameScreen extends Screen {
     void drawWorld(float deltaTime){
         Graphics g = game.getGraphics();
 
-        //SFONDO
-        int bgCellX = -xOffset/bgWidth, bgCellY = -yOffset/bgHeight;
-        int xOffsetCell = 1, yOffsetCell = 1;
-        if(xOffset > 0)
-            xOffsetCell = -1;
-        if(yOffset > 0)
-            yOffsetCell = -1;
-        g.drawPixmap(Assets.background, xOffset + bgWidth*bgCellX, yOffset + bgHeight*bgCellY);
-        g.drawPixmap(Assets.background, xOffset + bgWidth*(bgCellX+xOffsetCell), yOffset + bgHeight*bgCellY);
-        g.drawPixmap(Assets.background, xOffset + bgWidth*bgCellX, yOffset + bgHeight*(bgCellY+yOffsetCell));
-        g.drawPixmap(Assets.background, xOffset + bgWidth*(bgCellX+xOffsetCell), yOffset + bgHeight*(bgCellY+yOffsetCell));
+        if(game_over)
+            g.drawPixmap(Assets.game_over, 0, 0);
+        else {
+            //SFONDO
+            int bgCellX = -xOffset / bgWidth, bgCellY = -yOffset / bgHeight;
+            int xOffsetCell = 1, yOffsetCell = 1;
+            if (xOffset > 0)
+                xOffsetCell = -1;
+            if (yOffset > 0)
+                yOffsetCell = -1;
+            g.drawPixmap(Assets.background, xOffset + bgWidth * bgCellX, yOffset + bgHeight * bgCellY);
+            g.drawPixmap(Assets.background, xOffset + bgWidth * (bgCellX + xOffsetCell), yOffset + bgHeight * bgCellY);
+            g.drawPixmap(Assets.background, xOffset + bgWidth * bgCellX, yOffset + bgHeight * (bgCellY + yOffsetCell));
+            g.drawPixmap(Assets.background, xOffset + bgWidth * (bgCellX + xOffsetCell), yOffset + bgHeight * (bgCellY + yOffsetCell));
 
 
-        List<Entity> entities = world.entities;
-        for(int i = 0; i < entities.size();i++){ //l'enhanced for è meno efficiente perchè alloca memoria per la variabile di scorrimento
-            Entity e = entities.get(i);
-            if(!e.hasSuperComponent(SpriteComponent.class) || !e.hasComponent(BodyComponent.class))
-                continue;
-            SpriteComponent sprite = e.getWithSuperComponent(SpriteComponent.class);
-            BodyComponent body = e.getComponent(BodyComponent.class);
-            int posX = (int)body.body.getPositionX() + g.getWidth()/2 - sprite.width/2 + xOffset;
-            int posY = (int)body.body.getPositionY() + g.getHeight()/2 - sprite.height/2 + yOffset;
-            //g.drawPixmap(sprite.sprite,posX,posY, 0, 0, sprite.sprite.getWidth(), sprite.sprite.getHeight(), sprite.width, sprite.height, rot);
-            if(sprite instanceof AnimatedSpriteComponent){
-                ((AnimatedSpriteComponent) sprite).update(deltaTime);
-                AnimatedSpriteComponent as = (AnimatedSpriteComponent) sprite;
-                Log.d("ANIMATION", as.windowX + " " + as.windowY + " /// " + as.windowWidth + " " + as.windowHeight);
+            List<Entity> entities = world.entities;
+            for (int i = 0; i < entities.size(); i++) { //l'enhanced for è meno efficiente perchè alloca memoria per la variabile di scorrimento
+                Entity e = entities.get(i);
+                if (!e.hasSuperComponent(SpriteComponent.class) || !e.hasComponent(BodyComponent.class))
+                    continue;
+                SpriteComponent sprite = e.getWithSuperComponent(SpriteComponent.class);
+                BodyComponent body = e.getComponent(BodyComponent.class);
+                int posX = (int) body.body.getPositionX() + g.getWidth() / 2 - sprite.width / 2 + xOffset;
+                int posY = (int) body.body.getPositionY() + g.getHeight() / 2 - sprite.height / 2 + yOffset;
+                //g.drawPixmap(sprite.sprite,posX,posY, 0, 0, sprite.sprite.getWidth(), sprite.sprite.getHeight(), sprite.width, sprite.height, rot);
+                if (sprite instanceof AnimatedSpriteComponent) {
+                    ((AnimatedSpriteComponent) sprite).update(deltaTime);
+                    AnimatedSpriteComponent as = (AnimatedSpriteComponent) sprite;
+                    Log.d("ANIMATION", as.windowX + " " + as.windowY + " /// " + as.windowWidth + " " + as.windowHeight);
+                }
+                g.drawPixmap(sprite.sprite, posX, posY, sprite.windowX, sprite.windowY, sprite.windowWidth, sprite.windowHeight, sprite.width, sprite.height, sprite.rotation);
             }
-            g.drawPixmap(sprite.sprite, posX, posY, sprite.windowX, sprite.windowY, sprite.windowWidth, sprite.windowHeight, sprite.width, sprite.height, sprite.rotation);
         }
-
         List<Entity> uiElements = canvas.elements;
         for(int i = 0; i < uiElements.size(); i++){
             Entity e = uiElements.get(i);
@@ -326,6 +336,17 @@ public class GameScreen extends Screen {
         this.gameOverTimerLabel = gameOverTimer.getComponent(UILabelComponent.class);
         this.gameOverTimerLabel.enabled = false;
 
+        Entity mainMenuButton = entityFactory.create("MainMenuButton", world.physicsWorld, game);
+        this.mainMenuButton = mainMenuButton.getComponent(UIButtonComponent.class);
+        this.mainMenuButton.enabled = false;
+        UIButtonComponent.setOnClickEvent(mainMenuButton, ()->{
+            game.setScreen(new MainMenuScreen(game));
+        });
+
+        Entity gameOverLabel = entityFactory.create("GameOverLabel", world.physicsWorld, game);
+        this.gameOverLabel = gameOverLabel.getComponent(UILabelComponent.class);
+        this.gameOverLabel.enabled = false;
+
         canvas.addElement(board1);
         canvas.addElement(board2);
         canvas.addElement(board3);
@@ -337,6 +358,8 @@ public class GameScreen extends Screen {
         canvas.addElement(levelUpLabel);
         canvas.addElement(levelLabel);
         canvas.addElement(gameOverTimer);
+        canvas.addElement(mainMenuButton);
+        canvas.addElement(gameOverLabel);
 
         updateBoard();
 
@@ -388,7 +411,12 @@ public class GameScreen extends Screen {
     }
 
     void gameOver(){
-        Log.d("GAMEOVER", "GAMEOVER");
+        game_over = true;
+        for(int i = 0; i < canvas.elements.size(); i++){
+            canvas.elements.get(i).getWithSuperComponent(UIElementComponent.class).enabled = false;
+        }
+        mainMenuButton.enabled = true;
+        gameOverLabel.enabled = true;
     }
 
     void quizReady(){
@@ -411,7 +439,7 @@ public class GameScreen extends Screen {
         }
         else {
             Assets.wrongSound.play(10);
-            anthill.consumeFood(Math.min(anthill.food, 20));
+            anthill.consumeFood(20);
         }
         quizLabel.enabled = false;
         quizTrue.enabled = false;
@@ -492,6 +520,7 @@ public class GameScreen extends Screen {
     Entity spawnAnt(){
         Entity ant = ants_pool.acquire();
         Body antBody = ant.getComponent(BodyComponent.class).body;
+        ant.getComponent(AnimatedSpriteComponent.class).sprite = Assets.antSkins[CustomizationScreen.antSkin];
         antBody.setTransform(0,0, 0);
         antBody.setActive(true);
         world.addEntity(ant);

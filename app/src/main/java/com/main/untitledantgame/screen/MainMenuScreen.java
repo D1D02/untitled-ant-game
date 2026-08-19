@@ -74,7 +74,7 @@ public class MainMenuScreen extends Screen {
                 0, 0,
                 bgW, bgH);*/
         //g.drawRect(0,0, 480, 320, Color.convert(120,210,50,255)); //sfondo provvisorio
-        g.drawPixmap(Assets.background, -500, -500);
+        g.drawPixmap(Assets.background, 0, 0);
         List<Entity> uiElements = canvas.elements;
         for(int i = 0; i < uiElements.size(); i++){
             Entity e = uiElements.get(i);
@@ -108,7 +108,14 @@ public class MainMenuScreen extends Screen {
             gameStarted = true;
             game.setScreen(new GameScreen(game));
         });
+        Entity customize = factory.create("CustomizationButton", null, null);
+        UIButtonComponent.setOnClickEvent(customize, ()->{
+            if(gameStarted)
+                return;
+            game.setScreen(new CustomizationScreen(game));
+        });
 
         canvas.addElement(play);
+        canvas.addElement(customize);
     }
 }

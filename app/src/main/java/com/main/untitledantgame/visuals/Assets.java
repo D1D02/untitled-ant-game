@@ -16,8 +16,11 @@ import java.util.List;
 public class Assets {
     public static Pixmap background;
     public static Pixmap anthill;
-
+    public static Pixmap loading;
+    public static Pixmap game_over;
     public static Pixmap button;
+
+    public static Pixmap[] antSkins;
     public static PrototypeRegistry prototypeRegistry;
     public static List<Generator> generators;
 

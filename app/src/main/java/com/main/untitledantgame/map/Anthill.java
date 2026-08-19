@@ -74,11 +74,11 @@ public class Anthill extends Entity {
     }
 
     public boolean consumeFood(int amount){
-        if(amount > food)
+        if(food == 0)
             return false;
-        food -= amount;
+        food = Math.max(food-amount, 0);
         foodBar.value = food;
-        if(food <= 0)
+        if(food == 0)
             gameOverTimer.enabled = true;
         return true;
     }
