@@ -187,7 +187,10 @@ public class GameScreen extends Screen {
             if("Ant".equals(e.type))
             {
                 AIComponent agent = e.getComponent(AIComponent.class);
-                if(e.getComponent(FoodComponent.class).isFoodEnded(deltaTime)) world.removeEntity(e);
+                if(e.getComponent(FoodComponent.class).isFoodEnded(deltaTime)){
+                    ants_pool.release(e);
+                    world.removeEntity(e);
+                }
                 float rot = agent.updatePosition(e.getComponent(BodyComponent.class).body, e.getComponent(AntStatsComponent.class).force, this, deltaTime);
                 e.getWithSuperComponent(SpriteComponent.class).rotation =(float) Math.toDegrees(rot) + 90f;
             }
