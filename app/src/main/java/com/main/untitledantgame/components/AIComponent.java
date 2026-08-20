@@ -4,12 +4,12 @@ import android.util.Log;
 
 import java.util.*;
 
-import com.badlogic.androidgames.framework.Screen;
 import com.google.fpl.liquidfun.Body;
+import com.google.fpl.liquidfun.Fixture;
 import com.google.fpl.liquidfun.Joint;
-import com.google.fpl.liquidfun.RevoluteJointDef;
 import com.google.fpl.liquidfun.Vec2;
 
+import com.main.untitledantgame.collision.Sensor;
 import com.main.untitledantgame.map.GameWorld;
 import com.main.untitledantgame.screen.GameScreen;
 import com.main.untitledantgame.utility.ecs.Entity;
@@ -37,6 +37,9 @@ public class AIComponent implements Component {
     private final float p_max_time = 1.5f;
     private float p_time_spent = p_max_time;
 
+    public Vec2 sense_distance = new Vec2(30, 30);
+    public Sensor sensor = new Sensor();
+
 
     public float updatePosition( Body antBody, float force, GameScreen screen, float deltaTime ){
 
@@ -63,6 +66,20 @@ public class AIComponent implements Component {
     public float updateWandering( Body antBody, float force, GameScreen screen, float deltaTime ){
 
         w_time_spent+=deltaTime;
+
+        Vec2 ant_pos = antBody.getPosition();
+        List<Fixture> results = sensor.findInArea( screen.world.physicsWorld,
+                ant_pos.getX() - sense_distance.getX(),
+                ant_pos.getY() - sense_distance.getX(),
+                ant_pos.getX() + sense_distance.getX(),
+                ant_pos.getY() + sense_distance.getX() );
+        for (Fixture fixture : results) {
+            Body body = fixture.getBody();
+            Entity entity = (Entity) body.getUserData();
+            Entity ant = (Entity) antBody.getUserData();
+            if(!ant.equals(entity)) Log.d("AiComponent", "Detected: " + entity.type);
+        }
+
 
         if(w_time_spent>=w_max_time){
 

@@ -226,7 +226,6 @@ public class GameScreen extends Screen {
             if(sprite instanceof AnimatedSpriteComponent){
                 ((AnimatedSpriteComponent) sprite).update(deltaTime);
                 AnimatedSpriteComponent as = (AnimatedSpriteComponent) sprite;
-                Log.d("ANIMATION", as.windowX + " " + as.windowY + " /// " + as.windowWidth + " " + as.windowHeight);
             }
             g.drawPixmap(sprite.sprite, posX, posY, sprite.windowX, sprite.windowY, sprite.windowWidth, sprite.windowHeight, sprite.width, sprite.height, sprite.rotation);
         }
