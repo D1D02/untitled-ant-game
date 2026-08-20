@@ -3,7 +3,6 @@ package com.main.untitledantgame.utility;
 import android.content.Context;
 import android.util.Log;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonParser;
 

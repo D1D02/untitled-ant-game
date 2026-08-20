@@ -1,0 +1,159 @@
+package com.main.untitledantgame.utility;
+
+import android.content.Context;
+import android.util.Log;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.main.untitledantgame.map.Statistics;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.nio.charset.StandardCharsets;
+
+public class JsonSaver {
+
+    private static final String TAG = "JsonSaver";
+    private static final String STATS_FILE_NAME = "statistics.json";
+
+    public static void saveStatistics(Context context, Statistics stats) {
+
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+
+        JsonArray statisticsArray = loadStatisticsArray(context);
+
+        JsonObject statisticsJson = gson.toJsonTree(stats).getAsJsonObject();
+
+        statisticsArray.add(statisticsJson);
+
+        try (FileOutputStream fos = context.openFileOutput(STATS_FILE_NAME,Context.MODE_PRIVATE);
+             OutputStreamWriter writer = new OutputStreamWriter(fos,StandardCharsets.UTF_8)) {
+
+            gson.toJson(statisticsArray, writer);
+
+        } catch (Exception e) {
+        }
+    }
+
+    public static JsonArray loadStatisticsArray(Context context) {
+
+        File file = new File(context.getFilesDir(),STATS_FILE_NAME);
+
+        if (!file.exists()) {
+            return new JsonArray();
+        }
+
+        try (FileInputStream fis = context.openFileInput(STATS_FILE_NAME);
+             InputStreamReader reader = new InputStreamReader(fis,StandardCharsets.UTF_8)) {
+
+            return JsonParser.parseReader(reader).getAsJsonArray();
+
+        } catch (Exception e) {
+            return new JsonArray();
+        }
+    }
+
+    public static Statistics getStatistics(Context context,int index) {
+
+        JsonArray statisticsArray = loadStatisticsArray(context);
+
+        if (index < 0 || index >= statisticsArray.size()) {
+            return null;
+        }
+
+        Gson gson = new Gson();
+
+        return gson.fromJson(statisticsArray.get(index),Statistics.class);
+    }
+
+    public static Statistics getHighestLevelGame(Context context) {
+
+        JsonArray games = loadStatisticsArray(context);
+
+        if (games.size() == 0) {
+            return null;
+        }
+
+        Gson gson = new Gson();
+
+        Statistics highestLevelGame = null;
+
+        for (int i = 0; i < games.size(); i++) {
+
+            Statistics currentGame = gson.fromJson(games.get(i),Statistics.class);
+
+            if (highestLevelGame == null || currentGame.level > highestLevelGame.level) {
+                highestLevelGame = currentGame;
+            }
+        }
+
+        return highestLevelGame;
+    }
+
+    public static int getTotalGames(Context context) {
+
+        return loadStatisticsArray(context).size();
+    }
+
+    public static Statistics getTotalStatistics(Context context) {
+
+        JsonArray games = loadStatisticsArray(context);
+
+        Statistics total = new Statistics();
+
+        Gson gson = new Gson();
+
+        for (int i = 0; i < games.size(); i++) {
+
+            Statistics currentGame = gson.fromJson(
+                    games.get(i),
+                    Statistics.class
+            );
+
+            total.ants_spawned += currentGame.ants_spawned;
+            total.pheromones_spawned += currentGame.pheromones_spawned;
+            total.picked_food += currentGame.picked_food;
+            total.obstacle_moved += currentGame.obstacle_moved;
+            total.enemies_killed += currentGame.enemies_killed;
+            total.coin += currentGame.coin;
+        }
+
+        return total;
+    }
+
+    public static int getTotalAntsSpawned(Context context) {
+
+        return getTotalStatistics(context).ants_spawned;
+    }
+
+    public static int getTotalPheromonesSpawned(Context context) {
+
+        return getTotalStatistics(context).pheromones_spawned;
+    }
+
+    public static int getTotalPickedFood(Context context) {
+
+        return getTotalStatistics(context).picked_food;
+    }
+
+    public static int getTotalObstacleMoved(Context context) {
+
+        return getTotalStatistics(context).obstacle_moved;
+    }
+
+    public static int getTotalEnemiesKilled(Context context) {
+
+        return getTotalStatistics(context).enemies_killed;
+    }
+
+    public static int getTotalCoins(Context context) {
+
+        return getTotalStatistics(context).coin;
+    }
+}

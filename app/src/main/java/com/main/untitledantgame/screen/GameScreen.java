@@ -72,7 +72,7 @@ public class GameScreen extends Screen {
     float quizTimer = 0f;
     float quizWaitTime = 60f;
 
-    float exploreCooldown = 3f;
+    float exploreCooldown = 0.5f;
     float exploreTimer = 0f;
 
     float gameOverTimerDuration = 60f;
@@ -205,7 +205,10 @@ public class GameScreen extends Screen {
             if("Ant".equals(e.type))
             {
                 AIComponent agent = e.getComponent(AIComponent.class);
-                if(e.getComponent(FoodComponent.class).isFoodEnded(deltaTime)) world.removeEntity(e);
+                if(e.getComponent(FoodComponent.class).isFoodEnded(deltaTime)){
+                    ants_pool.release(e);
+                    world.removeEntity(e);
+                }
                 float rot = agent.updatePosition(e.getComponent(BodyComponent.class).body, e.getComponent(AntStatsComponent.class).force, this, deltaTime);
                 e.getWithSuperComponent(SpriteComponent.class).rotation =(float) Math.toDegrees(rot) + 90f;
             }
@@ -259,6 +262,8 @@ public class GameScreen extends Screen {
     }
 
     void initWorld(){
+        //RESET
+
         //WORLD
         world = Assets.world;
         contactListener = new GameContactListener();
@@ -370,12 +375,14 @@ public class GameScreen extends Screen {
         //generators.add(obstacle_generator);
         Entity rock_generator = entityFactory.create("RockGenerator", world.physicsWorld, game);
         generators.add(rock_generator);
-
+        Entity wasp_generator = entityFactory.create("WaspGenerator", world.physicsWorld, game);
+        generators.add(wasp_generator);
         //FORMICAIO
 
         anthill = new Anthill(0, 0, foodBarEntity.getComponent(UIBarComponent.class),expBarEntity.getComponent(UIBarComponent.class),
                 world.physicsWorld, this.levelUpLabel, levelLabel.getComponent(UILabelComponent.class), this.gameOverTimerLabel);
-
+        anthill.game_stats = Assets.game_stats;
+      
         world.addEntity(anthill);
 
         //PULSANTE SPEDIZIONE
@@ -474,14 +481,16 @@ public class GameScreen extends Screen {
     }
 
     public void addToBoard(Entity e, int id){
-        if(obSize >= obMax){
-            return;
+
+        for( Entity obstacle:  obstacles ) {
+            if (obstacle.equals(e)) return;
         }
         Assets.boardSound.play(1);
         ObstacleComponent oc = e.getComponent(ObstacleComponent.class);
         oc.path_id = id;
         oc.spotted = true;
         obstacles.add(e);
+
         obSize++;
         updateBoard();
     }
@@ -508,7 +517,7 @@ public class GameScreen extends Screen {
             }
         }
     }
-    Entity spawnEntity(String name, float x, float y){
+    public Entity spawnEntity(String name, float x, float y){
         Entity newEntity = entityFactory.create(name, world.physicsWorld, game);
         newEntity.getComponent(BodyComponent.class).body.setTransform(x, y, 0);
         newEntity.getComponent(BodyComponent.class).body.setActive(true);
@@ -524,6 +533,8 @@ public class GameScreen extends Screen {
         antBody.setTransform(0,0, 0);
         antBody.setActive(true);
         world.addEntity(ant);
+
+        anthill.game_stats.ants_spawned += 1;
 
         return ant;
     }
@@ -544,6 +555,9 @@ public class GameScreen extends Screen {
             mortalEntities.add(newPheromone);
 
             pendingEntities.add(newPheromone);
+
+            anthill.game_stats.pheromones_spawned += 1;
+
         }catch (Exception e)
         {
 
@@ -624,6 +638,7 @@ public class GameScreen extends Screen {
         if(rockJoint != null ) destroyJoint(rockJoint);
         if(obstacle != null ) world.removeEntity(obstacle);
 
+        anthill.game_stats.obstacle_moved += 1;
         updateBoard();
     }
 }
