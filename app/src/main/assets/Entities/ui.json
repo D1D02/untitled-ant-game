@@ -48,6 +48,21 @@
     }
   },
   {
+    "name": "CustomizationButton",
+    "components": {
+      "uibutton": {
+        "x": 33,
+        "y": 40,
+        "width": 34,
+        "height": 20,
+        "text": "CUSTOMIZE",
+        "textR": 255,
+        "textG": 255,
+        "textB": 255
+      }
+    }
+  },
+  {
     "name": "ResetCameraButton",
     "components": {
       "uibutton": {
@@ -160,7 +175,7 @@
       "y": 20,
       "width": 80,
       "height": 40,
-      "text": "Passare a Youtube \nPremium? Eddai :)",
+      "text": "domanda",
       "textR": 255,
       "textG": 255,
       "textB": 255
@@ -209,6 +224,172 @@
         "textR": 255,
         "textG": 255,
         "textB": 255
+      }
+    }
+  },
+  {
+    "name": "LevelLabel",
+    "components": {
+      "uilabel": {
+        "x": 40,
+        "y": 0,
+        "width": 20,
+        "height": 15,
+        "text": "1",
+        "textR": 255,
+        "textG": 255,
+        "textB": 0
+      }
+    }
+  },
+  {
+    "name": "GameOverTimerLabel",
+    "components": {
+      "uilabel": {
+        "x": 40,
+        "y": 85,
+        "width": 20,
+        "height": 15,
+        "text": "99",
+        "textR": 255,
+        "textG": 0,
+        "textB": 0
+      }
+    }
+  },
+  {
+    "name": "MainMenuButton",
+    "components": {
+      "uibutton": {
+        "x": 30,
+        "y": 55,
+        "width": 40,
+        "height": 20,
+        "text": "MAIN MENU",
+        "textR": 255,
+        "textG": 255,
+        "textB": 255
+      }
+    }
+  },
+  {
+    "name": "GameOverLabel",
+    "components": {
+      "uilabel": {
+        "x": 25,
+        "y": 20,
+        "width": 50,
+        "height": 25,
+        "text": "GAME OVER",
+        "textR": 255,
+        "textG": 0,
+        "textB": 0
+      }
+    }
+  },
+  {
+    "name": "SkinButton1",
+    "components": {
+      "uibutton": {
+        "x": 5,
+        "y": 70,
+        "width": 20,
+        "height": 20,
+        "text": "SELECTED",
+        "textR": 255,
+        "textG": 255,
+        "textB": 255
+      }
+    }
+  },
+  {
+    "name": "SkinButton2",
+    "components": {
+      "uibutton": {
+        "x": 30,
+        "y": 70,
+        "width": 20,
+        "height": 20,
+        "text": "SELECT",
+        "textR": 255,
+        "textG": 255,
+        "textB": 255
+      }
+    }
+  },
+  {
+    "name": "SkinButton3",
+    "components": {
+      "uibutton": {
+        "x": 55,
+        "y": 70,
+        "width": 20,
+        "height": 20,
+        "text": "SELECT",
+        "textR": 255,
+        "textG": 255,
+        "textB": 255
+      }
+    }
+  }
+,
+  {
+    "name": "CustMainMenu",
+    "components": {
+      "uibutton": {
+        "x": 80,
+        "y": 78,
+        "width": 15,
+        "height": 12,
+        "text": "BACK",
+        "textR": 255,
+        "textG": 255,
+        "textB": 255
+      }
+    }
+  },
+  {
+    "name": "SkinSprite1",
+    "components": {
+      "ui_animated_sprite": {
+        "pathname": "ant.png",
+        "x": 0,
+        "y": 35,
+        "width": 30,
+        "height": 30,
+        "window_width": 724,
+        "window_height": 724,
+        "frame_duration": 0.5
+      }
+    }
+  },
+  {
+    "name": "SkinSprite2",
+    "components": {
+      "ui_animated_sprite": {
+        "pathname": "ant2.png",
+        "x": 25,
+        "y": 35,
+        "width": 30,
+        "height": 30,
+        "window_width": 724,
+        "window_height": 724,
+        "frame_duration": 0.5
+      }
+    }
+  },
+  {
+    "name": "SkinSprite3",
+    "components": {
+      "ui_animated_sprite": {
+        "pathname": "ant3.png",
+        "x": 50,
+        "y": 35,
+        "width": 30,
+        "height": 30,
+        "window_width": 724,
+        "window_height": 724,
+        "frame_duration": 0.5
       }
     }
   }

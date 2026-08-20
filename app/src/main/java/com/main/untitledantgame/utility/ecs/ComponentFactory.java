@@ -10,6 +10,7 @@ import com.google.fpl.liquidfun.World;
 import com.main.untitledantgame.components.AIComponent;
 import com.main.untitledantgame.components.AliveComponent;
 import com.main.untitledantgame.components.BodyComponent;
+import com.main.untitledantgame.components.ui.UIAnimatedSpriteComponent;
 import com.main.untitledantgame.components.ui.UIButtonComponent;
 import com.main.untitledantgame.components.ui.UIBarComponent;
 import com.main.untitledantgame.components.FoodComponent;
@@ -181,7 +182,7 @@ public class ComponentFactory {
                 animatedSprite.windowY = 0;
                 animatedSprite.windowWidth = data.get("window_width").getAsInt();
                 animatedSprite.windowHeight = data.get("window_height").getAsInt();
-                animatedSprite.frameDuration = data.get("frame_duration").getAsInt();
+                animatedSprite.frameDuration = data.get("frame_duration").getAsFloat();
 
                 return animatedSprite;
             case "uibar":
@@ -237,6 +238,27 @@ public class ComponentFactory {
                 as.force = data.get("force").getAsFloat();
                 as.attack_damage = data.get("attack_damage").getAsFloat();
                 return as;
+            case "ui_animated_sprite":
+                UIAnimatedSpriteComponent uias = new UIAnimatedSpriteComponent();
+                String ui_path = data.get("pathname").getAsString();
+                /*try {
+                    Pixmap pixmap = game.getGraphics()
+                            .newPixmap(ui_path, Graphics.PixmapFormat.ARGB8888);
+                    uias.sprite = pixmap;
+                } catch (Exception e) {
+                    Log.e("ECS", "Errore sprite: " + ui_path);
+                }*/
+                uias.posX = data.get("x").getAsInt();
+                uias.posY = data.get("y").getAsInt();
+                uias.width = data.get("width").getAsInt();
+                uias.height = data.get("height").getAsInt();
+                uias.windowX = 0;
+                uias.windowY = 0;
+                uias.windowWidth = data.get("window_width").getAsInt();
+                uias.windowHeight = data.get("window_height").getAsInt();
+                uias.frameDuration = data.get("frame_duration").getAsFloat();
+
+                return uias;
             default:
                 return null;
         }
