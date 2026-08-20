@@ -25,6 +25,8 @@ public class LoadingScreen extends Screen {
     Graphics g;
     int screenW;
     int screenH;
+
+    boolean frame_skipped = false;
     android.content.res.AssetManager assetManager;
     public LoadingScreen(Game game) {
 
@@ -33,6 +35,14 @@ public class LoadingScreen extends Screen {
 
     @Override
     public void update(float deltaTime) {
+        if(!frame_skipped) {
+            frame_skipped = true;
+            g = game.getGraphics();
+            Assets.loading = loadSprite("loading.png", game);
+            return;
+        }
+
+
         System.loadLibrary("liquidfun");
         System.loadLibrary("liquidfun_jni");
 
@@ -67,17 +77,18 @@ public class LoadingScreen extends Screen {
         
         Assets.prototypeRegistry.load(generators);
 
-
-        g = game.getGraphics();
-
         screenW = g.getWidth();
         screenH = g.getHeight();
 
         assetManager = ((Context) game).getAssets();
 
         Assets.anthill = loadSprite("anthill.png", game);
-        Assets.background = loadSprite("grass.png", game);
+        Assets.background = loadSprite("grass_2.png", game);
         Assets.button = loadSprite("button.png", game);
+        Assets.game_over = loadSprite("game_over.png", game);
+        Assets.antSkins = new Pixmap[]{loadSprite("ant.png", game),
+                loadSprite("ant2.png", game),
+                loadSprite("ant3.png", game)};
 
         AndroidAudio audio = new AndroidAudio((Activity)game);
         Assets.soundtrack = audio.newMusic("soundtrack.mp3");
@@ -103,7 +114,7 @@ public class LoadingScreen extends Screen {
 
     @Override
     public void present(float deltaTime) {
-
+        g.drawPixmap(Assets.loading, 0, 0);
     }
 
     @Override
