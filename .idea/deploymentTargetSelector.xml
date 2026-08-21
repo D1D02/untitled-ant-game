@@ -7,7 +7,7 @@
       </SelectionState>
       <SelectionState runConfigName="AntGame">
         <option name="selectionMode" value="DROPDOWN" />
-        <DropdownSelection timestamp="2026-08-20T16:13:24.961137400Z">
+        <DropdownSelection timestamp="2026-08-21T10:01:23.141193200Z">
           <Target type="DEFAULT_BOOT">
             <handle>
               <DeviceId pluginId="PhysicalDevice" identifier="serial=2766488d" />

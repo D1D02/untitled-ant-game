@@ -129,7 +129,7 @@ public class AIComponent implements Component {
                 carryJoint = null;
                 carriedFood = null;
             }else screen.anthill.addFood(ant.getComponent(FoodComponent.class).food);
-            screen.world.removeEntity(ant);
+            screen.world.removePooledEntity(ant);
 
             return 1;
         }
@@ -164,9 +164,15 @@ public class AIComponent implements Component {
         else if( carriedRock != -1 )
         {
             Entity ant = (Entity) antBody.getUserData();
-            Entity rock = screen.obstacles.get(carriedRock);
-            carryJointRock = screen.createJoint(ant, rock);
-            state = Behaviour.DRAGGING;
+            try{
+
+                Entity rock = screen.obstacles.get(carriedRock);
+                carryJointRock = screen.createJoint(ant, rock);
+                state = Behaviour.DRAGGING;
+
+            } catch (Exception e) {
+                state = Behaviour.RETURNING;
+            }
         }
         return wanderAngle;
     }

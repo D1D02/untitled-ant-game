@@ -1,5 +1,6 @@
 package com.main.untitledantgame.pools;
 
+import com.main.untitledantgame.components.BodyComponent;
 import com.main.untitledantgame.utility.ecs.Entity;
 import com.main.untitledantgame.utility.ecs.EntityFactory;
 import com.main.untitledantgame.visuals.Assets;
@@ -61,6 +62,7 @@ public class EntityPool {
         if (remaining ==0)
             throw new IllegalStateException();
         remaining--;
+        entities[remaining].getComponent(BodyComponent.class).body.setActive(true);
         return entities[remaining];
     }
 
@@ -68,6 +70,7 @@ public class EntityPool {
     {
         if (remaining ==entities.length) return;
         entities[remaining] = e;
+        entities[remaining].getComponent(BodyComponent.class).body.setActive(false);
         remaining++;
     }
 

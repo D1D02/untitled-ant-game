@@ -31,4 +31,8 @@ public class GameWorld {
         entities.remove(e);
     }
 
+    public void removePooledEntity(Entity e ){
+        entities.remove(e);
+    }
+
 }

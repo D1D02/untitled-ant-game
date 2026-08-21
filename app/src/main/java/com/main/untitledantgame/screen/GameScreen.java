@@ -582,7 +582,7 @@ public class GameScreen extends Screen {
             if (mortalEntity.getComponent(AliveComponent.class).isDead(deltaTime)) {
                 iterator.remove();
 
-                world.removeEntity(mortalEntity);
+                world.removePooledEntity(mortalEntity);
                 if (Objects.equals(mortalEntity.type, "Pheromone")) {
                     IdentifierComponent id = mortalEntity.getComponent(IdentifierComponent.class);
                     /*if (trails[id.path_id][id.inc_id] == mortalEntity) {
