@@ -59,7 +59,6 @@ public class GameScreen extends Screen {
     GameContactListener contactListener;
 
     EntityFactory entityFactory;
-    List<Entity> pendingEntities = new ArrayList<>();
     List<Entity> generators = new ArrayList<>(5);
     List<Entity> mortalEntities = new ArrayList<>(100);
 
@@ -148,12 +147,6 @@ public class GameScreen extends Screen {
         checkTTL(deltaTime);
         //GENERATORI
         generateItems(deltaTime);
-
-        for(Entity e : pendingEntities){
-            world.addEntity(e);
-        }
-
-        pendingEntities.clear();
 
         //COOLDOWN
         quizTimer += deltaTime;
@@ -421,8 +414,26 @@ public class GameScreen extends Screen {
         for(int i = 0; i < canvas.elements.size(); i++){
             canvas.elements.get(i).getWithSuperComponent(UIElementComponent.class).enabled = false;
         }
+
+        Iterator<Entity> iterator = world.entities.iterator();
+        while (iterator.hasNext()) {
+            Entity entity = iterator.next();
+            iterator.remove();
+
+            if (Objects.equals(entity.type, "Pheromone") ) {
+                pheromones_pool.release(entity);
+                world.removePooledEntity(entity);
+            } else if (Objects.equals(entity.type, "Ant")) {
+                ants_pool.release(entity);
+                world.removePooledEntity(entity);
+            }else{
+                world.removeEntity(entity);
+            }
+        }
         mainMenuButton.enabled = true;
         gameOverLabel.enabled = true;
+
+
     }
 
     void quizReady(){
@@ -553,7 +564,7 @@ public class GameScreen extends Screen {
 
             mortalEntities.add(newPheromone);
 
-            pendingEntities.add(newPheromone);
+            world.addEntity(newPheromone);
 
             anthill.game_stats.pheromones_spawned += 1;
 
@@ -582,14 +593,17 @@ public class GameScreen extends Screen {
             if (mortalEntity.getComponent(AliveComponent.class).isDead(deltaTime)) {
                 iterator.remove();
 
-                world.removePooledEntity(mortalEntity);
                 if (Objects.equals(mortalEntity.type, "Pheromone")) {
                     IdentifierComponent id = mortalEntity.getComponent(IdentifierComponent.class);
                     /*if (trails[id.path_id][id.inc_id] == mortalEntity) {
                         trails[id.path_id][id.inc_id] = null;
                     }*/
                     pheromones_pool.release(mortalEntity);
+                    world.removePooledEntity(mortalEntity);
+                }else{
+                    world.removeEntity(mortalEntity);
                 }
+
             }
         }
     }
