@@ -20,6 +20,8 @@ public class AIComponent implements Component {
     public Behaviour state = Behaviour.WANDERING;
 
     public float wanderAngle = 0f;
+    public static final float angle_inc = (float) (3.14 * ( (float) 1 / 16));
+
 
     private float w_time_spent = 0;
     private float w_max_time = 1.5f;
@@ -40,6 +42,9 @@ public class AIComponent implements Component {
     public Vec2 sense_distance = new Vec2(30, 30);
     public Sensor sensor = new Sensor();
 
+    public Vec2 spawn_point;
+    public Vec2 next_checkpoint;
+
 
     public float updatePosition( Body antBody, float force, GameScreen screen, float deltaTime ){
 
@@ -56,8 +61,12 @@ public class AIComponent implements Component {
             case DRAGGING:
                 return dragRock( antBody, force, screen );
 
+            case PATROLLING:
+                return patrolArea( antBody, force, screen );
+
             case WAITING:
                 return 2;
+
             default:
                 return antBody.getAngle();
         }
@@ -68,18 +77,6 @@ public class AIComponent implements Component {
         w_time_spent+=deltaTime;
 
         Vec2 ant_pos = antBody.getPosition();
-        List<Fixture> results = sensor.findInArea( screen.world.physicsWorld,
-                ant_pos.getX() - sense_distance.getX(),
-                ant_pos.getY() - sense_distance.getX(),
-                ant_pos.getX() + sense_distance.getX(),
-                ant_pos.getY() + sense_distance.getX() );
-        for (Fixture fixture : results) {
-            Body body = fixture.getBody();
-            Entity entity = (Entity) body.getUserData();
-            Entity ant = (Entity) antBody.getUserData();
-            if(!ant.equals(entity)) Log.d("AiComponent", "Detected: " + entity.type);
-        }
-
 
         if(w_time_spent>=w_max_time){
 
@@ -89,10 +86,29 @@ public class AIComponent implements Component {
         }
 
         float angle = antBody.getAngle()+wanderAngle;
-
         float fx = (float)Math.cos(angle)*force;
         float fy = (float)Math.sin(angle)*force;
 
+        List<Fixture> results = sensor.findInArea( screen.world.physicsWorld,
+                ant_pos.getX() - sense_distance.getX(),
+                ant_pos.getY() - sense_distance.getX(),
+                ant_pos.getX() + sense_distance.getX(),
+                ant_pos.getY() + sense_distance.getX() );
+        for (Fixture fixture : results) {
+            Body body = fixture.getBody();
+            Entity entity = (Entity) body.getUserData();
+            Entity ant = (Entity) antBody.getUserData();
+            if (!ant.equals(entity)) Log.d("AiComponent", "Detected: " + entity.type);
+
+            if ("Food".equals(entity.type) || "Rock".equals(entity.type)) {
+                if(entity.hasComponent(ObstacleComponent.class) && entity.getComponent(ObstacleComponent.class).spotted ) break;
+                Vec2 en = entity.getComponent(BodyComponent.class).body.getPosition();
+                Vec2 d = new Vec2((en.getX() - ant_pos.getX()), en.getY() - ant_pos.getY());
+                fx = d.getX() * force;
+                fy = d.getY() * force;
+                break;
+            }
+        }
 
         antBody.applyForceToCenter( new Vec2(fx,fy), true );
         //Log.d("WANDERING", "x: " + fx + " y:"+ fy);
@@ -225,6 +241,37 @@ public class AIComponent implements Component {
         return wanderAngle;
     }
 
+    public float patrolArea( Body antBody, float force, GameScreen screen )
+    {
+
+        try {
+            Vec2 antPos = antBody.getPosition();
+
+            if( antBody.getPositionX() - next_checkpoint.getX() < 10  && antBody.getPositionY() - next_checkpoint.getY() < 10 ){
+                wanderAngle += angle_inc;
+                next_checkpoint.setX((float) (spawn_point.getX() + spawn_point.getX() * Math.cos(wanderAngle)));
+                next_checkpoint.setY((float) (spawn_point.getY() + spawn_point.getY() * Math.cos(wanderAngle)));
+            }
+            Vec2 d = new Vec2((next_checkpoint.getX() - antPos.getX()), next_checkpoint.getY() - antPos.getY());
+            Vec2.normalize(d);
+
+            d.setX(-d.getX() * force);
+            d.setY(-d.getY() * force);
+
+
+            antBody.applyForceToCenter(d, true);
+
+            antBody.setLinearDamping(0.5f);
+
+        }catch(Exception e){
+            //state = Behaviour.WAITING;
+            antBody.setAngularVelocity(2);
+        }
+
+
+        return wanderAngle;
+    }
+
     public void handleCollision( Entity ant, Entity b, GameWorld world, GameScreen screen ){
 
         if( state == Behaviour.WANDERING && Objects.equals(b.type,"Food") && carriedRock ==-1 )
@@ -245,6 +292,7 @@ public class AIComponent implements Component {
             state = Behaviour.RETURNING;
             b.getComponent(BodyComponent.class).body.setLinearVelocity(new Vec2(0f, 0f));
             b.getComponent(BodyComponent.class).body.setAngularVelocity(0);
+            b.getComponent(ObstacleComponent.class).spotted = true;
             Log.d( "AI", "Rock detected" );
         }
         else if( state == Behaviour.FOLLOWING && Objects.equals(b.type,"Rock") )

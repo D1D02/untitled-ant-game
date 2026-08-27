@@ -9,6 +9,7 @@ import com.badlogic.androidgames.framework.Screen;
 import com.google.fpl.liquidfun.Body;
 import com.google.fpl.liquidfun.DistanceJointDef;
 import com.google.fpl.liquidfun.Joint;
+import com.google.fpl.liquidfun.Vec2;
 import com.main.untitledantgame.collision.Collision;
 import com.main.untitledantgame.collision.GameContactListener;
 import com.main.untitledantgame.components.AIComponent;
@@ -523,7 +524,15 @@ public class GameScreen extends Screen {
                 GeneratorComponent gen = generator.getComponent(GeneratorComponent.class);
                 float x = gen.getRandomPosition();
                 float y = gen.getRandomPosition();
-                spawnEntity(generator.getComponent(GeneratorComponent.class).entity_name, x, y);
+
+                String entity_name = generator.getComponent(GeneratorComponent.class).entity_name;
+                Entity e = spawnEntity(entity_name, x, y);
+                if( "Wasp".equals(entity_name) ) {
+                    AIComponent e_ai = e.getComponent(AIComponent.class);
+                    e_ai.spawn_point = new Vec2( x, y );
+                    e_ai.next_checkpoint = new Vec2( x + x, y );
+                    e_ai.state = Behaviour.PATROLLING;
+                }
             }
         }
     }

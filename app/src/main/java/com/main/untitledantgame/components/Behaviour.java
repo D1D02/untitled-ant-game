@@ -5,5 +5,6 @@ public enum Behaviour {
     FOLLOWING,
     RETURNING,
     DRAGGING,
-    WAITING
+    WAITING,
+    PATROLLING
 }
