@@ -65,7 +65,6 @@ public class GameScreen extends Screen {
     EntityFactory entityFactory;
     List<Entity> generators = new ArrayList<>(5);
     List<Entity> mortalEntities = new ArrayList<>(100);
-
     public List<Entity> obstacles = new ArrayList<>(10);
     int obSize = 0;
     int obMax = 10;
@@ -199,7 +198,7 @@ public class GameScreen extends Screen {
             Entity e = entities.get(i);
 
 
-            if("Ant".equals(e.type))
+            if("Ant".equals(e.type) || "Wasp".equals(e.type))
             {
                 AIComponent agent = e.getComponent(AIComponent.class);
                 if(e.getComponent(FoodComponent.class).isFoodEnded(deltaTime)){
@@ -531,8 +530,6 @@ public class GameScreen extends Screen {
                 Entity e = spawnEntity(entity_name, x, y);
                 if( "Wasp".equals(entity_name) ) {
                     AIComponent e_ai = e.getComponent(AIComponent.class);
-                    e_ai.spawn_point = new Vec2( x, y );
-                    e_ai.next_checkpoint = new Vec2( x + x, y );
                     e_ai.state = Behaviour.PATROLLING;
                 }
             }

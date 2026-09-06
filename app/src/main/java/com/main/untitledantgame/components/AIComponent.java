@@ -42,15 +42,13 @@ public class AIComponent implements Component {
     public Vec2 sense_distance = new Vec2(30, 30);
     public Sensor sensor = new Sensor();
 
-    public Vec2 spawn_point;
-    public Vec2 next_checkpoint;
 
 
     public float updatePosition( Body antBody, float force, GameScreen screen, float deltaTime ){
 
         switch(state){
             case WANDERING:
-                return updateWandering( antBody, force, screen, deltaTime );
+                return updateWandering( antBody, force, screen, deltaTime, false );
 
             case RETURNING:
                 return followTrail( antBody, force, screen, false );
@@ -62,7 +60,7 @@ public class AIComponent implements Component {
                 return dragRock( antBody, force, screen );
 
             case PATROLLING:
-                return patrolArea( antBody, force, screen );
+                return patrolArea( antBody, force, screen, deltaTime );
 
             case WAITING:
                 return 2;
@@ -72,7 +70,7 @@ public class AIComponent implements Component {
         }
     }
 
-    public float updateWandering( Body antBody, float force, GameScreen screen, float deltaTime ){
+    public float updateWandering( Body antBody, float force, GameScreen screen, float deltaTime, boolean isWasp ){
 
         w_time_spent+=deltaTime;
 
@@ -100,13 +98,25 @@ public class AIComponent implements Component {
             Entity ant = (Entity) antBody.getUserData();
             if (!ant.equals(entity)) Log.d("AiComponent", "Detected: " + entity.type);
 
-            if ("Food".equals(entity.type) || "Rock".equals(entity.type)) {
-                if(entity.hasComponent(ObstacleComponent.class) && entity.getComponent(ObstacleComponent.class).spotted ) break;
-                Vec2 en = entity.getComponent(BodyComponent.class).body.getPosition();
-                Vec2 d = new Vec2((en.getX() - ant_pos.getX()), en.getY() - ant_pos.getY());
-                fx = d.getX() * force;
-                fy = d.getY() * force;
-                break;
+            if(!isWasp) {
+                if ("Food".equals(entity.type) || "Rock".equals(entity.type)) {
+                    if (entity.hasComponent(ObstacleComponent.class) && entity.getComponent(ObstacleComponent.class).spotted)
+                        break;
+                    Vec2 en = entity.getComponent(BodyComponent.class).body.getPosition();
+                    Vec2 d = new Vec2((en.getX() - ant_pos.getX()), en.getY() - ant_pos.getY());
+                    fx = d.getX() * force;
+                    fy = d.getY() * force;
+                    break;
+                }
+            }
+            else {
+                if ("Ant".equals(entity.type)) {
+                    Vec2 en = entity.getComponent(BodyComponent.class).body.getPosition();
+                    Vec2 d = new Vec2((en.getX() - ant_pos.getX()), en.getY() - ant_pos.getY());
+                    fx = d.getX() * force;
+                    fy = d.getY() * force;
+                    break;
+                }
             }
         }
 
@@ -115,7 +125,7 @@ public class AIComponent implements Component {
 
         antBody.setLinearDamping(1.5f);
 
-        generatePheromone( antBody, screen, deltaTime );
+        if(!isWasp) generatePheromone( antBody, screen, deltaTime );
 
         return angle;
     }
@@ -241,27 +251,11 @@ public class AIComponent implements Component {
         return wanderAngle;
     }
 
-    public float patrolArea( Body antBody, float force, GameScreen screen )
+    public float patrolArea( Body antBody, float force, GameScreen screen, float deltaTime )
     {
-
+        this.updateWandering(antBody, force, screen, deltaTime, true);
         try {
-            Vec2 antPos = antBody.getPosition();
 
-            if( antBody.getPositionX() - next_checkpoint.getX() < 10  && antBody.getPositionY() - next_checkpoint.getY() < 10 ){
-                wanderAngle += angle_inc;
-                next_checkpoint.setX((float) (spawn_point.getX() + spawn_point.getX() * Math.cos(wanderAngle)));
-                next_checkpoint.setY((float) (spawn_point.getY() + spawn_point.getY() * Math.cos(wanderAngle)));
-            }
-            Vec2 d = new Vec2((next_checkpoint.getX() - antPos.getX()), next_checkpoint.getY() - antPos.getY());
-            Vec2.normalize(d);
-
-            d.setX(-d.getX() * force);
-            d.setY(-d.getY() * force);
-
-
-            antBody.applyForceToCenter(d, true);
-
-            antBody.setLinearDamping(0.5f);
 
         }catch(Exception e){
             //state = Behaviour.WAITING;
