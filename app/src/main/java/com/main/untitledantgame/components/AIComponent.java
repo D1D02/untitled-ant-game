@@ -76,11 +76,14 @@ public class AIComponent implements Component {
 
         Vec2 ant_pos = antBody.getPosition();
 
-        if(w_time_spent>=w_max_time){
+        if(!isWasp && w_time_spent>=w_max_time){
 
             wanderAngle += (float)((Math.random()-0.5f)*0.5f);
             w_time_spent-=w_max_time;
 
+        } else if (isWasp && w_time_spent>=w_max_time) {
+            wanderAngle += (float)(Math.random()*3.14f);
+            w_time_spent-=w_max_time;
         }
 
         float angle = antBody.getAngle()+wanderAngle;
