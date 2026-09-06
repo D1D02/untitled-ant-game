@@ -398,14 +398,13 @@ public class GameScreen extends Screen {
         //ENTITA' INIZIALI
         for(int i = 0; i < 10; i++){
             GeneratorComponent foodGen = food_generator.getComponent(GeneratorComponent.class);
-            spawnEntity("Food", foodGen.getRandomPosition(), foodGen.getRandomPosition());
+            spawnEntity("Food", foodGen.getRandomPosition(this), foodGen.getRandomPosition(this));
             if(i < 3){
                 GeneratorComponent rockGen = rock_generator.getComponent(GeneratorComponent.class);
-                spawnEntity("Rock", rockGen.getRandomPosition(), rockGen.getRandomPosition());
+                spawnEntity("Rock", rockGen.getRandomPosition(this), rockGen.getRandomPosition(this));
             }
         }
 
-        //pheromones_pool = new EntityPool(1000, "Pheromone", world.physicsWorld, game);
         pheromones_pool = Assets.pheromones_pool;
         trails = new Entity[1000][1000];
 
@@ -525,8 +524,8 @@ public class GameScreen extends Screen {
         for(Entity generator : generators ) {
             if(generator.getComponent(GeneratorComponent.class).canBeGenerated(deltaTime)) {
                 GeneratorComponent gen = generator.getComponent(GeneratorComponent.class);
-                float x = gen.getRandomPosition();
-                float y = gen.getRandomPosition();
+                float x = gen.getRandomPosition(this);
+                float y = gen.getRandomPosition(this);
 
                 String entity_name = generator.getComponent(GeneratorComponent.class).entity_name;
                 Entity e = spawnEntity(entity_name, x, y);
