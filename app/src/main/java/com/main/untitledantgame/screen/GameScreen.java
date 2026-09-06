@@ -42,11 +42,14 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
+import java.util.Random;
 
 public class GameScreen extends Screen {
 
     int xOffset=0, yOffset=0, lastDragX, lastDragY; //servono per lo scorrimento della visuale
     float camVelocityX = 0, camVelocityY = 0, camSpeed = 120;
+
+    public Random rand = new Random();
 
     int bgWidth = Assets.background.getWidth(), bgHeight = Assets.background.getHeight();
 
@@ -387,7 +390,7 @@ public class GameScreen extends Screen {
                 exploreTimer = exploreCooldown;
 
                 Entity ant = spawnAnt();
-                ant.getComponent(AIComponent.class).wanderAngle = (float) (Math.random() * Math.PI * 2);
+                ant.getComponent(AIComponent.class).wanderAngle = (float) (rand.nextFloat() * Math.PI * 2);
             }
         });
         canvas.addElement(exploration);
