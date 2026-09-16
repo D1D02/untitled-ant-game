@@ -63,6 +63,21 @@
     }
   },
   {
+    "name": "StatisticsButton",
+    "components": {
+      "uibutton": {
+        "x": 33,
+        "y": 70,
+        "width": 34,
+        "height": 20,
+        "text": "STATISTICS",
+        "textR": 255,
+        "textG": 255,
+        "textB": 255
+      }
+    }
+  },
+  {
     "name": "ResetCameraButton",
     "components": {
       "uibutton": {
@@ -390,6 +405,126 @@
         "window_width": 724,
         "window_height": 724,
         "frame_duration": 0.5
+      }
+    }
+  },
+  {
+    "name": "StatisticsLabel",
+    "components": {
+      "uilabel": {
+        "x": 20,
+        "y": 5,
+        "width": 60,
+        "height": 15,
+        "text": "YOUR BEST SCORE:",
+        "textR": 255,
+        "textG": 0,
+        "textB": 0
+      }
+    }
+  },
+  {
+    "name": "AntsSpawnedLabel",
+    "components": {
+      "uilabel": {
+        "x": 5,
+        "y": 25,
+        "width": 45,
+        "height": 15,
+        "text": "Ants spawned: 0",
+        "textR": 255,
+        "textG": 255,
+        "textB": 255
+      }
+    }
+  },
+  {
+    "name": "PheromonesSpawnedLabel",
+    "components": {
+      "uilabel": {
+        "x": 55,
+        "y": 25,
+        "width": 45,
+        "height": 15,
+        "text": "Pheromones spawned: 0",
+        "textR": 255,
+        "textG": 255,
+        "textB": 255
+      }
+    }
+  },
+  {
+    "name": "FoodPickedLabel",
+    "components": {
+      "uilabel": {
+        "x": 5,
+        "y": 45,
+        "width": 45,
+        "height": 15,
+        "text": "Food picked up: 0",
+        "textR": 255,
+        "textG": 255,
+        "textB": 255
+      }
+    }
+  },
+  {
+    "name": "ObstaclesRemovedLabel",
+    "components": {
+      "uilabel": {
+        "x": 55,
+        "y": 45,
+        "width": 45,
+        "height": 15,
+        "text": "Obstacles removed: 0",
+        "textR": 255,
+        "textG": 255,
+        "textB": 255
+      }
+    }
+  },
+  {
+    "name": "EnemiesKilledLabel",
+    "components": {
+      "uilabel": {
+        "x": 5,
+        "y": 65,
+        "width": 45,
+        "height": 15,
+        "text": "Enemies killed: 0",
+        "textR": 255,
+        "textG": 255,
+        "textB": 255
+      }
+    }
+  },
+  {
+    "name": "LevelReachedLabel",
+    "components": {
+      "uilabel": {
+        "x": 55,
+        "y": 65,
+        "width": 45,
+        "height": 15,
+        "text": "Level reached: 1",
+        "textR": 255,
+        "textG": 255,
+        "textB": 255
+      }
+    }
+  },
+  {
+    "name": "CoinsEarnedLabel",
+    "components": {
+      "uilabel": {
+        "x": 5,
+        "y": 85,
+        "width": 45,
+        "height": 15,
+        "text": "Coins earned: 0",
+        "textR": 255,
+        "textG": 255,
+        "textB": 255
       }
     }
   }

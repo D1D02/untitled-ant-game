@@ -183,12 +183,12 @@ public class GameScreen extends Screen {
 
     @Override
     public void pause() {
-
+        Assets.soundtrack.pause();
     }
 
     @Override
     public void resume() {
-
+        Assets.soundtrack.play();
     }
 
     @Override
@@ -247,7 +247,6 @@ public class GameScreen extends Screen {
                 if (sprite instanceof AnimatedSpriteComponent) {
                     ((AnimatedSpriteComponent) sprite).update(deltaTime);
                     AnimatedSpriteComponent as = (AnimatedSpriteComponent) sprite;
-                    Log.d("ANIMATION", as.windowX + " " + as.windowY + " /// " + as.windowWidth + " " + as.windowHeight);
                 }
                 g.drawPixmap(sprite.sprite, posX, posY, sprite.windowX, sprite.windowY, sprite.windowWidth, sprite.windowHeight, sprite.width, sprite.height, sprite.rotation);
             }
@@ -481,12 +480,13 @@ public class GameScreen extends Screen {
     }
 
     public void addToBoard(Entity e, int id){
-
         for( Entity obstacle:  obstacles ) {
             if (obstacle.equals(e)) return;
         }
-        Assets.boardSound.play(1);
         ObstacleComponent oc = e.getComponent(ObstacleComponent.class);
+        if(oc.spotted)
+            return;
+        Assets.boardSound.play(1);
         oc.path_id = id;
         oc.spotted = true;
         obstacles.add(e);

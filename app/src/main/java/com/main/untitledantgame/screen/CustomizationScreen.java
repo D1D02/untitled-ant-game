@@ -65,12 +65,12 @@ public class CustomizationScreen extends Screen {
 
     @Override
     public void pause() {
-
+        Assets.soundtrack.pause();
     }
 
     @Override
     public void resume() {
-
+        Assets.soundtrack.play();
     }
 
     @Override
