@@ -4,12 +4,12 @@ import android.util.Log;
 
 import java.util.*;
 
-import com.badlogic.androidgames.framework.Screen;
 import com.google.fpl.liquidfun.Body;
+import com.google.fpl.liquidfun.Fixture;
 import com.google.fpl.liquidfun.Joint;
-import com.google.fpl.liquidfun.RevoluteJointDef;
 import com.google.fpl.liquidfun.Vec2;
 
+import com.main.untitledantgame.collision.Sensor;
 import com.main.untitledantgame.map.GameWorld;
 import com.main.untitledantgame.screen.GameScreen;
 import com.main.untitledantgame.utility.ecs.Entity;
@@ -20,6 +20,8 @@ public class AIComponent implements Component {
     public Behaviour state = Behaviour.WANDERING;
 
     public float wanderAngle = 0f;
+    public static final float angle_inc = (float) (3.14 * ( (float) 1 / 16));
+
 
     private float w_time_spent = 0;
     private float w_max_time = 1.5f;
@@ -37,12 +39,16 @@ public class AIComponent implements Component {
     private final float p_max_time = 1.5f;
     private float p_time_spent = p_max_time;
 
+    public Vec2 sense_distance = new Vec2(30, 30);
+    public Sensor sensor = new Sensor();
+
+
 
     public float updatePosition( Body antBody, float force, GameScreen screen, float deltaTime ){
 
         switch(state){
             case WANDERING:
-                return updateWandering( antBody, force, screen, deltaTime );
+                return updateWandering( antBody, force, screen, deltaTime, false );
 
             case RETURNING:
                 return followTrail( antBody, force, screen, false );
@@ -53,36 +59,76 @@ public class AIComponent implements Component {
             case DRAGGING:
                 return dragRock( antBody, force, screen );
 
+            case PATROLLING:
+                return patrolArea( antBody, force, screen, deltaTime );
+
             case WAITING:
                 return 2;
+
             default:
                 return antBody.getAngle();
         }
     }
 
-    public float updateWandering( Body antBody, float force, GameScreen screen, float deltaTime ){
+    public float updateWandering( Body antBody, float force, GameScreen screen, float deltaTime, boolean isWasp ){
 
         w_time_spent+=deltaTime;
 
-        if(w_time_spent>=w_max_time){
+        Vec2 ant_pos = antBody.getPosition();
+
+        if(!isWasp && w_time_spent>=w_max_time){
 
             wanderAngle += (float)((Math.random()-0.5f)*0.5f);
             w_time_spent-=w_max_time;
 
+        } else if (isWasp && w_time_spent>=w_max_time) {
+            wanderAngle += (float)(Math.random()*3.14f);
+            w_time_spent-=w_max_time;
         }
 
         float angle = antBody.getAngle()+wanderAngle;
-
         float fx = (float)Math.cos(angle)*force;
         float fy = (float)Math.sin(angle)*force;
 
+        List<Fixture> results = sensor.findInArea( screen.world.physicsWorld,
+                ant_pos.getX() - sense_distance.getX(),
+                ant_pos.getY() - sense_distance.getX(),
+                ant_pos.getX() + sense_distance.getX(),
+                ant_pos.getY() + sense_distance.getX() );
+        for (Fixture fixture : results) {
+            Body body = fixture.getBody();
+            Entity entity = (Entity) body.getUserData();
+            Entity ant = (Entity) antBody.getUserData();
+            if (!ant.equals(entity)) Log.d("AiComponent", "Detected: " + entity.type);
+
+            if(!isWasp) {
+                if ("Food".equals(entity.type) || "Rock".equals(entity.type)) {
+                    if (entity.hasComponent(ObstacleComponent.class) && entity.getComponent(ObstacleComponent.class).spotted)
+                        break;
+                    Vec2 en = entity.getComponent(BodyComponent.class).body.getPosition();
+                    Vec2 d = new Vec2((en.getX() - ant_pos.getX()), en.getY() - ant_pos.getY());
+                    fx = d.getX() * force;
+                    fy = d.getY() * force;
+                    break;
+                }
+            }
+            else {
+                if ("Ant".equals(entity.type)) {
+                    Vec2 en = entity.getComponent(BodyComponent.class).body.getPosition();
+                    Vec2 d = new Vec2((en.getX() - ant_pos.getX()), en.getY() - ant_pos.getY());
+                    fx = d.getX() * force;
+                    fy = d.getY() * force;
+                    break;
+                }
+            }
+        }
 
         antBody.applyForceToCenter( new Vec2(fx,fy), true );
         //Log.d("WANDERING", "x: " + fx + " y:"+ fy);
 
         antBody.setLinearDamping(1.5f);
 
-        generatePheromone( antBody, screen, deltaTime );
+        if(!isWasp) generatePheromone( antBody, screen, deltaTime );
 
         return angle;
     }
@@ -112,7 +158,7 @@ public class AIComponent implements Component {
                 carryJoint = null;
                 carriedFood = null;
             }else screen.anthill.addFood(ant.getComponent(FoodComponent.class).food);
-            screen.world.removeEntity(ant);
+            screen.world.removePooledEntity(ant);
 
             return 1;
         }
@@ -147,9 +193,15 @@ public class AIComponent implements Component {
         else if( carriedRock != -1 )
         {
             Entity ant = (Entity) antBody.getUserData();
-            Entity rock = screen.obstacles.get(carriedRock);
-            carryJointRock = screen.createJoint(ant, rock);
-            state = Behaviour.DRAGGING;
+            try{
+
+                Entity rock = screen.obstacles.get(carriedRock);
+                carryJointRock = screen.createJoint(ant, rock);
+                state = Behaviour.DRAGGING;
+
+            } catch (Exception e) {
+                state = Behaviour.RETURNING;
+            }
         }
         return wanderAngle;
     }
@@ -202,6 +254,21 @@ public class AIComponent implements Component {
         return wanderAngle;
     }
 
+    public float patrolArea( Body antBody, float force, GameScreen screen, float deltaTime )
+    {
+        this.updateWandering(antBody, force, screen, deltaTime, true);
+        try {
+
+
+        }catch(Exception e){
+            //state = Behaviour.WAITING;
+            antBody.setAngularVelocity(2);
+        }
+
+
+        return wanderAngle;
+    }
+
     public void handleCollision( Entity ant, Entity b, GameWorld world, GameScreen screen ){
 
         if( state == Behaviour.WANDERING && Objects.equals(b.type,"Food") && carriedRock ==-1 )
@@ -222,6 +289,7 @@ public class AIComponent implements Component {
             state = Behaviour.RETURNING;
             b.getComponent(BodyComponent.class).body.setLinearVelocity(new Vec2(0f, 0f));
             b.getComponent(BodyComponent.class).body.setAngularVelocity(0);
+            b.getComponent(ObstacleComponent.class).spotted = true;
             Log.d( "AI", "Rock detected" );
         }
         else if( state == Behaviour.FOLLOWING && Objects.equals(b.type,"Rock") )

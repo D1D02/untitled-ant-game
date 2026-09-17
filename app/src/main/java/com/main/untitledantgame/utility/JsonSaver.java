@@ -17,10 +17,13 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
 
+
+
 public class JsonSaver {
 
     private static final String TAG = "JsonSaver";
     private static final String STATS_FILE_NAME = "statistics.json";
+    private static final String COINS_FILE_NAME = "coins.json";
 
     public static void saveStatistics(Context context, Statistics stats) {
 
@@ -155,5 +158,88 @@ public class JsonSaver {
     public static int getTotalCoins(Context context) {
 
         return getTotalStatistics(context).coin;
+    }
+
+    public static int getCoins(Context context) {
+
+        File file = new File(
+                context.getFilesDir(),
+                COINS_FILE_NAME
+        );
+
+        if (!file.exists()) {
+            return 0;
+        }
+
+        try (FileInputStream fis =
+                     context.openFileInput(COINS_FILE_NAME);
+             InputStreamReader reader =
+                     new InputStreamReader(fis, StandardCharsets.UTF_8)) {
+
+            JsonObject json = JsonParser
+                    .parseReader(reader)
+                    .getAsJsonObject();
+
+            return json.get("coins").getAsInt();
+
+        } catch (Exception e) {
+            Log.e(TAG, "Errore durante il caricamento delle monete", e);
+            return 0;
+        }
+    }
+
+    public static void setCoins(Context context, int coins) {
+
+        if (coins < 0) {
+            return;
+        }
+
+        JsonObject json = new JsonObject();
+        json.addProperty("coins", coins);
+
+        try (FileOutputStream fos =
+                     context.openFileOutput(
+                             COINS_FILE_NAME,
+                             Context.MODE_PRIVATE
+                     );
+             OutputStreamWriter writer =
+                     new OutputStreamWriter(fos, StandardCharsets.UTF_8)) {
+
+            new GsonBuilder()
+                    .setPrettyPrinting()
+                    .create()
+                    .toJson(json, writer);
+
+        } catch (Exception e) {
+            Log.e(TAG, "Errore durante il salvataggio delle monete", e);
+        }
+    }
+
+    public static void addCoins(Context context, int amount) {
+
+        if (amount <= 0) {
+            return;
+        }
+
+        int currentCoins = getCoins(context);
+
+        setCoins(context, currentCoins + amount);
+    }
+
+    public static boolean spendCoins(Context context, int amount) {
+
+        if (amount <= 0) {
+            return false;
+        }
+
+        int currentCoins = getCoins(context);
+
+        if (currentCoins < amount) {
+            return false;
+        }
+
+        setCoins(context, currentCoins - amount);
+
+        return true;
     }
 }

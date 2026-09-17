@@ -1,5 +1,8 @@
 package com.main.untitledantgame.components;
 
+import com.badlogic.androidgames.framework.Screen;
+import com.main.untitledantgame.screen.GameScreen;
+
 public class GeneratorComponent implements Component {
     public int start_delay = 0;
     public float ratio = 10;
@@ -15,8 +18,8 @@ public class GeneratorComponent implements Component {
         else{ return false; }
     }
 
-    public float getRandomPosition(){
-        float distance = ((max_distance - min_distance) * (float)Math.random()) + min_distance;
+    public float getRandomPosition(GameScreen game){
+        float distance = ((max_distance - min_distance) * game.rand.nextFloat()) + min_distance;
         if(Math.random() < 0.5) distance = -distance;
         return distance;
     }

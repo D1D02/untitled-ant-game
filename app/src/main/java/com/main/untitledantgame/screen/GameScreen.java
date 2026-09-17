@@ -10,6 +10,7 @@ import com.badlogic.androidgames.framework.Screen;
 import com.google.fpl.liquidfun.Body;
 import com.google.fpl.liquidfun.DistanceJointDef;
 import com.google.fpl.liquidfun.Joint;
+import com.google.fpl.liquidfun.Vec2;
 import com.main.untitledantgame.collision.Collision;
 import com.main.untitledantgame.collision.GameContactListener;
 import com.main.untitledantgame.components.AIComponent;
@@ -43,11 +44,14 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
+import java.util.Random;
 
 public class GameScreen extends Screen {
 
     int xOffset=0, yOffset=0, lastDragX, lastDragY; //servono per lo scorrimento della visuale
     float camVelocityX = 0, camVelocityY = 0, camSpeed = 120;
+
+    public Random rand = new Random();
 
     int bgWidth = Assets.background.getWidth(), bgHeight = Assets.background.getHeight();
 
@@ -61,10 +65,8 @@ public class GameScreen extends Screen {
     GameContactListener contactListener;
 
     EntityFactory entityFactory;
-    List<Entity> pendingEntities = new ArrayList<>();
     List<Entity> generators = new ArrayList<>(5);
     List<Entity> mortalEntities = new ArrayList<>(100);
-
     public List<Entity> obstacles = new ArrayList<>(10);
     int obSize = 0;
     int obMax = 10;
@@ -151,12 +153,6 @@ public class GameScreen extends Screen {
         //GENERATORI
         generateItems(deltaTime);
 
-        for(Entity e : pendingEntities){
-            world.addEntity(e);
-        }
-
-        pendingEntities.clear();
-
         //COOLDOWN
         quizTimer += deltaTime;
         if(quizTimer >= quizWaitTime)
@@ -204,7 +200,7 @@ public class GameScreen extends Screen {
             Entity e = entities.get(i);
 
 
-            if("Ant".equals(e.type))
+            if("Ant".equals(e.type) || "Wasp".equals(e.type))
             {
                 AIComponent agent = e.getComponent(AIComponent.class);
                 if(e.getComponent(FoodComponent.class).isFoodEnded(deltaTime)){
@@ -235,7 +231,6 @@ public class GameScreen extends Screen {
             g.drawPixmap(Assets.background, xOffset + bgWidth * bgCellX, yOffset + bgHeight * (bgCellY + yOffsetCell));
             g.drawPixmap(Assets.background, xOffset + bgWidth * (bgCellX + xOffsetCell), yOffset + bgHeight * (bgCellY + yOffsetCell));
 
-
             List<Entity> entities = world.entities;
             for (int i = 0; i < entities.size(); i++) { //l'enhanced for è meno efficiente perchè alloca memoria per la variabile di scorrimento
                 Entity e = entities.get(i);
@@ -259,6 +254,7 @@ public class GameScreen extends Screen {
                     }
                 }
                 g.drawPixmap(sprite.sprite, posX, posY, sprite.windowX, sprite.windowY, sprite.windowWidth, sprite.windowHeight, sprite.width, sprite.height, sprite.rotation);
+
             }
         }
         List<Entity> uiElements = canvas.elements;
@@ -403,7 +399,7 @@ public class GameScreen extends Screen {
                 exploreTimer = exploreCooldown;
 
                 Entity ant = spawnAnt();
-                ant.getComponent(AIComponent.class).wanderAngle = (float) (Math.random() * Math.PI * 2);
+                ant.getComponent(AIComponent.class).wanderAngle = (float) (rand.nextFloat() * Math.PI * 2);
             }
         });
         canvas.addElement(exploration);
@@ -411,14 +407,13 @@ public class GameScreen extends Screen {
         //ENTITA' INIZIALI
         for(int i = 0; i < 10; i++){
             GeneratorComponent foodGen = food_generator.getComponent(GeneratorComponent.class);
-            spawnEntity("Food", foodGen.getRandomPosition(), foodGen.getRandomPosition());
+            spawnEntity("Food", foodGen.getRandomPosition(this), foodGen.getRandomPosition(this));
             if(i < 3){
                 GeneratorComponent rockGen = rock_generator.getComponent(GeneratorComponent.class);
-                spawnEntity("Rock", rockGen.getRandomPosition(), rockGen.getRandomPosition());
+                spawnEntity("Rock", rockGen.getRandomPosition(this), rockGen.getRandomPosition(this));
             }
         }
 
-        //pheromones_pool = new EntityPool(1000, "Pheromone", world.physicsWorld, game);
         pheromones_pool = Assets.pheromones_pool;
         trails = new Entity[1000][1000];
 
@@ -431,8 +426,26 @@ public class GameScreen extends Screen {
         for(int i = 0; i < canvas.elements.size(); i++){
             canvas.elements.get(i).getWithSuperComponent(UIElementComponent.class).enabled = false;
         }
+
+        Iterator<Entity> iterator = world.entities.iterator();
+        while (iterator.hasNext()) {
+            Entity entity = iterator.next();
+            iterator.remove();
+
+            if (Objects.equals(entity.type, "Pheromone") ) {
+                pheromones_pool.release(entity);
+                world.removePooledEntity(entity);
+            } else if (Objects.equals(entity.type, "Ant")) {
+                ants_pool.release(entity);
+                world.removePooledEntity(entity);
+            }else{
+                world.removeEntity(entity);
+            }
+        }
         mainMenuButton.enabled = true;
         gameOverLabel.enabled = true;
+
+
     }
 
     void quizReady(){
@@ -521,9 +534,15 @@ public class GameScreen extends Screen {
         for(Entity generator : generators ) {
             if(generator.getComponent(GeneratorComponent.class).canBeGenerated(deltaTime)) {
                 GeneratorComponent gen = generator.getComponent(GeneratorComponent.class);
-                float x = gen.getRandomPosition();
-                float y = gen.getRandomPosition();
-                spawnEntity(generator.getComponent(GeneratorComponent.class).entity_name, x, y);
+                float x = gen.getRandomPosition(this);
+                float y = gen.getRandomPosition(this);
+
+                String entity_name = generator.getComponent(GeneratorComponent.class).entity_name;
+                Entity e = spawnEntity(entity_name, x, y);
+                if( "Wasp".equals(entity_name) ) {
+                    AIComponent e_ai = e.getComponent(AIComponent.class);
+                    e_ai.state = Behaviour.PATROLLING;
+                }
             }
         }
     }
@@ -564,7 +583,7 @@ public class GameScreen extends Screen {
 
             mortalEntities.add(newPheromone);
 
-            pendingEntities.add(newPheromone);
+            world.addEntity(newPheromone);
 
             anthill.game_stats.pheromones_spawned += 1;
 
@@ -593,14 +612,17 @@ public class GameScreen extends Screen {
             if (mortalEntity.getComponent(AliveComponent.class).isDead(deltaTime)) {
                 iterator.remove();
 
-                world.removeEntity(mortalEntity);
                 if (Objects.equals(mortalEntity.type, "Pheromone")) {
                     IdentifierComponent id = mortalEntity.getComponent(IdentifierComponent.class);
                     /*if (trails[id.path_id][id.inc_id] == mortalEntity) {
                         trails[id.path_id][id.inc_id] = null;
                     }*/
                     pheromones_pool.release(mortalEntity);
+                    world.removePooledEntity(mortalEntity);
+                }else{
+                    world.removeEntity(mortalEntity);
                 }
+
             }
         }
     }

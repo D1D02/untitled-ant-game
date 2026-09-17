@@ -10,7 +10,7 @@
         },
         "ant_stats": {
             "force": 5000.0,
-            "max_distance": 10,
+            "max_distance": 1500,
             "range": 3,
             "attack_damage": 3
         },
@@ -62,7 +62,7 @@
             },
             "ant_stats": {
                 "force": 5000.0,
-                "max_distance": 10,
+                "max_distance": 1000,
                 "range": 3,
                 "attack_damage": 10
             },
@@ -89,12 +89,12 @@
                 }
             },
             "animated_sprite": {
-                "pathname": "ant.png",
+                "pathname": "wasp.png",
                 "width": "40",
                 "height": "40",
-                "window_width": "90",
-                "window_height": "90",
-                "frame_duration": "1"
+                "window_width": "724",
+                "window_height": "724",
+                "frame_duration": "0.5"
             },
             "ai":{
                 "wander_angle": "90",
