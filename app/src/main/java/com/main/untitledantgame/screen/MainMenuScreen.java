@@ -84,12 +84,12 @@ public class MainMenuScreen extends Screen {
 
     @Override
     public void pause() {
-
+        Assets.soundtrack.pause();
     }
 
     @Override
     public void resume() {
-
+        Assets.soundtrack.play();
     }
 
     @Override
@@ -114,8 +114,15 @@ public class MainMenuScreen extends Screen {
                 return;
             game.setScreen(new CustomizationScreen(game));
         });
+        Entity stats = factory.create("StatisticsButton", null, null);
+        UIButtonComponent.setOnClickEvent(stats, ()->{
+            if(gameStarted)
+                return;
+            game.setScreen(new StatisticsScreen(game));
+        });
 
         canvas.addElement(play);
         canvas.addElement(customize);
+        canvas.addElement(stats);
     }
 }

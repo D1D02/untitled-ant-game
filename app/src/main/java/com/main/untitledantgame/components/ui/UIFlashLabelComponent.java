@@ -22,7 +22,7 @@ public class UIFlashLabelComponent extends UILabelComponent{
 
         //g.drawRect(relativeX, relativeY,relativeWidth, relativeHeight, color);
         g.drawPixmap(Assets.button, relativeX, relativeY, 0, 0, Assets.button.getWidth(), Assets.button.getHeight(), relativeWidth, relativeHeight, (int)Math.min(255, alpha));
-        g.drawText(text, relativeX + 10, relativeY + (relativeHeight / 2) + 10, textColor, 40);
+        g.drawText(text, relativeX + 10, relativeY + (relativeHeight / 2) + 10, textColor);
     }
     public void update(float deltaTime){
         if(!play)

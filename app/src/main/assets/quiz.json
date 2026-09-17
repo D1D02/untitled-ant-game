@@ -1,42 +1,42 @@
 [
   {
-    "question": "Ants can lift objects that are many times heavier than their own body weight",
+    "question": "Ants can lift objects that \nare many times heavier \nthan their own body weight",
     "answer" : "true"
   },
   {
-    "question": "All ants in a colony have wings",
+    "question": "All ants in a colony \nhave wings",
     "answer" : "false"
   },
   {
-  "question": "Ants have lungs to breathe oxygen",
+  "question": "Ants have lungs to \nbreathe oxygen",
   "answer" : "false"
   },
   {
-    "question": "Some species of ants farm other insects, such as aphids",
+    "question": "Some species of ants \nfarm other insects, \nsuch as aphids",
     "answer" : "true"
   },
   {
-    "question": "Ant ears are located on their antennae",
+    "question": "Ant ears are located \non their antennae",
     "answer" : "false"
   },
   {
-    "question": "An ant colony can have more than one queen",
+    "question": "An ant colony can have \nmore than one queen",
     "answer" : "true"
   },
   {
-    "question": "Ants are capable of living in frozen glaciers and permanently icy environments",
+    "question": "Ants are capable of living in \nfrozen glaciers and permanently \nicy environments",
     "answer" : "false"
   },
   {
-    "question": "Fire ants got their name because of their bright red coloration and the burning sensation caused by their sting",
+    "question": "Fire ants got their name because of \ntheir bright red coloration and the \nburning sensation caused by their sting",
     "answer" : "true"
   },
   {
-    "question": "The primary role of male ants in a colony is to forage for food and defend the nest",
+    "question": "The primary role of male ants \nin a colony is to forage for \nfood and defend the nest",
     "answer" : "false"
   },
   {
-    "question": "Ants communicate with each other primarily through chemical signals called pheromones",
+    "question": "Ants communicate with each other \nprimarily through chemical signals \ncalled pheromones",
     "answer" : "true"
   }
 ]

@@ -30,7 +30,7 @@ public interface Graphics {
 
     public void drawText(String text, int x, int y, int color);
 
-    public void drawText(String text, int x, int y, int color, int lineLength);
+    //public void drawText(String text, int x, int y, int color, int lineLength);
 
     public int getWidth();
 

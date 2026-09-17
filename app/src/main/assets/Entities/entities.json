@@ -5,7 +5,7 @@
         "food": {
             "food": 10,
             "capacity":10,
-            "consuming_timer": 100,
+            "consuming_timer": 10,
             "last_consumed": 0
         },
         "ant_stats": {
@@ -37,7 +37,7 @@
             }
         },
         "animated_sprite": {
-            "pathname": "ant2.png",
+            "pathname": "ant.png",
             "width": "40",
             "height": "40",
             "window_width": "724",
