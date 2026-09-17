@@ -90,7 +90,8 @@ public class GameScreen extends Screen {
 
     UIFlashLabelComponent levelUpLabel;
 
-    UIButtonComponent mainMenuButton;
+    Entity mainMenuButton;
+    Entity resumeButton;
 
     UILabelComponent gameOverLabel;
 
@@ -102,6 +103,8 @@ public class GameScreen extends Screen {
     Entity[][] trails;
 
     int curr_path_id = 0;
+
+    boolean paused = false;
 
 
     public GameScreen(Game game) {
@@ -119,6 +122,18 @@ public class GameScreen extends Screen {
         int len = touchEvents.size();
 
         dragged = false;
+
+        if(paused){
+            for(int i = 0; i < len; i++) {
+                Input.TouchEvent event = touchEvents.get(i);
+                if(event.type == Input.TouchEvent.TOUCH_UP){
+                    List<Entity> uiElements = canvas.elements;
+                    UIButtonComponent.check(resumeButton, event, g);
+                    UIButtonComponent.check(mainMenuButton, event, g);
+                }
+            }
+            return;
+        }
 
         //GESTIONE EVENTI
         for(int i = 0; i < len; i++) {
@@ -215,6 +230,12 @@ public class GameScreen extends Screen {
 
     void drawWorld(float deltaTime){
         Graphics g = game.getGraphics();
+
+        if(paused){
+            resumeButton.getComponent(UIButtonComponent.class).draw(g);
+            mainMenuButton.getComponent(UIButtonComponent.class).draw(g);
+            return;
+        }
 
         if(game_over)
             g.drawPixmap(Assets.game_over, 0, 0);
@@ -347,8 +368,8 @@ public class GameScreen extends Screen {
         this.gameOverTimerLabel.enabled = false;
 
         Entity mainMenuButton = entityFactory.create("MainMenuButton", world.physicsWorld, game);
-        this.mainMenuButton = mainMenuButton.getComponent(UIButtonComponent.class);
-        this.mainMenuButton.enabled = false;
+        this.mainMenuButton = mainMenuButton;
+        this.mainMenuButton.getComponent(UIButtonComponent.class).enabled = false;
         UIButtonComponent.setOnClickEvent(mainMenuButton, ()->{
             game.setScreen(new MainMenuScreen(game));
         });
@@ -356,6 +377,13 @@ public class GameScreen extends Screen {
         Entity gameOverLabel = entityFactory.create("GameOverLabel", world.physicsWorld, game);
         this.gameOverLabel = gameOverLabel.getComponent(UILabelComponent.class);
         this.gameOverLabel.enabled = false;
+
+        Entity pauseButton = entityFactory.create("PauseButton", world.physicsWorld, game);
+        UIButtonComponent.setOnClickEvent(pauseButton, ()->pauseGame(true));
+        Entity resumeButton = entityFactory.create("ResumeButton", world.physicsWorld, game);
+        this.resumeButton = resumeButton;
+        UIButtonComponent.setOnClickEvent(resumeButton, ()->pauseGame(false));
+        this.resumeButton.getComponent(UIButtonComponent.class).enabled = false;
 
         canvas.addElement(board1);
         canvas.addElement(board2);
@@ -370,6 +398,8 @@ public class GameScreen extends Screen {
         canvas.addElement(gameOverTimer);
         canvas.addElement(mainMenuButton);
         canvas.addElement(gameOverLabel);
+        canvas.addElement(pauseButton);
+        canvas.addElement(resumeButton);
 
         updateBoard();
 
@@ -421,6 +451,13 @@ public class GameScreen extends Screen {
 
     }
 
+    void pauseGame(boolean flag){
+        paused = flag;
+        mainMenuButton.getComponent(UIButtonComponent.class).enabled = flag;
+        resumeButton.getComponent(UIButtonComponent.class).enabled = flag;
+
+    }
+
     void gameOver(){
         game_over = true;
         for(int i = 0; i < canvas.elements.size(); i++){
@@ -442,7 +479,7 @@ public class GameScreen extends Screen {
                 world.removeEntity(entity);
             }
         }
-        mainMenuButton.enabled = true;
+        mainMenuButton.getComponent(UIButtonComponent.class).enabled = true;
         gameOverLabel.enabled = true;
 
 
