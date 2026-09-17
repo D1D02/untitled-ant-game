@@ -7,6 +7,7 @@ import com.google.fpl.liquidfun.BodyType;
 import com.google.fpl.liquidfun.FixtureDef;
 import com.google.fpl.liquidfun.PolygonShape;
 import com.google.fpl.liquidfun.World;
+import com.google.gson.JsonElement;
 import com.main.untitledantgame.components.AIComponent;
 import com.main.untitledantgame.components.AliveComponent;
 import com.main.untitledantgame.components.BodyComponent;
@@ -146,6 +147,7 @@ public class ComponentFactory {
             case "life":
                 LifeComponent life = new LifeComponent();
                 life.hp = data.get("hp").getAsFloat();
+                life.maxHp = life.hp;
                 return life;
 
             case "sprite":
@@ -202,6 +204,13 @@ public class ComponentFactory {
                 buttonComponent.posY = data.get("y").getAsInt();
                 buttonComponent.width = data.get("width").getAsInt();
                 buttonComponent.height = data.get("height").getAsInt();
+                JsonElement textOffsetXJSON = data.get("textOffsetX");
+                JsonElement textOffsetYJSON = data.get("textOffsetY");
+                if(textOffsetXJSON != null)
+                    buttonComponent.textOffsetX = textOffsetXJSON.getAsInt();
+                if(textOffsetYJSON != null)
+                    buttonComponent.textOffsetY = textOffsetYJSON.getAsInt();
+
                 //buttonComponent.color = Color.convert(data.get("R").getAsInt(),data.get("G").getAsInt(),data.get("B").getAsInt(),255);
                 buttonComponent.text = data.get("text").getAsString();
                 buttonComponent.textColor = Color.convert(data.get("textR").getAsInt(),data.get("textG").getAsInt(),data.get("textB").getAsInt(),255);

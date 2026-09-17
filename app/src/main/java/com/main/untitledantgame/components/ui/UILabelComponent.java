@@ -17,6 +17,6 @@ public class UILabelComponent extends UIElementComponent{
 
         //g.drawRect(relativeX, relativeY,relativeWidth, relativeHeight, color);
         g.drawPixmap(Assets.button, relativeX, relativeY, 0, 0, Assets.button.getWidth(), Assets.button.getHeight(), relativeWidth, relativeHeight);
-        g.drawText(text, relativeX + 10, relativeY+(relativeHeight/2)+10, textColor, 40);
+        g.drawText(text, relativeX+(relativeWidth/6), relativeY+(relativeHeight/2)+10, textColor);
     }
 }

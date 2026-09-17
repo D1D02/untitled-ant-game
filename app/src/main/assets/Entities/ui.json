@@ -413,11 +413,11 @@
     "components": {
       "uilabel": {
         "x": 20,
-        "y": 5,
+        "y": 2,
         "width": 60,
         "height": 15,
         "text": "YOUR BEST SCORE:",
-        "textR": 255,
+        "textR": 0,
         "textG": 0,
         "textB": 0
       }

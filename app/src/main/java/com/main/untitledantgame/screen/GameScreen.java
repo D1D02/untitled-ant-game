@@ -2,6 +2,7 @@ package com.main.untitledantgame.screen;
 
 import android.util.Log;
 
+import com.badlogic.androidgames.framework.Color;
 import com.badlogic.androidgames.framework.Game;
 import com.badlogic.androidgames.framework.Graphics;
 import com.badlogic.androidgames.framework.Input;
@@ -20,6 +21,7 @@ import com.main.untitledantgame.components.BodyComponent;
 import com.main.untitledantgame.components.FoodComponent;
 import com.main.untitledantgame.components.GeneratorComponent;
 import com.main.untitledantgame.components.IdentifierComponent;
+import com.main.untitledantgame.components.LifeComponent;
 import com.main.untitledantgame.components.ObstacleComponent;
 import com.main.untitledantgame.components.SpriteComponent;
 import com.main.untitledantgame.components.ui.UIBarComponent;
@@ -246,7 +248,15 @@ public class GameScreen extends Screen {
                 //g.drawPixmap(sprite.sprite,posX,posY, 0, 0, sprite.sprite.getWidth(), sprite.sprite.getHeight(), sprite.width, sprite.height, rot);
                 if (sprite instanceof AnimatedSpriteComponent) {
                     ((AnimatedSpriteComponent) sprite).update(deltaTime);
-                    AnimatedSpriteComponent as = (AnimatedSpriteComponent) sprite;
+                    //AnimatedSpriteComponent as = (AnimatedSpriteComponent) sprite;
+                }
+                if(e.hasComponent(LifeComponent.class)){
+                    LifeComponent ac = e.getComponent(LifeComponent.class);
+                    if(ac.hp < ac.maxHp) {
+                        g.drawRect(posX, posY - 20, 40, 5, Color.convert(255, 0, 0, 255));
+                        int width = (int) (((float) ac.hp / (float) ac.maxHp) * 40);
+                        g.drawRect(posX, posY - 20, width, 5, Color.convert(0, 255, 0, 255));
+                    }
                 }
                 g.drawPixmap(sprite.sprite, posX, posY, sprite.windowX, sprite.windowY, sprite.windowWidth, sprite.windowHeight, sprite.width, sprite.height, sprite.rotation);
             }

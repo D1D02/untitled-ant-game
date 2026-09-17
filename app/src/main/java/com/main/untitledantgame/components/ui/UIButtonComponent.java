@@ -13,6 +13,9 @@ public class UIButtonComponent extends UIElementComponent{
     public String text = "BUTTON";
     public int textColor = Color.convert(0, 0, 0, 255);
 
+    public int textOffsetX = 20, textOffsetY = 20;
+
+
     @Override
     public void draw(Graphics g) {
         int relativeX = getRelativeX(g),
@@ -22,7 +25,7 @@ public class UIButtonComponent extends UIElementComponent{
 
         //g.drawRect(relativeX, relativeY,relativeWidth, relativeHeight, color);
         g.drawPixmap(Assets.button, relativeX, relativeY, 0, 0, Assets.button.getWidth(), Assets.button.getHeight(), relativeWidth, relativeHeight);
-        g.drawText(text, relativeX+(relativeWidth/4), relativeY+(relativeHeight/2)+10, textColor);
+        g.drawText(text, relativeX+(relativeWidth/6), relativeY+(relativeHeight/2)+10, textColor);
     }
 
     public static void setOnClickEvent(Entity e, OnClick event){
