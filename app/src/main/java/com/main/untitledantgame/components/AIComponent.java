@@ -39,10 +39,15 @@ public class AIComponent implements Component {
     private final float p_max_time = 1.5f;
     private float p_time_spent = p_max_time;
 
-    public Vec2 sense_distance = new Vec2(30, 30);
+    public Vec2 sense_distance = new Vec2(50, 50);
     public Sensor sensor = new Sensor();
 
+    public float attack_damage = 1f;
 
+    public float attack_time = 0.3f;
+    public float last_attack = 0f;
+
+    public Vec2 attack_range = new Vec2(25,25);
 
     public float updatePosition( Body antBody, float force, GameScreen screen, float deltaTime ){
 
@@ -95,22 +100,52 @@ public class AIComponent implements Component {
                 ant_pos.getY() - sense_distance.getX(),
                 ant_pos.getX() + sense_distance.getX(),
                 ant_pos.getY() + sense_distance.getX() );
+
+        boolean ant_found = false;
         for (Fixture fixture : results) {
             Body body = fixture.getBody();
             Entity entity = (Entity) body.getUserData();
-            Entity ant = (Entity) antBody.getUserData();
-            if (!ant.equals(entity)) Log.d("AiComponent", "Detected: " + entity.type);
+            //if (!ant.equals(entity)) Log.d("AiComponent", "Detected: " + entity.type);
 
             if(!isWasp) {
-                if ("Food".equals(entity.type) || "Rock".equals(entity.type)) {
+                if (!"Ant".equals(entity.type) ) {
                     if (entity.hasComponent(ObstacleComponent.class) && entity.getComponent(ObstacleComponent.class).spotted)
                         break;
                     Vec2 en = entity.getComponent(BodyComponent.class).body.getPosition();
                     Vec2 d = new Vec2((en.getX() - ant_pos.getX()), en.getY() - ant_pos.getY());
                     fx = d.getX() * force;
                     fy = d.getY() * force;
+                    if("Wasp".equals(entity.type) && checkInRange(ant_pos, body.getPosition(), attack_range)){
+                        Log.d("AiComponent", "Ant: " );
+                        Entity ant = (Entity) antBody.getUserData();
+                        if(last_attack > 0) last_attack -= deltaTime;
+                        else {
+                            last_attack = attack_time;
+                            entity.getComponent(LifeComponent.class).hp -= attack_damage;
+
+                        }
+                        AIComponent waspAI = entity.getComponent(AIComponent.class);
+                        if(waspAI.last_attack > 0 ) waspAI.last_attack -= deltaTime;
+                        else{
+                            waspAI.last_attack = waspAI.attack_time;
+                            ant.getComponent(LifeComponent.class).hp -= waspAI.attack_damage;
+                            Log.d("AiComponent", "Ant life: " + ant.getComponent(LifeComponent.class).hp);
+
+                        }
+                        if(entity.getComponent(LifeComponent.class).hp < 0) {
+                            screen.world.removePooledEntity(entity);
+                            state = Behaviour.WANDERING;
+                        }
+                        if(ant.getComponent(LifeComponent.class).hp < 0) {
+                            screen.ants_pool.release(ant);
+                            screen.world.removePooledEntity(ant);
+                            Log.d("AiComponent", "Ant died. ");
+                            waspAI.state = Behaviour.PATROLLING;
+                        }
+                    }
                     break;
                 }
+
             }
             else {
                 if ("Ant".equals(entity.type)) {
@@ -118,11 +153,14 @@ public class AIComponent implements Component {
                     Vec2 d = new Vec2((en.getX() - ant_pos.getX()), en.getY() - ant_pos.getY());
                     fx = d.getX() * force;
                     fy = d.getY() * force;
+                    ant_found = true;
                     break;
                 }
             }
         }
 
+
+        if(isWasp && !ant_found) state = Behaviour.PATROLLING;
         antBody.applyForceToCenter( new Vec2(fx,fy), true );
         //Log.d("WANDERING", "x: " + fx + " y:"+ fy);
 
@@ -150,7 +188,7 @@ public class AIComponent implements Component {
                     screen.anthill.addFood(carriedFood.getComponent(FoodComponent.class).food + ant.getComponent(FoodComponent.class).food);
                     screen.anthill.addExp(25);
                     screen.destroyJoint(carryJoint);
-                    screen.world.removeEntity(carriedFood);
+                    screen.world.removePooledEntity(carriedFood);
                     screen.anthill.game_stats.picked_food += 1;
                 }
 
@@ -269,7 +307,7 @@ public class AIComponent implements Component {
         return wanderAngle;
     }
 
-    public void handleCollision( Entity ant, Entity b, GameWorld world, GameScreen screen ){
+    public void handleCollision( Entity ant, Entity b, GameWorld world, GameScreen screen, float deltaTime ){
 
         if( state == Behaviour.WANDERING && Objects.equals(b.type,"Food") && carriedRock ==-1 )
         {
@@ -302,6 +340,9 @@ public class AIComponent implements Component {
 
             Log.d( "AI", "Food grabbed" );
         }
+        else if(Objects.equals(b.type,"Wasp")){
+
+        }
     }
 
     private void generatePheromone( Body antBody, GameScreen screen, float deltaTime ){
@@ -320,6 +361,14 @@ public class AIComponent implements Component {
 
         }
 
+    }
+    
+    private boolean checkInRange( Vec2 pos1, Vec2 pos2, Vec2 range ) {
+        return (abs(pos1.getX() - pos2.getX()) < range.getX()) && (abs(pos1.getY() - pos2.getY()) < range.getY());
+    }
+
+    private float abs(float v) {
+        return v > 0 ? v : -v;
     }
 
 }

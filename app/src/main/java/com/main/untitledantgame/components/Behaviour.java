@@ -6,5 +6,6 @@ public enum Behaviour {
     RETURNING,
     DRAGGING,
     WAITING,
-    PATROLLING
+    PATROLLING,
+    FIGHTING
 }
