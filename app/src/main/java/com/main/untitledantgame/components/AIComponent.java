@@ -141,7 +141,6 @@ public class AIComponent implements Component {
                             screen.world.removePooledEntity(ant);
                             Log.d("AiComponent", "Ant died. ");
                             waspAI.state = Behaviour.PATROLLING;
-                            return angle;
                         }
                     }
                     break;
