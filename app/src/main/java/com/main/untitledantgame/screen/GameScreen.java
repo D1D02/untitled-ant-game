@@ -96,7 +96,7 @@ public class GameScreen extends Screen {
     UILabelComponent gameOverLabel;
 
     EntityPool pheromones_pool;
-    EntityPool ants_pool;
+    public EntityPool ants_pool;
 
     float move_ants = 0.0f;
 
@@ -162,7 +162,7 @@ public class GameScreen extends Screen {
         moveAnts(deltaTime);
         world.physicsWorld.step(deltaTime, 8, 3, 3);
         //handleCollisions(contactListener.getCollisions());
-        dispatchCollisions();
+        dispatchCollisions(deltaTime);
 
         checkTTL(deltaTime);
         //GENERATORI
@@ -218,9 +218,10 @@ public class GameScreen extends Screen {
             if("Ant".equals(e.type) || "Wasp".equals(e.type))
             {
                 AIComponent agent = e.getComponent(AIComponent.class);
-                if(e.getComponent(FoodComponent.class).isFoodEnded(deltaTime)){
+                if("Ant".equals(e.type) && e.getComponent(FoodComponent.class).isFoodEnded(deltaTime)){
                     ants_pool.release(e);
-                    world.removeEntity(e);
+                    world.removePooledEntity(e);
+                    continue;
                 }
                 float rot = agent.updatePosition(e.getComponent(BodyComponent.class).body, e.getComponent(AntStatsComponent.class).force, this, deltaTime);
                 e.getWithSuperComponent(SpriteComponent.class).rotation =(float) Math.toDegrees(rot) + 90f;
@@ -631,12 +632,12 @@ public class GameScreen extends Screen {
         return  path_id;
     }
 
-    public void dispatchCollisions() {
+    public void dispatchCollisions( float deltaTime ) {
         Collection<Collision> collisions = contactListener.getCollisions();
 
         for(Collision event : collisions) {
-                if(Objects.equals(event.a.type, "Ant")) event.a.getComponent(AIComponent.class).handleCollision( event.a, event.b, world, this);
-                else if(Objects.equals(event.b.type, "Ant")) event.b.getComponent(AIComponent.class).handleCollision( event.b, event.a, world, this);
+                if(Objects.equals(event.a.type, "Ant")) event.a.getComponent(AIComponent.class).handleCollision( event.a, event.b, world, this, deltaTime);
+                else if(Objects.equals(event.b.type, "Ant")) event.b.getComponent(AIComponent.class).handleCollision( event.b, event.a, world, this, deltaTime);
         }
     }
 
