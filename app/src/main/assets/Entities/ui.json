@@ -246,11 +246,26 @@
     "name": "LevelLabel",
     "components": {
       "uilabel": {
-        "x": 40,
+        "x": 50,
         "y": 0,
         "width": 20,
         "height": 15,
         "text": "1",
+        "textR": 255,
+        "textG": 255,
+        "textB": 0
+      }
+    }
+  },
+  {
+    "name": "PauseButton",
+    "components": {
+      "uibutton": {
+        "x": 30,
+        "y": 0,
+        "width": 20,
+        "height": 15,
+        "text": "PAUSE",
         "textR": 255,
         "textG": 255,
         "textB": 0
@@ -281,6 +296,21 @@
         "width": 40,
         "height": 20,
         "text": "MAIN MENU",
+        "textR": 255,
+        "textG": 255,
+        "textB": 255
+      }
+    }
+  },
+  {
+    "name": "ResumeButton",
+    "components": {
+      "uibutton": {
+        "x": 30,
+        "y": 25,
+        "width": 40,
+        "height": 20,
+        "text": "RESUME",
         "textR": 255,
         "textG": 255,
         "textB": 255
