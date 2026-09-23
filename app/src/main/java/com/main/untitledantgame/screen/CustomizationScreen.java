@@ -1,5 +1,8 @@
 package com.main.untitledantgame.screen;
 
+import android.content.Context;
+import android.util.Log;
+
 import com.badlogic.androidgames.framework.Color;
 import com.badlogic.androidgames.framework.Game;
 import com.badlogic.androidgames.framework.Graphics;
@@ -8,7 +11,9 @@ import com.badlogic.androidgames.framework.Screen;
 import com.main.untitledantgame.components.ui.UIAnimatedSpriteComponent;
 import com.main.untitledantgame.components.ui.UIButtonComponent;
 import com.main.untitledantgame.components.ui.UIElementComponent;
+import com.main.untitledantgame.components.ui.UILabelComponent;
 import com.main.untitledantgame.ui.UICanvas;
+import com.main.untitledantgame.utility.JsonSaver;
 import com.main.untitledantgame.utility.ecs.Entity;
 import com.main.untitledantgame.utility.ecs.EntityFactory;
 import com.main.untitledantgame.visuals.Assets;
@@ -21,12 +26,24 @@ public class CustomizationScreen extends Screen {
 
     int RED = Color.convert(255, 0, 0, 255);
     int BLACK = Color.convert(0, 0, 0, 255);
+    int BLUE = Color.convert(0, 0, 255, 255);
 
     UIButtonComponent[] skinButtons = new UIButtonComponent[3];
     UIAnimatedSpriteComponent[] skinSprites = new UIAnimatedSpriteComponent[3];
+    int[] skinPrices = {0, 100, 200};
+
+    UILabelComponent coinsLabel;
+
 
     public CustomizationScreen(Game game) {
         super(game);
+
+        int[] selectedSkin = new int[1];
+        skinPrices = JsonSaver.getSkins((Context)game, selectedSkin);
+        antSkin = selectedSkin[0];
+        Log.d("SKINS", ""+antSkin);
+        Log.d("SKINS", skinPrices[0] + " " + skinPrices[1] + " " + skinPrices[2]);
+
         initUI();
         selectSkin(antSkin);
     }
@@ -82,6 +99,10 @@ public class CustomizationScreen extends Screen {
         EntityFactory factory = new EntityFactory(Assets.prototypeRegistry);
         this.canvas = new UICanvas();
 
+        Entity coinsLabel = factory.create("CoinsLabel", null, null);
+        this.coinsLabel = coinsLabel.getComponent(UILabelComponent.class);
+        this.coinsLabel.text = "COINS: "+JsonSaver.getCoins((Context) game);
+
         Entity skin1 = factory.create("SkinButton1", null, null);
         UIButtonComponent.setOnClickEvent(skin1, ()->{
             selectSkin(0);
@@ -111,8 +132,21 @@ public class CustomizationScreen extends Screen {
         skinSprites[0] = skinSprite1.getComponent(UIAnimatedSpriteComponent.class);
         skinSprites[1] = skinSprite2.getComponent(UIAnimatedSpriteComponent.class);
         skinSprites[2] = skinSprite3.getComponent(UIAnimatedSpriteComponent.class);
-        for(int i = 0; i < skinSprites.length; i++)
+        for(int i = 0; i < skinSprites.length; i++){
             skinSprites[i].sprite = Assets.antSkins[i];
+            if(skinPrices[i] > 0){
+                skinButtons[i].text = ""+skinPrices[i];
+                skinButtons[i].textColor = BLUE;
+            }
+            else if(antSkin == i){
+                skinButtons[0].text = "SELECTED";
+                skinButtons[0].textColor = RED;
+            }
+            else{
+                skinButtons[0].text = "SELECT";
+                skinButtons[0].textColor = BLACK;
+            }
+        }
 
         canvas.addElement(skin1);
         canvas.addElement(skin2);
@@ -121,11 +155,23 @@ public class CustomizationScreen extends Screen {
         canvas.addElement(skinSprite1);
         canvas.addElement(skinSprite2);
         canvas.addElement(skinSprite3);
+        canvas.addElement(coinsLabel);
     }
 
     void selectSkin(int index){
-        antSkin = index;
+        if(skinPrices[index] > 0){
+            if(JsonSaver.spendCoins((Context)game,skinPrices[index])){
+                skinPrices[index] = 0;
+                antSkin = index;
+                this.coinsLabel.text = "COINS: "+JsonSaver.getCoins((Context) game);
+            }
+        }else{
+            antSkin = index;
+        }
+
         for(int i = 0; i < Assets.antSkins.length; i++){
+            if(skinPrices[i]>0)
+                continue;
             if (i == antSkin){
                 skinButtons[i].text = "SELECTED";
                 skinButtons[i].textColor = RED;
@@ -135,5 +181,6 @@ public class CustomizationScreen extends Screen {
                 skinButtons[i].textColor = BLACK;
             }
         }
+        JsonSaver.setSkins((Context)game, skinPrices, antSkin);
     }
 }

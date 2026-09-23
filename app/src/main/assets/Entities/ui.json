@@ -331,6 +331,21 @@
         "textB": 0
       }
     }
+    },
+  {
+    "name": "CoinsLabel",
+    "components": {
+      "uilabel": {
+        "x": 5,
+        "y": 5,
+        "width": 20,
+        "height": 18,
+        "text": "COINS:",
+        "textR": 255,
+        "textG": 255,
+        "textB": 255
+      }
+    }
   },
   {
     "name": "SkinButton1",

@@ -24,6 +24,7 @@ public class JsonSaver {
     private static final String TAG = "JsonSaver";
     private static final String STATS_FILE_NAME = "statistics.json";
     private static final String COINS_FILE_NAME = "coins.json";
+    private static final String SKINS_FILE_NAME = "skins.json";
 
     public static void saveStatistics(Context context, Statistics stats) {
 
@@ -241,5 +242,108 @@ public class JsonSaver {
         setCoins(context, currentCoins - amount);
 
         return true;
+    }
+
+    public static void setSkins(
+            Context context,
+            int[] skinPrices,
+            int selectedSkin
+    ) {
+
+        // Controllo array
+        if (skinPrices == null || skinPrices.length != 3) {
+            return;
+        }
+
+        // Controllo selectedSkin
+        if (selectedSkin < 0 || selectedSkin > 2) {
+            return;
+        }
+
+        JsonObject json = new JsonObject();
+
+        JsonArray pricesArray = new JsonArray();
+
+        for (int price : skinPrices) {
+            pricesArray.add(price);
+        }
+
+        json.add("skinPrices", pricesArray);
+        json.addProperty("selectedSkin", selectedSkin);
+
+        try (FileOutputStream fos =
+                     context.openFileOutput(
+                             SKINS_FILE_NAME,
+                             Context.MODE_PRIVATE
+                     );
+             OutputStreamWriter writer =
+                     new OutputStreamWriter(fos, StandardCharsets.UTF_8)) {
+
+            new GsonBuilder()
+                    .setPrettyPrinting()
+                    .create()
+                    .toJson(json, writer);
+
+        } catch (Exception e) {
+            Log.e(TAG, "Errore durante il salvataggio delle skin", e);
+        }
+    }
+
+
+    public static int[] getSkins(
+            Context context,
+            int[] selectedSkin
+    ) {
+
+        File file = new File(
+                context.getFilesDir(),
+                SKINS_FILE_NAME
+        );
+
+        // Valori di default
+        int[] defaultPrices = {0, 0, 0};
+
+        if (selectedSkin != null && selectedSkin.length > 0) {
+            selectedSkin[0] = 0;
+        }
+
+        if (!file.exists()) {
+            return defaultPrices;
+        }
+
+        try (FileInputStream fis =
+                     context.openFileInput(SKINS_FILE_NAME);
+             InputStreamReader reader =
+                     new InputStreamReader(fis, StandardCharsets.UTF_8)) {
+
+            JsonObject json = JsonParser
+                    .parseReader(reader)
+                    .getAsJsonObject();
+
+            JsonArray pricesArray = json
+                    .getAsJsonArray("skinPrices");
+
+            int[] skinPrices = new int[3];
+
+            for (int i = 0; i < 3; i++) {
+                skinPrices[i] = pricesArray.get(i).getAsInt();
+            }
+
+            int skin = json
+                    .get("selectedSkin")
+                    .getAsInt();
+
+            if (skin >= 0 && skin <= 2) {
+                if (selectedSkin != null && selectedSkin.length > 0) {
+                    selectedSkin[0] = skin;
+                }
+            }
+
+            return skinPrices;
+
+        } catch (Exception e) {
+            Log.e(TAG, "Errore durante il caricamento delle skin", e);
+            return defaultPrices;
+        }
     }
 }
