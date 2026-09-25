@@ -1,5 +1,6 @@
 package com.main.untitledantgame.screen;
 
+import android.content.Context;
 import android.util.Log;
 
 import com.badlogic.androidgames.framework.Color;
@@ -34,6 +35,7 @@ import com.main.untitledantgame.map.Anthill;
 import com.main.untitledantgame.map.GameWorld;
 import com.main.untitledantgame.pools.EntityPool;
 import com.main.untitledantgame.ui.UICanvas;
+import com.main.untitledantgame.utility.JsonSaver;
 import com.main.untitledantgame.utility.Quiz;
 import com.main.untitledantgame.utility.ecs.Entity;
 import com.main.untitledantgame.utility.ecs.EntityFactory;
@@ -415,7 +417,7 @@ public class GameScreen extends Screen {
         //FORMICAIO
 
         anthill = new Anthill(0, 0, foodBarEntity.getComponent(UIBarComponent.class),expBarEntity.getComponent(UIBarComponent.class),
-                world.physicsWorld, this.levelUpLabel, levelLabel.getComponent(UILabelComponent.class), this.gameOverTimerLabel);
+                world.physicsWorld, this.levelUpLabel, levelLabel.getComponent(UILabelComponent.class), this.gameOverTimerLabel, (Context)game);
         anthill.game_stats = Assets.game_stats;
       
         world.addEntity(anthill);
@@ -502,6 +504,7 @@ public class GameScreen extends Screen {
         if(right) {
             Assets.correctSound.play(20);
             anthill.addExp(50);
+            JsonSaver.addCoins((Context)game, 2);
         }
         else {
             Assets.wrongSound.play(10);
