@@ -53,7 +53,7 @@
     {
         "name": "Wasp",
         "components":{
-            "life": {"hp": 100},
+            "life": {"hp": 30},
             "food": {
                 "food": 10,
                 "capacity":10,
