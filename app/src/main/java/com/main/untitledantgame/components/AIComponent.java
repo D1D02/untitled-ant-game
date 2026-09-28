@@ -164,7 +164,7 @@ public class AIComponent implements Component {
         antBody.applyForceToCenter( new Vec2(fx,fy), true );
         //Log.d("WANDERING", "x: " + fx + " y:"+ fy);
 
-        antBody.setLinearDamping(1.5f);
+        antBody.setLinearDamping(0.5f);
 
         if(!isWasp) generatePheromone( antBody, screen, deltaTime );
 
@@ -188,7 +188,7 @@ public class AIComponent implements Component {
                     screen.anthill.addFood(carriedFood.getComponent(FoodComponent.class).food + ant.getComponent(FoodComponent.class).food);
                     screen.anthill.addExp(25);
                     screen.destroyJoint(carryJoint);
-                    screen.world.removePooledEntity(carriedFood);
+                    screen.world.removeEntity(carriedFood);
                     screen.anthill.game_stats.picked_food += 1;
                 }
 
@@ -252,11 +252,13 @@ public class AIComponent implements Component {
 
         try {
             if (pheromone != null) {
+                if (carryJointRock == null || carriedRock == -1) return wanderAngle;
+                Vec2 obstacle = screen.obstacles.get(carriedRock).getComponent(BodyComponent.class).body.getPosition();
                 Vec2 antPos = antBody.getPosition();
                 Vec2 pheromonePos = pheromone.getComponent(BodyComponent.class).body.getPosition();
-                Vec2 d = new Vec2((pheromonePos.getX() - antPos.getX()), pheromonePos.getY() - antPos.getY());
-                if ((d.getY() * d.getY() + d.getX() * d.getX()) > 3500) {
-                    if (carryJointRock != null && carriedRock != -1) {
+                Vec2 d = new Vec2((pheromonePos.getX() - obstacle.getX()), pheromonePos.getY() - obstacle.getY());
+                if ((d.getY() * d.getY() + d.getX() * d.getX()) > 20000) {
+                     {
                         screen.destroyObstacle(carriedRock, carryJointRock);
                         carriedRock = -1;
                         carryJointRock = null;
