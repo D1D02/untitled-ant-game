@@ -90,8 +90,8 @@
             },
             "animated_sprite": {
                 "pathname": "wasp.png",
-                "width": "40",
-                "height": "40",
+                "width": "70",
+                "height": "70",
                 "window_width": "724",
                 "window_height": "724",
                 "frame_duration": "0.5"

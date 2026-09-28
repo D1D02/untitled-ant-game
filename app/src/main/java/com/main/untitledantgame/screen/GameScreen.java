@@ -11,7 +11,6 @@ import com.badlogic.androidgames.framework.Screen;
 import com.google.fpl.liquidfun.Body;
 import com.google.fpl.liquidfun.DistanceJointDef;
 import com.google.fpl.liquidfun.Joint;
-import com.google.fpl.liquidfun.Vec2;
 import com.main.untitledantgame.collision.Collision;
 import com.main.untitledantgame.collision.GameContactListener;
 import com.main.untitledantgame.components.AIComponent;
@@ -184,7 +183,7 @@ public class GameScreen extends Screen {
         if(anthill.food <= 0) {
             gameOverTimer -= deltaTime;
             if (gameOverTimer <= 0f)
-                gameOver();
+                gameOverScreen();
             gameOverTimerLabel.text = ((int)gameOverTimer) + "";
         }
         else
@@ -374,6 +373,7 @@ public class GameScreen extends Screen {
         this.mainMenuButton = mainMenuButton;
         this.mainMenuButton.getComponent(UIButtonComponent.class).enabled = false;
         UIButtonComponent.setOnClickEvent(mainMenuButton, ()->{
+            quit();
             game.setScreen(new MainMenuScreen(game));
         });
 
@@ -461,12 +461,16 @@ public class GameScreen extends Screen {
 
     }
 
-    void gameOver(){
+    void gameOverScreen(){
         game_over = true;
         for(int i = 0; i < canvas.elements.size(); i++){
             canvas.elements.get(i).getWithSuperComponent(UIElementComponent.class).enabled = false;
         }
+        mainMenuButton.getComponent(UIButtonComponent.class).enabled = true;
+        gameOverLabel.enabled = true;
+    }
 
+    void quit(){
         Iterator<Entity> iterator = world.entities.iterator();
         while (iterator.hasNext()) {
             Entity entity = iterator.next();
@@ -482,10 +486,6 @@ public class GameScreen extends Screen {
                 world.removeEntity(entity);
             }
         }
-        mainMenuButton.getComponent(UIButtonComponent.class).enabled = true;
-        gameOverLabel.enabled = true;
-
-
     }
 
     void quizReady(){

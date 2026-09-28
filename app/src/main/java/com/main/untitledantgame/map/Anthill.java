@@ -110,7 +110,7 @@ public class Anthill extends Entity {
         levelUpLabel.play = true;
         level++;
         JsonSaver.addCoins(ctx, 10);
-        maxExp += (int) (Math.exp(level + 1) * 12);
+        maxExp += (int) (Math.exp(level + 1) * 5);
         expbar.maxValue = maxExp;
         game_stats.level += 1;
         levelLabel.text = level + "";
