@@ -207,7 +207,7 @@ public class AIComponent implements Component {
                 Vec2 pheromonePos = pheromone.getComponent(BodyComponent.class).body.getPosition();
                 Vec2 d = new Vec2((pheromonePos.getX() - antPos.getX()), pheromonePos.getY() - antPos.getY());
                 wanderAngle = (float) Math.atan2(d.getY(), d.getX());
-                if (Math.abs(d.getX()) < 10.1f && Math.abs(d.getY()) < 10.1f) {
+                if (Math.abs(d.getX()) < 20.1f && Math.abs(d.getY()) < 20.1f) {
                     if (forward) inc_id++;
                     else inc_id--;
                     antBody.setLinearVelocity(new Vec2(0f, 0f));

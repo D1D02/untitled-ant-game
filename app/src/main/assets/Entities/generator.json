@@ -1,17 +1,4 @@
 [{
-  "name": "PheromonesGenerator",
-  "components":{
-    "generator": {
-      "entity_name": "Pheromone",
-      "start_delay":0,
-      "ratio": 100,
-      "time_spent": 0,
-      "min_distance": 0,
-      "max_distance": 10
-    }
-  }
-},
-{
   "name": "WaspGenerator",
   "components":{
     "generator": {
@@ -19,8 +6,8 @@
       "start_delay":100,
       "ratio": 500,
       "time_spent": 0,
-      "min_distance": 10,
-      "max_distance": 200
+      "min_distance": 30,
+      "max_distance": 70
     }
   }
 },
@@ -32,8 +19,8 @@
       "start_delay":0,
       "ratio": 100,
       "time_spent": 0,
-      "min_distance": 50,
-      "max_distance": 100
+      "min_distance": 40,
+      "max_distance": 200
     }
   }
 },
@@ -45,8 +32,8 @@
         "start_delay":0,
         "ratio": 60,
         "time_spent": 0,
-        "min_distance": 200,
-        "max_distance": 400
+        "min_distance": 40,
+        "max_distance": 200
       }
     }
   }]

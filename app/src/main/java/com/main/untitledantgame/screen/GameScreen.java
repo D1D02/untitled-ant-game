@@ -1,5 +1,6 @@
 package com.main.untitledantgame.screen;
 
+import android.content.Context;
 import android.util.Log;
 
 import com.badlogic.androidgames.framework.Color;
@@ -10,7 +11,6 @@ import com.badlogic.androidgames.framework.Screen;
 import com.google.fpl.liquidfun.Body;
 import com.google.fpl.liquidfun.DistanceJointDef;
 import com.google.fpl.liquidfun.Joint;
-import com.google.fpl.liquidfun.Vec2;
 import com.main.untitledantgame.collision.Collision;
 import com.main.untitledantgame.collision.GameContactListener;
 import com.main.untitledantgame.components.AIComponent;
@@ -34,6 +34,7 @@ import com.main.untitledantgame.map.Anthill;
 import com.main.untitledantgame.map.GameWorld;
 import com.main.untitledantgame.pools.EntityPool;
 import com.main.untitledantgame.ui.UICanvas;
+import com.main.untitledantgame.utility.JsonSaver;
 import com.main.untitledantgame.utility.Quiz;
 import com.main.untitledantgame.utility.ecs.Entity;
 import com.main.untitledantgame.utility.ecs.EntityFactory;
@@ -182,7 +183,7 @@ public class GameScreen extends Screen {
         if(anthill.food <= 0) {
             gameOverTimer -= deltaTime;
             if (gameOverTimer <= 0f)
-                gameOver();
+                gameOverScreen();
             gameOverTimerLabel.text = ((int)gameOverTimer) + "";
         }
         else
@@ -372,6 +373,7 @@ public class GameScreen extends Screen {
         this.mainMenuButton = mainMenuButton;
         this.mainMenuButton.getComponent(UIButtonComponent.class).enabled = false;
         UIButtonComponent.setOnClickEvent(mainMenuButton, ()->{
+            quit();
             game.setScreen(new MainMenuScreen(game));
         });
 
@@ -416,7 +418,7 @@ public class GameScreen extends Screen {
         //FORMICAIO
 
         anthill = new Anthill(0, 0, foodBarEntity.getComponent(UIBarComponent.class),expBarEntity.getComponent(UIBarComponent.class),
-                world.physicsWorld, this.levelUpLabel, levelLabel.getComponent(UILabelComponent.class), this.gameOverTimerLabel);
+                world.physicsWorld, this.levelUpLabel, levelLabel.getComponent(UILabelComponent.class), this.gameOverTimerLabel, (Context)game);
         anthill.game_stats = Assets.game_stats;
       
         world.addEntity(anthill);
@@ -459,12 +461,16 @@ public class GameScreen extends Screen {
 
     }
 
-    void gameOver(){
+    void gameOverScreen(){
         game_over = true;
         for(int i = 0; i < canvas.elements.size(); i++){
             canvas.elements.get(i).getWithSuperComponent(UIElementComponent.class).enabled = false;
         }
+        mainMenuButton.getComponent(UIButtonComponent.class).enabled = true;
+        gameOverLabel.enabled = true;
+    }
 
+    void quit(){
         Iterator<Entity> iterator = world.entities.iterator();
         while (iterator.hasNext()) {
             Entity entity = iterator.next();
@@ -480,10 +486,6 @@ public class GameScreen extends Screen {
                 world.removeEntity(entity);
             }
         }
-        mainMenuButton.getComponent(UIButtonComponent.class).enabled = true;
-        gameOverLabel.enabled = true;
-
-
     }
 
     void quizReady(){
@@ -503,6 +505,7 @@ public class GameScreen extends Screen {
         if(right) {
             Assets.correctSound.play(20);
             anthill.addExp(50);
+            JsonSaver.addCoins((Context)game, 2);
         }
         else {
             Assets.wrongSound.play(10);

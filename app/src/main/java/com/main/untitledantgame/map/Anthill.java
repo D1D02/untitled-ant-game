@@ -1,5 +1,6 @@
 package com.main.untitledantgame.map;
 
+import android.content.Context;
 import android.util.Log;
 
 import com.badlogic.androidgames.framework.Game;
@@ -17,6 +18,7 @@ import com.main.untitledantgame.components.SpriteComponent;
 import com.main.untitledantgame.components.ui.UIBarComponent;
 import com.main.untitledantgame.components.ui.UIFlashLabelComponent;
 import com.main.untitledantgame.components.ui.UILabelComponent;
+import com.main.untitledantgame.utility.JsonSaver;
 import com.main.untitledantgame.utility.ecs.ComponentFactory;
 import com.main.untitledantgame.utility.ecs.Entity;
 import com.main.untitledantgame.visuals.Assets;
@@ -32,9 +34,10 @@ public class Anthill extends Entity {
     int maxFood = 100,maxExp = 100;
     int level = 1;
     public Statistics game_stats;
+    Context ctx;
 
     public Anthill(int x, int y, UIBarComponent foodBar, UIBarComponent expbar, World world,
-                   UIFlashLabelComponent levelUpLabel, UILabelComponent levelLabel, UILabelComponent gameOverTimer){
+                   UIFlashLabelComponent levelUpLabel, UILabelComponent levelLabel, UILabelComponent gameOverTimer, Context ctx){
         BodyComponent body = generateBody(x, y, world);
 
         addComponent(body);
@@ -47,6 +50,7 @@ public class Anthill extends Entity {
         sprite.windowY = 0;
         sprite.windowWidth = sprite.sprite.getWidth();
         sprite.windowHeight = sprite.sprite.getHeight();
+        this.ctx = ctx;
 
         addComponent(sprite);
 
@@ -96,16 +100,17 @@ public class Anthill extends Entity {
         exp += amount;
         while(exp >= maxExp){
             exp -= maxExp;
-            levelUp();
+            levelUp(ctx);
         }
         expbar.value = exp;
     }
 
-    void levelUp(){
+    void levelUp(Context ctx){
         Assets.levelUpSound.play(1);
         levelUpLabel.play = true;
         level++;
-        maxExp += (int) (Math.exp(level + 1) * 12);
+        JsonSaver.addCoins(ctx, 10);
+        maxExp += (int) (Math.exp(level + 1) * 5);
         expbar.maxValue = maxExp;
         game_stats.level += 1;
         levelLabel.text = level + "";
