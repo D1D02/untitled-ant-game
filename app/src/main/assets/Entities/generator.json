@@ -3,8 +3,8 @@
   "components":{
     "generator": {
       "entity_name": "Wasp",
-      "start_delay":200,
-      "ratio": 60,
+      "start_delay":100,
+      "ratio": 500,
       "time_spent": 0,
       "min_distance": 30,
       "max_distance": 70
