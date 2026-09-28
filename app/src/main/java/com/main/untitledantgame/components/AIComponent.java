@@ -252,11 +252,13 @@ public class AIComponent implements Component {
 
         try {
             if (pheromone != null) {
+                if (carryJointRock == null || carriedRock == -1) return wanderAngle;
+                Vec2 obstacle = screen.obstacles.get(carriedRock).getComponent(BodyComponent.class).body.getPosition();
                 Vec2 antPos = antBody.getPosition();
                 Vec2 pheromonePos = pheromone.getComponent(BodyComponent.class).body.getPosition();
-                Vec2 d = new Vec2((pheromonePos.getX() - antPos.getX()), pheromonePos.getY() - antPos.getY());
-                if ((d.getY() * d.getY() + d.getX() * d.getX()) > 10000) {
-                    if (carryJointRock != null && carriedRock != -1) {
+                Vec2 d = new Vec2((pheromonePos.getX() - obstacle.getX()), pheromonePos.getY() - obstacle.getY());
+                if ((d.getY() * d.getY() + d.getX() * d.getX()) > 20000) {
+                     {
                         screen.destroyObstacle(carriedRock, carryJointRock);
                         carriedRock = -1;
                         carryJointRock = null;
