@@ -32,6 +32,7 @@ import com.main.untitledantgame.components.ui.UIFlashLabelComponent;
 import com.main.untitledantgame.components.ui.UILabelComponent;
 import com.main.untitledantgame.map.Anthill;
 import com.main.untitledantgame.map.GameWorld;
+import com.main.untitledantgame.map.Statistics;
 import com.main.untitledantgame.pools.EntityPool;
 import com.main.untitledantgame.ui.UICanvas;
 import com.main.untitledantgame.utility.JsonSaver;
@@ -106,6 +107,8 @@ public class GameScreen extends Screen {
     int curr_path_id = 0;
 
     boolean paused = false;
+
+    Statistics stats = new Statistics();
 
 
     public GameScreen(Game game) {
@@ -486,6 +489,7 @@ public class GameScreen extends Screen {
                 world.removeEntity(entity);
             }
         }
+        JsonSaver.saveStatistics((Context)game, anthill.game_stats);
     }
 
     void quizReady(){
