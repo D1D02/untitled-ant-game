@@ -37,7 +37,8 @@ public class Anthill extends Entity {
     Context ctx;
 
     public Anthill(int x, int y, UIBarComponent foodBar, UIBarComponent expbar, World world,
-                   UIFlashLabelComponent levelUpLabel, UILabelComponent levelLabel, UILabelComponent gameOverTimer, Context ctx){
+                   UIFlashLabelComponent levelUpLabel, UILabelComponent levelLabel, UILabelComponent gameOverTimer,
+                   Context ctx){
         BodyComponent body = generateBody(x, y, world);
 
         addComponent(body);
