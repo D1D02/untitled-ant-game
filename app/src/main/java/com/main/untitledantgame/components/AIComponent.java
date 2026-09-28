@@ -164,7 +164,7 @@ public class AIComponent implements Component {
         antBody.applyForceToCenter( new Vec2(fx,fy), true );
         //Log.d("WANDERING", "x: " + fx + " y:"+ fy);
 
-        antBody.setLinearDamping(1.5f);
+        antBody.setLinearDamping(0.5f);
 
         if(!isWasp) generatePheromone( antBody, screen, deltaTime );
 
@@ -255,7 +255,7 @@ public class AIComponent implements Component {
                 Vec2 antPos = antBody.getPosition();
                 Vec2 pheromonePos = pheromone.getComponent(BodyComponent.class).body.getPosition();
                 Vec2 d = new Vec2((pheromonePos.getX() - antPos.getX()), pheromonePos.getY() - antPos.getY());
-                if ((d.getY() * d.getY() + d.getX() * d.getX()) > 3500) {
+                if ((d.getY() * d.getY() + d.getX() * d.getX()) > 10000) {
                     if (carryJointRock != null && carriedRock != -1) {
                         screen.destroyObstacle(carriedRock, carryJointRock);
                         carriedRock = -1;
