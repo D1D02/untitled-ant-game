@@ -188,7 +188,7 @@ public class AIComponent implements Component {
                     screen.anthill.addFood(carriedFood.getComponent(FoodComponent.class).food + ant.getComponent(FoodComponent.class).food);
                     screen.anthill.addExp(25);
                     screen.destroyJoint(carryJoint);
-                    screen.world.removePooledEntity(carriedFood);
+                    screen.world.removeEntity(carriedFood);
                     screen.anthill.game_stats.picked_food += 1;
                 }
 
