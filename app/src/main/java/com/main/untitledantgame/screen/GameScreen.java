@@ -108,9 +108,6 @@ public class GameScreen extends Screen {
 
     boolean paused = false;
 
-    Statistics stats = new Statistics();
-
-
     public GameScreen(Game game) {
         super(game);
         entityFactory = new EntityFactory(Assets.prototypeRegistry);
@@ -509,7 +506,7 @@ public class GameScreen extends Screen {
         if(right) {
             Assets.correctSound.play(20);
             anthill.addExp(50);
-            JsonSaver.addCoins((Context)game, 2);
+            JsonSaver.addCoins((Context)game, 2, anthill.game_stats);
         }
         else {
             Assets.wrongSound.play(10);

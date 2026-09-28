@@ -216,13 +216,15 @@ public class JsonSaver {
         }
     }
 
-    public static void addCoins(Context context, int amount) {
+    public static void addCoins(Context context, int amount, Statistics stats) {
 
         if (amount <= 0) {
             return;
         }
 
         int currentCoins = getCoins(context);
+
+        stats.coin += amount;
 
         setCoins(context, currentCoins + amount);
     }

@@ -110,7 +110,7 @@ public class Anthill extends Entity {
         Assets.levelUpSound.play(1);
         levelUpLabel.play = true;
         level++;
-        JsonSaver.addCoins(ctx, 10);
+        JsonSaver.addCoins(ctx, 10,game_stats);
         maxExp += (int) (Math.exp(level + 1) * 5);
         expbar.maxValue = maxExp;
         game_stats.level += 1;
