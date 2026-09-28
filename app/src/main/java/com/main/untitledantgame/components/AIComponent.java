@@ -33,7 +33,7 @@ public class AIComponent implements Component {
 
     private Entity carriedFood = null;
     private Joint carryJoint = null;
-    public int carriedRock = -1;
+    public Entity carriedRock = null;
     private Joint carryJointRock = null;
 
     private final float p_max_time = 1.5f;
@@ -228,13 +228,12 @@ public class AIComponent implements Component {
             }
 
         }
-        else if( carriedRock != -1 )
+        else if( carriedRock != null )
         {
             Entity ant = (Entity) antBody.getUserData();
             try{
 
-                Entity rock = screen.obstacles.get(carriedRock);
-                carryJointRock = screen.createJoint(ant, rock);
+                carryJointRock = screen.createJoint(ant, carriedRock);
                 state = Behaviour.DRAGGING;
 
             } catch (Exception e) {
@@ -248,19 +247,34 @@ public class AIComponent implements Component {
     {
         Entity pheromone = screen.nextTrailPheromone( path_id, inc_id - 1);
         //Log.d("DragRock", "Path_id: "+path_id+" Inc_id: "+inc_id);
-        if(carryJointRock == null || carriedRock == -1) state = Behaviour.RETURNING;
+        if(carryJointRock == null || carriedRock == null) state = Behaviour.RETURNING;
 
         try {
             if (pheromone != null) {
-                if (carryJointRock == null || carriedRock == -1) return wanderAngle;
-                Vec2 obstacle = screen.obstacles.get(carriedRock).getComponent(BodyComponent.class).body.getPosition();
+                if (carryJointRock == null || carriedRock == null){
+
+                    state = Behaviour.RETURNING;
+                    return wanderAngle;
+                }
+
+                if(!screen.checkObstacleStillExist(carriedRock)){
+                    carriedRock = null;
+                    carryJointRock = null;
+                    Vec2 antPos = antBody.getPosition();
+                    carriedFood = screen.spawnEntity("Food", antPos.getX(), antPos.getY());
+                    carryJoint = screen.createJoint((Entity) antBody.getUserData(), carriedFood);
+                    state = Behaviour.RETURNING;
+                    inc_id--;
+                    return wanderAngle;
+                }
+                Vec2 obstacle = carriedRock.getComponent(BodyComponent.class).body.getPosition();
                 Vec2 antPos = antBody.getPosition();
                 Vec2 pheromonePos = pheromone.getComponent(BodyComponent.class).body.getPosition();
                 Vec2 d = new Vec2((pheromonePos.getX() - obstacle.getX()), pheromonePos.getY() - obstacle.getY());
                 if ((d.getY() * d.getY() + d.getX() * d.getX()) > 20000) {
                      {
                         screen.destroyObstacle(carriedRock, carryJointRock);
-                        carriedRock = -1;
+                        carriedRock = null;
                         carryJointRock = null;
                         carriedFood = screen.spawnEntity("Food", antPos.getX(), antPos.getY());
                         carryJoint = screen.createJoint((Entity) antBody.getUserData(), carriedFood);
@@ -269,7 +283,7 @@ public class AIComponent implements Component {
                     inc_id--;
 
 
-                    state = Behaviour.RETURNING;
+                   // state = Behaviour.RETURNING;
                 } else {
                     wanderAngle = (float) Math.atan2(-d.getY(), -d.getX());
                     //Log.d("DragRock", "Angle: "+wanderAngle);
@@ -311,7 +325,7 @@ public class AIComponent implements Component {
 
     public void handleCollision( Entity ant, Entity b, GameWorld world, GameScreen screen, float deltaTime ){
 
-        if( state == Behaviour.WANDERING && Objects.equals(b.type,"Food") && carriedRock ==-1 )
+        if( state == Behaviour.WANDERING && Objects.equals(b.type,"Food") && carriedRock == null )
         {
             carryJoint = screen.createJoint(ant, b);
             carriedFood = b;

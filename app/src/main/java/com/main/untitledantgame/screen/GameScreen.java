@@ -32,6 +32,7 @@ import com.main.untitledantgame.components.ui.UIFlashLabelComponent;
 import com.main.untitledantgame.components.ui.UILabelComponent;
 import com.main.untitledantgame.map.Anthill;
 import com.main.untitledantgame.map.GameWorld;
+import com.main.untitledantgame.map.Statistics;
 import com.main.untitledantgame.pools.EntityPool;
 import com.main.untitledantgame.ui.UICanvas;
 import com.main.untitledantgame.utility.JsonSaver;
@@ -106,6 +107,8 @@ public class GameScreen extends Screen {
     int curr_path_id = 0;
 
     boolean paused = false;
+
+    Statistics stats = new Statistics();
 
 
     public GameScreen(Game game) {
@@ -486,6 +489,7 @@ public class GameScreen extends Screen {
                 world.removeEntity(entity);
             }
         }
+        JsonSaver.saveStatistics((Context)game, anthill.game_stats);
     }
 
     void quizReady(){
@@ -537,7 +541,7 @@ public class GameScreen extends Screen {
             AIComponent agent = ant.getComponent(AIComponent.class);
             agent.path_id = oc.path_id;
             agent.inc_id = 1;
-            agent.carriedRock =  index;
+            agent.carriedRock =  obstacles.get(index);
 
             agent.state = Behaviour.FOLLOWING;
         }
@@ -701,17 +705,29 @@ public class GameScreen extends Screen {
         if (joint != null) world.physicsWorld.destroyJoint(joint);
     }
 
-    public void destroyObstacle( int index, Joint rockJoint ) {
-        if(obSize <= index)
-            return;
-        obSize--;
+    public boolean destroyObstacle( Entity rock, Joint rockJoint ) {
 
-        Entity obstacle = obstacles.remove(index);
+        for(Entity e: obstacles){
+            if(e.equals(rock)){
+                obstacles.remove(rock);
+                if(rockJoint != null ) destroyJoint(rockJoint);
+                if(rock != null ) world.removeEntity(rock);
 
-        if(rockJoint != null ) destroyJoint(rockJoint);
-        if(obstacle != null ) world.removeEntity(obstacle);
+                anthill.game_stats.obstacle_moved += 1;
+                updateBoard();
+                return true;
+            }
+        }
 
-        anthill.game_stats.obstacle_moved += 1;
-        updateBoard();
+        return false;
+    }
+
+    public boolean checkObstacleStillExist(Entity rock){
+        for(Entity e: obstacles){
+            if(e.equals(rock)){
+                return true;
+            }
+        }
+        return false;
     }
 }

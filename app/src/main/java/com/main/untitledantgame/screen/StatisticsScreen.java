@@ -102,12 +102,12 @@ public class StatisticsScreen extends Screen {
         Statistics stats = JsonSaver.getHighestLevelGame((Context) game);
         if(stats == null)
             return;
-        antsSpawnedLabel.getComponent(UILabelComponent.class).text = stats.ants_spawned + "";
-        pheromonesSpawnedLabel.getComponent(UILabelComponent.class).text = stats.pheromones_spawned + "";
-        foodPickedLabel.getComponent(UILabelComponent.class).text = stats.picked_food +"";
-        obstaclesRemovedLabel.getComponent(UILabelComponent.class).text = stats.obstacle_moved + "";
-        enemiesKilledLabel.getComponent(UILabelComponent.class).text = stats.enemies_killed + "";
-        levelReachedLabel.getComponent(UILabelComponent.class).text = stats.level + "";
-        coinsEarnedLabel.getComponent(UILabelComponent.class).text = stats.coin + "";
+        antsSpawnedLabel.getComponent(UILabelComponent.class).text = "Ants spawned: " + stats.ants_spawned;
+        pheromonesSpawnedLabel.getComponent(UILabelComponent.class).text = "Pheromones spawned: " + stats.pheromones_spawned;
+        foodPickedLabel.getComponent(UILabelComponent.class).text = "Food picked up: " + stats.picked_food;
+        obstaclesRemovedLabel.getComponent(UILabelComponent.class).text = "Obstacles removed: " + stats.obstacle_moved;
+        enemiesKilledLabel.getComponent(UILabelComponent.class).text = "Enemies killed: " + stats.enemies_killed;
+        levelReachedLabel.getComponent(UILabelComponent.class).text = "Level reached: " + stats.level;
+        coinsEarnedLabel.getComponent(UILabelComponent.class).text = "Coins earned: " + stats.coin;
     }
 }
