@@ -56,10 +56,10 @@ public class AIComponent implements Component {
                 return updateWandering( antBody, force, screen, deltaTime, false );
 
             case RETURNING:
-                return followTrail( antBody, force, screen, false );
+                return followTrail( antBody, force, screen, false, deltaTime );
 
             case FOLLOWING:
-                return followTrail( antBody, force, screen, true );
+                return followTrail( antBody, force, screen, true, deltaTime );
 
             case DRAGGING:
                 return dragRock( antBody, force, screen );
@@ -171,13 +171,67 @@ public class AIComponent implements Component {
         return angle;
     }
 
-    public float followTrail( Body antBody, float force, GameScreen screen, Boolean forward ) {
+    public float followTrail( Body antBody, float force, GameScreen screen, Boolean forward, float deltaTime ) {
 
         Entity pheromone = screen.nextTrailPheromone( path_id, inc_id);
 
         Vec2 antPos = antBody.getPosition();
         //Log.d("TRAIL", "Path_id:"+path_id+" Inc_id:"+inc_id);
+        List<Fixture> results = sensor.findInArea( screen.world.physicsWorld,
+                antPos.getX() - sense_distance.getX(),
+                antPos.getY() - sense_distance.getX(),
+                antPos.getX() + sense_distance.getX(),
+                antPos.getY() + sense_distance.getX() );
+
+        boolean ant_found = false;
+        for (Fixture fixture : results) {
+            Body body = fixture.getBody();
+            Entity entity = (Entity) body.getUserData();
+            if (!"Ant".equals(entity.type) ) {
+                if (entity.hasComponent(ObstacleComponent.class) && entity.getComponent(ObstacleComponent.class).spotted)
+                    break;
+                Vec2 en = entity.getComponent(BodyComponent.class).body.getPosition();
+                Vec2 d = new Vec2((en.getX() - antPos.getX()), en.getY() - antPos.getY());
+                float fx = d.getX() * force;
+                float fy = d.getY() * force;
+                if("Wasp".equals(entity.type) && checkInRange(antPos, body.getPosition(), attack_range)){
+                    Log.d("AiComponent", "Ant: " );
+                    Entity ant = (Entity) antBody.getUserData();
+                    if(last_attack > 0) last_attack -= deltaTime;
+                    else {
+                        last_attack = attack_time;
+                        entity.getComponent(LifeComponent.class).hp -= attack_damage;
+
+                    }
+                    AIComponent waspAI = entity.getComponent(AIComponent.class);
+                    if(waspAI.last_attack > 0 ) waspAI.last_attack -= deltaTime;
+                    else{
+                        waspAI.last_attack = waspAI.attack_time;
+                        ant.getComponent(LifeComponent.class).hp -= waspAI.attack_damage;
+                        Log.d("AiComponent", "Ant life: " + ant.getComponent(LifeComponent.class).hp);
+
+                    }
+                    if(entity.getComponent(LifeComponent.class).hp < 0) {
+                        screen.world.removePooledEntity(entity);
+                        state = Behaviour.WANDERING;
+                    }
+                    if(ant.getComponent(LifeComponent.class).hp < 0) {
+                        screen.ants_pool.release(ant);
+                        screen.world.removePooledEntity(ant);
+                        Log.d("AiComponent", "Ant died. ");
+                        waspAI.state = Behaviour.PATROLLING;
+                    }
+                    antBody.applyForceToCenter( new Vec2(fx,fy), true );
+                    return wanderAngle;
+                }
+                break;
+            }
+
+
+        }
+
         Vec2 d_spawn = new Vec2((0 - antPos.getX()), 0 - antPos.getY());
+
         if ( !forward  && ( ( Math.abs(d_spawn.getX()) < 20.1f && Math.abs(d_spawn.getY()) < 20.1f )  ) ) {
             Entity ant = (Entity)antBody.getUserData();
             if (carryJoint != null && carriedFood != null)
