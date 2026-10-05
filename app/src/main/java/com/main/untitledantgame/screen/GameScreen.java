@@ -599,6 +599,8 @@ public class GameScreen extends Screen {
 
     Entity spawnAnt(){
         Entity ant = ants_pool.acquire();
+        LifeComponent life_ant = ant.getComponent(LifeComponent.class);
+        life_ant.hp = life_ant.maxHp;
         Body antBody = ant.getComponent(BodyComponent.class).body;
         ant.getComponent(AnimatedSpriteComponent.class).sprite = Assets.antSkins[CustomizationScreen.antSkin];
         antBody.setTransform(0,0, 0);
