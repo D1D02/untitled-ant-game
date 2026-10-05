@@ -4,7 +4,7 @@
     "generator": {
       "entity_name": "Wasp",
       "start_delay":100,
-      "ratio": 500,
+      "ratio": 15,
       "time_spent": 0,
       "min_distance": 30,
       "max_distance": 70
