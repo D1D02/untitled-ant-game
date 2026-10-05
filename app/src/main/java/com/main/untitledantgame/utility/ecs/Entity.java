@@ -9,9 +9,8 @@ import java.util.Map;
 public class Entity {
 
     private static long NEXT_ID = 0;
-    private long id;
+    private final long id;
     public String type;
-    public int pool_id;
 
     private Map<Class<? extends Component>, Component> components = new HashMap<>();
 
@@ -19,9 +18,6 @@ public class Entity {
         this.id = NEXT_ID++;
     }
 
-    public long getId() {
-        return id;
-    }
 
     public <T extends Component> void addComponent(T component) {
         components.put(component.getClass(), component);

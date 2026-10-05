@@ -538,10 +538,13 @@ public class GameScreen extends Screen {
             AIComponent agent = ant.getComponent(AIComponent.class);
             agent.path_id = oc.path_id;
             agent.inc_id = 1;
-            agent.carriedRock =  obstacles.get(index);
+            agent.carriedRock =  e;
 
             agent.state = Behaviour.FOLLOWING;
         }
+        obSize--;
+        obstacles.remove(index);
+        updateBoard();
     }
 
     public void addToBoard(Entity e, int id){
@@ -706,27 +709,16 @@ public class GameScreen extends Screen {
 
     public boolean destroyObstacle( Entity rock, Joint rockJoint ) {
 
-        for(Entity e: obstacles){
-            if(e.equals(rock)){
-                obstacles.remove(rock);
                 if(rockJoint != null ) destroyJoint(rockJoint);
                 if(rock != null ) world.removeEntity(rock);
 
                 anthill.game_stats.obstacle_moved += 1;
-                updateBoard();
-                return true;
-            }
-        }
+
 
         return false;
     }
 
     public boolean checkObstacleStillExist(Entity rock){
-        for(Entity e: obstacles){
-            if(e.equals(rock)){
-                return true;
-            }
-        }
-        return false;
+        return rock != null && world.entities.contains(rock);
     }
 }
