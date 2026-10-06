@@ -45,6 +45,7 @@ public class ComponentFactory {
             case "alive":
                 AliveComponent al = new AliveComponent();
                 al.ttl = data.get("ttl").getAsFloat();
+                al.duration = al.ttl;
                 return al;
 
             case "body":

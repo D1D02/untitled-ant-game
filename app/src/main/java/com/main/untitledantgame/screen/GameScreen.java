@@ -655,8 +655,8 @@ public class GameScreen extends Screen {
 
         while (iterator.hasNext()) {
             Entity mortalEntity = iterator.next();
-
-            if (mortalEntity.getComponent(AliveComponent.class).isDead(deltaTime)) {
+            AliveComponent alive = mortalEntity.getComponent(AliveComponent.class);
+            if (alive.isDead(deltaTime)) {
                 iterator.remove();
 
                 if (Objects.equals(mortalEntity.type, "Pheromone")) {
@@ -664,6 +664,7 @@ public class GameScreen extends Screen {
                     /*if (trails[id.path_id][id.inc_id] == mortalEntity) {
                         trails[id.path_id][id.inc_id] = null;
                     }*/
+                    alive.ttl = alive.duration;
                     pheromones_pool.release(mortalEntity);
                     world.removePooledEntity(mortalEntity);
                 }else{
