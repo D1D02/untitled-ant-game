@@ -31,7 +31,7 @@ public class Anthill extends Entity {
 
     UILabelComponent gameOverTimer;
     public int food = 100, exp = 0;
-    int maxFood = 100,maxExp = 100;
+    int maxFood = 200,maxExp = 100;
     int level = 1;
     public Statistics game_stats;
     Context ctx;

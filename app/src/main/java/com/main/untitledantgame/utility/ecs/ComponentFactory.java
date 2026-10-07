@@ -83,8 +83,10 @@ public class ComponentFactory {
                     FixtureDef fDef = new FixtureDef();
                     fDef.setShape(shape);
                     fDef.setDensity(fixData.get("density").getAsFloat());
-                    fDef.setFriction(fixData.get("friction").getAsFloat());
-                    fDef.setRestitution(fixData.get("restitution").getAsFloat());
+                    //fDef.setFriction(fixData.get("friction").getAsFloat());
+                    //fDef.setRestitution(fixData.get("restitution").getAsFloat());
+                    fDef.setFriction(1);
+                    fDef.setRestitution(0);
 
                     bc.body.createFixture(fDef);
 

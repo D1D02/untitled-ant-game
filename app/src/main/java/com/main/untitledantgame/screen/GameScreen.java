@@ -419,7 +419,7 @@ public class GameScreen extends Screen {
 
         anthill = new Anthill(0, 0, foodBarEntity.getComponent(UIBarComponent.class),expBarEntity.getComponent(UIBarComponent.class),
                 world.physicsWorld, this.levelUpLabel, levelLabel.getComponent(UILabelComponent.class), this.gameOverTimerLabel, (Context)game);
-        anthill.game_stats = Assets.game_stats;
+        anthill.game_stats = new Statistics();//Assets.game_stats;
       
         world.addEntity(anthill);
 
@@ -438,10 +438,10 @@ public class GameScreen extends Screen {
         canvas.addElement(exploration);
 
         //ENTITA' INIZIALI
-        for(int i = 0; i < 10; i++){
+        for(int i = 0; i < 60; i++){
             GeneratorComponent foodGen = food_generator.getComponent(GeneratorComponent.class);
             spawnEntity("Food", foodGen.getRandomPosition(this), foodGen.getRandomPosition(this));
-            if(i < 3){
+            if(i < 15){
                 GeneratorComponent rockGen = rock_generator.getComponent(GeneratorComponent.class);
                 spawnEntity("Rock", rockGen.getRandomPosition(this), rockGen.getRandomPosition(this));
             }
@@ -487,6 +487,8 @@ public class GameScreen extends Screen {
             }
         }
         JsonSaver.saveStatistics((Context)game, anthill.game_stats);
+        for(int i = 0; i < 50; i++)
+            Log.d("STATS", "coins: " + anthill.game_stats.coin + "| kills: " + anthill.game_stats.enemies_killed);
     }
 
     void quizReady(){

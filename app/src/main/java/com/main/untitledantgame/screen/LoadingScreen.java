@@ -107,7 +107,7 @@ public class LoadingScreen extends Screen {
         Assets.world = new GameWorld();
 
         //Assets.world.physicsWorld.setContactListener(new GameContactListener());
-        Assets.game_stats = new Statistics();
+        //Assets.game_stats = new Statistics();
         Assets.pheromones_pool = new EntityPool(1000, "Pheromone", Assets.world.physicsWorld, game);
         Quiz.init((Context) game);
     }

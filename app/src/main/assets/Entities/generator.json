@@ -4,10 +4,10 @@
     "generator": {
       "entity_name": "Wasp",
       "start_delay":100,
-      "ratio": 15,
+      "ratio": 110,
       "time_spent": 0,
-      "min_distance": 30,
-      "max_distance": 70
+      "min_distance": 100,
+      "max_distance": 350
     }
   }
 },
@@ -17,10 +17,10 @@
     "generator": {
       "entity_name": "Rock",
       "start_delay":0,
-      "ratio": 100,
+      "ratio": 120,
       "time_spent": 0,
-      "min_distance": 40,
-      "max_distance": 60
+      "min_distance": 100,
+      "max_distance": 800
     }
   }
 },
@@ -30,10 +30,10 @@
       "generator": {
         "entity_name": "Food",
         "start_delay":0,
-        "ratio": 60,
+        "ratio": 50,
         "time_spent": 0,
         "min_distance": 100,
-        "max_distance": 200
+        "max_distance": 1000
       }
     }
   }]

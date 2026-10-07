@@ -36,7 +36,7 @@ public class AIComponent implements Component {
     public Entity carriedRock = null;
     private Joint carryJointRock = null;
 
-    private final float p_max_time = 1.5f;
+    private final float p_max_time = 0.5f;
     private float p_time_spent = p_max_time;
 
     public Vec2 sense_distance = new Vec2(50, 50);

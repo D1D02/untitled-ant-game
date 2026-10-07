@@ -5,11 +5,11 @@
         "food": {
             "food": 10,
             "capacity":10,
-            "consuming_timer": 10,
+            "consuming_timer": 25,
             "last_consumed": 0
         },
         "ant_stats": {
-            "force": 5000.0,
+            "force": 3000.0,
             "max_distance": 1500,
             "range": 3,
             "attack_damage": 3
@@ -61,7 +61,7 @@
                 "last_consumed": 0
             },
             "ant_stats": {
-                "force": 5000.0,
+                "force": 3000.0,
                 "max_distance": 1000,
                 "range": 3,
                 "attack_damage": 10
@@ -111,7 +111,7 @@
         "identifier":{
             "inc_id": 0
         },
-        "alive": {"ttl": 100},
+        "alive": {"ttl": 250},
         "body":{
             "type": "staticBody",
             "fixed_rotation": "true",
@@ -140,7 +140,7 @@
                     "dimension_2": 10.0
                 },
                 "fixture": {
-                    "density": 0.000001,
+                    "density": 0.1,
                     "friction": 0.0001,
                     "restitution": 2
                 }
@@ -167,7 +167,7 @@
                     "dimension_2": 10.01
                 },
                 "fixture": {
-                    "density": 10,
+                    "density": 75,
                     "friction": 200000000,
                     "restitution": 2
                 }

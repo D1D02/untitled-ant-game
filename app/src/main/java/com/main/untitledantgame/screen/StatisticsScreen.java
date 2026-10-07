@@ -97,17 +97,17 @@ public class StatisticsScreen extends Screen {
         canvas.addElement(obstaclesRemovedLabel);
         canvas.addElement(enemiesKilledLabel);
         canvas.addElement(levelReachedLabel);
-        canvas.addElement(coinsEarnedLabel);
+        //canvas.addElement(coinsEarnedLabel);
 
         Statistics stats = JsonSaver.getHighestLevelGame((Context) game);
         if(stats == null)
             return;
         antsSpawnedLabel.getComponent(UILabelComponent.class).text = "Ants spawned: " + stats.ants_spawned;
-        pheromonesSpawnedLabel.getComponent(UILabelComponent.class).text = "Pheromones spawned: " + stats.pheromones_spawned;
+        pheromonesSpawnedLabel.getComponent(UILabelComponent.class).text = "Phero. spawned: " + stats.pheromones_spawned;
         foodPickedLabel.getComponent(UILabelComponent.class).text = "Food picked up: " + stats.picked_food;
         obstaclesRemovedLabel.getComponent(UILabelComponent.class).text = "Obstacles removed: " + stats.obstacle_moved;
         enemiesKilledLabel.getComponent(UILabelComponent.class).text = "Enemies killed: " + stats.enemies_killed;
         levelReachedLabel.getComponent(UILabelComponent.class).text = "Level reached: " + stats.level;
-        coinsEarnedLabel.getComponent(UILabelComponent.class).text = "Coins earned: " + stats.coin;
+        //coinsEarnedLabel.getComponent(UILabelComponent.class).text = "Coins earned: " + stats.coin;
     }
 }
