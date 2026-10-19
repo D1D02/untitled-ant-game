@@ -214,7 +214,7 @@ public class AIComponent implements Component {
                     }
                     if(entity.getComponent(LifeComponent.class).hp < 0) {
                         screen.world.removePooledEntity(entity);
-                        state = Behaviour.WANDERING;
+                        state = Behaviour.RETURNING;
                     }
                     if(ant.getComponent(LifeComponent.class).hp < 0) {
                         screen.ants_pool.release(ant);
